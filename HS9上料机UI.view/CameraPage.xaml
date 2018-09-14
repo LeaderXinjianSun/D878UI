@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="HS9上料机UI.view.CameraPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:bing="clr-namespace:BingLibrary.hjb.mvvm;assembly=BingLibrary"
+             xmlns:hwind="clr-namespace:HalconDotNet;assembly=halcondotnet"
+             xmlns:local="clr-namespace:HS9上料机UI.view"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1024">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <GroupBox Header="相机">
+            <hwind:HWindowControlWPF x:Name="WPF_HWindow"></hwind:HWindowControlWPF>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="操作">
+            <StackPanel>
+                <Button Content="Open" Width="100" Command="{bing:ActionAuto OpenImage}"></Button>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</UserControl>

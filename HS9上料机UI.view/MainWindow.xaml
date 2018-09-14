@@ -1,0 +1,33 @@
+﻿<metro:MetroWindow x:Class="HS9上料机UI.view.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:bing="clr-namespace:BingLibrary.hjb.mvvm;assembly=BingLibrary"
+        xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:local="clr-namespace:HS9上料机UI.view"
+        mc:Ignorable="d"
+        Title="HS9上料机UI" WindowStartupLocation="CenterScreen" WindowState="Maximized"
+                     BorderThickness="0" GlowBrush="Black"  ResizeMode="CanResizeWithGrip" WindowTransitionsEnabled="True"
+                     Height="768" Width="1024" DataContext="{bing:Data md}" Icon="dog.ico" Closing="MetroWindow_Closing">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="68*"></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="主页"></MenuItem>
+            <MenuItem Header="检测相机"></MenuItem>
+            <MenuItem Header="轴控"></MenuItem>
+            <MenuItem Header="记录" ></MenuItem>
+            <MenuItem Header="报警"></MenuItem>
+            <MenuItem Header="登录"></MenuItem>
+            <MenuItem Header="参数" />
+        </Menu>
+        <Grid Grid.Row="1" x:Name="CameraPageGrid">
+            <local:CameraPage ></local:CameraPage>
+        </Grid>
+    </Grid>
+</metro:MetroWindow>

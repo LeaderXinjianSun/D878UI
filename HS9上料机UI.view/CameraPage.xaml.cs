@@ -12,17 +12,23 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using HS9上料机UI.viewmodel;
+using ViewROI;
 
-namespace HS9上料机UI
+namespace HS9上料机UI.view
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// CameraPage.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class CameraPage : UserControl
     {
-        public MainWindow()
+        public CameraPage()
         {
             InitializeComponent();
+            GlobalVar.hWndCtrl = new HWndCtrl(WPF_HWindow);
+            GlobalVar.rOIController = new ROIController();
+            GlobalVar.hWndCtrl.useROIController(GlobalVar.rOIController);
+            GlobalVar.hWndCtrl.setViewState(HWndCtrl.MODE_VIEW_MOVE);
         }
     }
 }

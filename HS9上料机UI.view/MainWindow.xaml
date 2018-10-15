@@ -7,27 +7,59 @@
         xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:HS9上料机UI.view"
         mc:Ignorable="d"
-        Title="HS9上料机UI" WindowStartupLocation="CenterScreen" WindowState="Maximized"
+        Title="HS9上料机UI" WindowStartupLocation="CenterScreen" WindowState="Normal"
                      BorderThickness="0" GlowBrush="Black"  ResizeMode="CanResizeWithGrip" WindowTransitionsEnabled="True"
                      Height="768" Width="1024" DataContext="{bing:Data md}" Icon="dog.ico" Closing="MetroWindow_Closing">
+    <metro:MetroWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Dictionary1.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </metro:MetroWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="68*"></RowDefinition>
-            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
         <Menu>
-            <MenuItem Header="主页"></MenuItem>
-            <MenuItem Header="检测相机"></MenuItem>
-            <MenuItem Header="轴控"></MenuItem>
+            <MenuItem Header="主页" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="0"></MenuItem>
+            <MenuItem Header="检测相机" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="1"></MenuItem>
+            <MenuItem Header="轴控" IsEnabled="{Binding Isloagin}"></MenuItem>
             <MenuItem Header="记录" ></MenuItem>
             <MenuItem Header="报警"></MenuItem>
-            <MenuItem Header="登录"></MenuItem>
-            <MenuItem Header="参数" />
+            <MenuItem Header="{Binding LoginString}" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="5"></MenuItem>
+            <MenuItem Header="参数" IsEnabled="{Binding Isloagin}" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="6"/>
         </Menu>
-        <Grid Grid.Row="1" x:Name="CameraPageGrid">
+        <Grid Grid.Row="1" Visibility="{Binding HomePageVisibility}">
+            <local:HomePage></local:HomePage>
+        </Grid>
+        <Grid Grid.Row="1" x:Name="CameraPageGrid" Visibility="{Binding CameraPageVisibility}">
             <local:CameraPage ></local:CameraPage>
         </Grid>
+        <Grid  Grid.Row="1" Visibility="{Binding ParameterPageVisibility}">
+            <local:ParameterPage></local:ParameterPage>
+        </Grid>
+        <StatusBar Grid.Row="2">
+            <StatusBarItem>
+                <TextBlock>PLC</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Ellipse Style="{StaticResource PLCConnectStatus}"></Ellipse>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock>机械手</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Ellipse Style="{StaticResource TCPConnectStatus}"></Ellipse>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock>数据库</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Ellipse Style="{StaticResource DBConnectStatus}"></Ellipse>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </metro:MetroWindow>

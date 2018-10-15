@@ -54,7 +54,6 @@ namespace BingLibrary.hjb.net
         public async Task<string> ReceiveAsync()
         {
             string tempS = "error";
-
             try
             {
                 IsOnline();
@@ -64,7 +63,7 @@ namespace BingLibrary.hjb.net
                 stream.ReadTimeout = 200;
                 //Int32 bytes = stream.Read(data, 0, data.Length);
                 Int32 bytes = await stream.ReadAsync(data, 0, data.Length);
-                tempS = Encoding.ASCII.GetString(data, 0, bytes);
+                tempS = System.Text.Encoding.GetEncoding("GBK").GetString(data, 0, bytes);
                 return tempS;
             }
             catch

@@ -1,6 +1,24 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:HS9上料机UI.view">
+    <Style TargetType="Button" x:Key="DebugButton1">
+        <Setter Property="Margin" Value="0,10,0,0"></Setter>
+        <Setter Property="Width" Value="120"></Setter>
+        <Setter Property="Height" Value="40"></Setter>
+        <Setter Property="FontSize" Value="16"></Setter>
+    </Style>
+    <Style TargetType="Button" x:Key="DebugButton2">
+        <Setter Property="Margin" Value="5,0,0,0"></Setter>
+        <Setter Property="Width" Value="40"></Setter>
+        <Setter Property="Height" Value="20"></Setter>
+        <Setter Property="FontSize" Value="12"></Setter>
+    </Style>
+    <Style TargetType="{x:Type TextBox}" x:Key="TextBoxBase">
+        <Setter Property="FontSize" Value="14"></Setter>
+        <Setter Property="Margin" Value="5,0,0,0"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+    </Style>
     <Style TargetType="TextBlock" x:Key="TextBlockBase">
         <Setter Property="VerticalAlignment" Value="Center"></Setter>
         <Setter Property="FontSize" Value="14"></Setter>
@@ -16,6 +34,111 @@
         <Setter Property="FontFamily" Value="YaHei"></Setter>
         <Setter Property="Foreground" Value="White"></Setter>
         <Setter Property="Background" Value="SeaGreen"></Setter>
+    </Style>
+    <Style TargetType="Button" x:Key="TwinCATButtonBase">
+        <Setter Property="Margin" Value="15,15"></Setter>
+        <Setter Property="FontSize" Value="16"></Setter>
+        <Setter Property="FontFamily" Value="YaHei"></Setter>
+        <Setter Property="Width" Value="45"></Setter>
+        <Setter Property="Height" Value="45"></Setter>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="HS_Debug_Begin">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HSRDYtoDebug.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="HS_In_Begin">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HSInDebug.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="H_SVN">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PowerOn5.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="S_SVN">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PowerOn6.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="XY_Debug_Begin">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding XYRDYtoDebug.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="XY_In_Begin">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding XYInDebug.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="F_Debug_Begin">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding FRDYtoDebug.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="F_In_Begin">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding FInDebug.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="T_Debug_Begin">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding TRDYtoDebug.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="T_In_Begin">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding TInDebug.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="X_SVN">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PowerOn1.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="Y_SVN">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PowerOn2.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="F_SVN">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PowerOn3.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="T_SVN">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PowerOn4.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
     <Style TargetType="StackPanel" x:Key="EpsonStatusStackPanel">
         <Setter Property="Margin" Value="2,0"></Setter>
@@ -123,5 +246,390 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-
+    <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}" x:Key="TextBlockParameterName">
+        <Setter Property="Width" Value="70"></Setter>
+    </Style>
+    <!--<Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}" x:Key="TextBlockParameterMidName">
+        <Setter Property="Width" Value="80"></Setter>
+    </Style>-->
+    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxBase}" x:Key="TextBoxCor">
+        <Setter Property="Width" Value="100"></Setter>
+    </Style>
+    <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockBase}" x:Key="TextBlockParameterLoneName">
+        <Setter Property="Width" Value="120"></Setter>
+    </Style>
+    <Style TargetType="Label" x:Key="LabelBase">
+        <Setter Property="Width" Value="70"></Setter>
+        <Setter Property="Background" Value="Gray"></Setter>
+        <Setter Property="FontSize" Value="18"></Setter>
+    </Style>
+    <Style TargetType="Label" BasedOn="{StaticResource LabelBase}" x:Key="H_HomeStaus">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HRDY.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Label" BasedOn="{StaticResource LabelBase}" x:Key="S_HomeStaus">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SRDY.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Label" BasedOn="{StaticResource LabelBase}" x:Key="X_HomeStaus">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding XRDY.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Label" BasedOn="{StaticResource LabelBase}" x:Key="Y_HomeStaus">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding YRDY.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Label" BasedOn="{StaticResource LabelBase}" x:Key="F_HomeStaus">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding FRDY.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Label" BasedOn="{StaticResource LabelBase}" x:Key="T_HomeStaus">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding TRDY.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" x:Key="EllipseIOBase">
+        <Setter Property="Fill" Value="Gray"></Setter>
+        <Setter Property="Width" Value="20"></Setter>
+        <Setter Property="Height" Value="20"></Setter>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI1">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI1.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI2">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI2.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI3">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI3.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI4">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI4.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI5">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI5.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI6">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI6.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI7">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI7.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI8">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI8.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI9">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI9.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI10">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI10.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI11">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI11.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI12">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI12.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="BFI13">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFI13.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO1">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO1.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO2">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO2.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO3">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO3.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO4">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO4.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO5">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO5.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO6">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO6.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO7">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO7.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO8">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO8.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO9">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO9.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO10">
+        <Setter Property="Width" Value="55"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO10.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO11">
+        <Setter Property="Width" Value="55"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO11.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO12">
+        <Setter Property="Width" Value="55"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO12.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO13">
+        <Setter Property="Width" Value="55"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO13.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO14">
+        <Setter Property="Width" Value="55"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO14.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO15">
+        <Setter Property="Width" Value="55"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO15.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_BFO16">
+        <Setter Property="Width" Value="55"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding BFO16.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="SV1">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckValue1.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="SV2">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckValue2.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="SV3">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckValue3.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="SV4">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckValue4.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="SV5">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckValue5.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="SV6">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckValue6.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="SV7">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckValue7.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="SV8">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckValue8.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck1">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Suck1.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck2">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Suck2.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck3">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Suck3.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck4">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Suck4.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck5">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Suck5.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck6">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Suck6.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck7">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Suck7.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck8">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Suck8.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

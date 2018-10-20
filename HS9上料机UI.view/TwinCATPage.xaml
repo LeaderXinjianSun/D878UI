@@ -628,12 +628,12 @@
                                 <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="200" Text="真空吸，运料"></TextBlock>
                                 <Button Style="{DynamicResource IO_BFO3}" Margin ="1" Content="BFO3" Command="{bing:ActionAutoWithParam TwinCATIOOperate}" CommandParameter="3"></Button>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="200" Text="吸盘吸产品上下气缸1-1"></TextBlock>
+                            <!--<StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="200" Text="吸盘吸产品上下气缸"></TextBlock>
                                 <Button Style="{DynamicResource IO_BFO4}" Margin ="1" Content="BFO4" Command="{bing:ActionAutoWithParam TwinCATIOOperate}" CommandParameter="4"></Button>
-                            </StackPanel>
+                            </StackPanel>-->
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="200" Text="吸盘吸产品上下气缸1-2"></TextBlock>
+                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="200" Text="前面自动安全门气缸"></TextBlock>
                                 <Button Style="{DynamicResource IO_BFO5}" Margin ="1" Content="BFO5" Command="{bing:ActionAutoWithParam TwinCATIOOperate}" CommandParameter="5"></Button>
                             </StackPanel>
                             <!--<StackPanel Orientation="Horizontal">
@@ -661,7 +661,7 @@
                                 <!--<TextBlock Style="{StaticResource  TextBlockParameterName}" Width="200" Text="校正平台吸产品真空吸7"></TextBlock>
                                 <Button Style="{DynamicResource IO_BFO12}" Margin ="1" Content="BFO12" Command="{bing:ActionAutoWithParam TwinCATIOOperate}" CommandParameter="12"></Button>-->
                                 <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="200" Text="DangerIn"></TextBlock>
-                                <Button Style="{DynamicResource IO_BFO13}" Margin ="1" Content="BFO13" Command="{bing:ActionAutoWithParam TwinCATIOOperate}" CommandParameter="13"></Button>
+                                <Button Style="{DynamicResource IO_BFO14}" Margin ="1" Content="BFO14" Command="{bing:ActionAutoWithParam TwinCATIOOperate}" CommandParameter="14"></Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <!--<TextBlock Style="{StaticResource  TextBlockParameterName}" Width="200" Text="校正平台吸产品真空吸8"></TextBlock>
@@ -713,44 +713,70 @@
                                 <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="250" Text="上料负压表8"></TextBlock>
                                 <Ellipse Style="{StaticResource SV8}"></Ellipse>
                             </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="250" Text="上料负压表9"></TextBlock>
+                                <Ellipse Style="{StaticResource SV8}"></Ellipse>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="250" Text="上料负压表10"></TextBlock>
+                                <Ellipse Style="{StaticResource SV8}"></Ellipse>
+                            </StackPanel>
                         </StackPanel>
 
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="输出">
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸1"></TextBlock>
-                                <Button Style="{DynamicResource IO_Suck1}" Content="Suck1" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="1"></Button>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸1"></TextBlock>
+                                    <Button Style="{DynamicResource IO_Suck1}" Content="Suck1" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="1"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸2"></TextBlock>
+                                    <Button Style="{DynamicResource IO_Suck2}" Content="Suck2" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="2"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸3"></TextBlock>
+                                    <Button Style="{DynamicResource IO_Suck3}" Content="Suck3" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="3"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸4"></TextBlock>
+                                    <Button Style="{DynamicResource IO_Suck4}" Content="Suck4" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="4"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸5"></TextBlock>
+                                    <Button Style="{DynamicResource IO_Suck5}" Content="Suck5" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="5"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸6"></TextBlock>
+                                    <Button Style="{DynamicResource IO_Suck6}" Content="Suck6" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="6"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸7"></TextBlock>
+                                    <Button Style="{DynamicResource IO_Suck7}" Content="Suck7" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="7"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸8"></TextBlock>
+                                    <Button Style="{DynamicResource IO_Suck8}" Content="Suck8" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="8"></Button>
+                                </StackPanel>
+
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸2"></TextBlock>
-                                <Button Style="{DynamicResource IO_Suck2}" Content="Suck2" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="2"></Button>
+                            <StackPanel Orientation="Vertical" Grid.Column="1">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸9"></TextBlock>
+                                    <Button Style="{DynamicResource IO_Suck9}" Content="Suck9" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="9"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸10"></TextBlock>
+                                    <Button Style="{DynamicResource IO_Suck10}" Content="Suck10" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="10"></Button>
+                                </StackPanel>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸3"></TextBlock>
-                                <Button Style="{DynamicResource IO_Suck3}" Content="Suck3" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="3"></Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸4"></TextBlock>
-                                <Button Style="{DynamicResource IO_Suck4}" Content="Suck4" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="4"></Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸5"></TextBlock>
-                                <Button Style="{DynamicResource IO_Suck5}" Content="Suck5" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="5"></Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸6"></TextBlock>
-                                <Button Style="{DynamicResource IO_Suck6}" Content="Suck6" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="6"></Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸7"></TextBlock>
-                                <Button Style="{DynamicResource IO_Suck7}" Content="Suck7" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="7"></Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸8"></TextBlock>
-                                <Button Style="{DynamicResource IO_Suck8}" Content="Suck8" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="8"></Button>
-                            </StackPanel>
-                        </StackPanel>
+                        </Grid>
+                        
                     </GroupBox>
                 </Grid>
             </TabItem>

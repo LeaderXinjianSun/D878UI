@@ -74,6 +74,30 @@
                     <Ellipse Style="{StaticResource EpsonStatusReadyColor}"></Ellipse>
                 </StackPanel>
             </StackPanel>
+            <StackPanel VerticalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="X: "></TextBlock>
+                    <TextBlock Text="{Binding XErrorCode.Value}" Width="80"></TextBlock>
+                    <TextBlock Text="H: "></TextBlock>
+                    <TextBlock Text="{Binding HErrorCode.Value}" Width="80"></TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Y: "></TextBlock>
+                    <TextBlock Text="{Binding YErrorCode.Value}" Width="80"></TextBlock>
+                    <TextBlock Text="S: "></TextBlock>
+                    <TextBlock Text="{Binding SErrorCode.Value}" Width="80"></TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="F: "></TextBlock>
+                    <TextBlock Text="{Binding FErrorCode.Value}" Width="80"></TextBlock>
+                    <TextBlock Text="U: "></TextBlock>
+                    <TextBlock Text="{Binding UErrorCode.Value}" Width="80"></TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="T: "></TextBlock>
+                    <TextBlock Text="{Binding TErrorCode.Value}" Width="80"></TextBlock>
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

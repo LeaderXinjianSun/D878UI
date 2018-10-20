@@ -19,6 +19,14 @@ namespace HS9上料机UI.viewmodel
     {
         #region 属性
         #region Twincat
+        public TwinCATCoil1 XErrorCode { set; get; }
+        public TwinCATCoil1 YErrorCode { set; get; }
+        public TwinCATCoil1 HErrorCode { set; get; }
+        public TwinCATCoil1 SErrorCode { set; get; }
+        public TwinCATCoil1 FErrorCode { set; get; }
+        public TwinCATCoil1 TErrorCode { set; get; }
+        public TwinCATCoil1 UErrorCode { set; get; }
+
         public TwinCATCoil1 SaveButton { set; get; }
         public TwinCATCoil1 SuckValue1 { set; get; }
         public TwinCATCoil1 SuckValue2 { set; get; }
@@ -28,6 +36,8 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 SuckValue6 { set; get; }
         public TwinCATCoil1 SuckValue7 { set; get; }
         public TwinCATCoil1 SuckValue8 { set; get; }
+        public TwinCATCoil1 SuckValue9 { set; get; }
+        public TwinCATCoil1 SuckValue10 { set; get; }
         public TwinCATCoil1 Suck1 { set; get; }
         public TwinCATCoil1 Suck2 { set; get; }
         public TwinCATCoil1 Suck3 { set; get; }
@@ -36,6 +46,8 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 Suck6 { set; get; }
         public TwinCATCoil1 Suck7 { set; get; }
         public TwinCATCoil1 Suck8 { set; get; }
+        public TwinCATCoil1 Suck9 { set; get; }
+        public TwinCATCoil1 Suck10 { set; get; }
         public TwinCATCoil1 BFI1 { set; get; }
         public TwinCATCoil1 BFI2 { set; get; }
         public TwinCATCoil1 BFI3 { set; get; }
@@ -49,6 +61,9 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 BFI11 { set; get; }
         public TwinCATCoil1 BFI12 { set; get; }
         public TwinCATCoil1 BFI13 { set; get; }
+        public TwinCATCoil1 BFI14 { set; get; }
+        public TwinCATCoil1 BFI15 { set; get; }
+        public TwinCATCoil1 BFI16 { set; get; }
 
         public TwinCATCoil1 BFO1 { set; get; }
         public TwinCATCoil1 BFO2 { set; get; }
@@ -249,11 +264,20 @@ namespace HS9上料机UI.viewmodel
             TwincatVarInit();
             Init();
             Async.RunFuncAsync(PLCWork, null);
+            Async.RunFuncAsync(Run, null);
         }
         #endregion
         #region Twincat实例化
         private void TwincatVarInit()
         {
+            XErrorCode = new TwinCATCoil1(new TwinCATCoil("MAIN.XErrorCode", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            YErrorCode = new TwinCATCoil1(new TwinCATCoil("MAIN.YErrorCode", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            FErrorCode = new TwinCATCoil1(new TwinCATCoil("MAIN.FErrorCode", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            TErrorCode = new TwinCATCoil1(new TwinCATCoil("MAIN.TErrorCode", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            HErrorCode = new TwinCATCoil1(new TwinCATCoil("MAIN.HErrorCode", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            SErrorCode = new TwinCATCoil1(new TwinCATCoil("MAIN.SErrorCode", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            UErrorCode = new TwinCATCoil1(new TwinCATCoil("MAIN.UErrorCode", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
             XPos = new TwinCATCoil1(new TwinCATCoil("MAIN.XPos", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
             YPos = new TwinCATCoil1(new TwinCATCoil("MAIN.YPos", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
             FPos = new TwinCATCoil1(new TwinCATCoil("MAIN.FPos", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -395,6 +419,9 @@ namespace HS9上料机UI.viewmodel
             BFI11 = new TwinCATCoil1(new TwinCATCoil("MAIN.BFI11", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             BFI12 = new TwinCATCoil1(new TwinCATCoil("MAIN.BFI12", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             BFI13 = new TwinCATCoil1(new TwinCATCoil("MAIN.BFI13", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            BFI14 = new TwinCATCoil1(new TwinCATCoil("MAIN.BFI14", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            BFI15 = new TwinCATCoil1(new TwinCATCoil("MAIN.BFI15", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            BFI16 = new TwinCATCoil1(new TwinCATCoil("MAIN.BFI16", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             BFO1 = new TwinCATCoil1(new TwinCATCoil("MAIN.BFO1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             BFO2 = new TwinCATCoil1(new TwinCATCoil("MAIN.BFO2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -421,6 +448,8 @@ namespace HS9上料机UI.viewmodel
             Suck6 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck6", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             Suck7 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck7", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             Suck8 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck8", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            Suck9 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck9", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            Suck10 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck10", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             SuckValue1 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             SuckValue2 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -430,6 +459,8 @@ namespace HS9上料机UI.viewmodel
             SuckValue6 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue6", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             SuckValue7 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue7", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             SuckValue8 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue8", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            SuckValue9 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue9", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            SuckValue10 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue10", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             Calc_Start = new TwinCATCoil1(new TwinCATCoil("MAIN.Calc_Start", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
@@ -543,7 +574,7 @@ namespace HS9上料机UI.viewmodel
             }
             MessageStr += System.DateTime.Now.ToString() + " " + str;
             return MessageStr;
-        }
+        }        
         #region TwinCATOperate
         public void TwinCATButtonOperate(object p)
         {
@@ -1294,6 +1325,12 @@ namespace HS9上料机UI.viewmodel
                 case "8":
                     Suck8.Value = !(bool)Suck8.Value;
                     break;
+                case "9":
+                    Suck9.Value = !(bool)Suck9.Value;
+                    break;
+                case "10":
+                    Suck10.Value = !(bool)Suck10.Value;
+                    break;
                 default:
                     break;
             }
@@ -1448,6 +1485,61 @@ namespace HS9上料机UI.viewmodel
                     Xinjie.ModbusInit(SerialPortCom, 19200, System.IO.Ports.Parity.Even, 8, System.IO.Ports.StopBits.One);
                     Xinjie.ModbusConnect();
                 }
+            }
+        }
+        public void Run()
+        {
+            while (true)
+            {
+                System.Threading.Thread.Sleep(10);
+                try
+                {
+                    XinJieIn[0] = (bool)Suck1.Value;
+                    XinJieIn[1] = (bool)Suck2.Value;
+                    XinJieIn[2] = (bool)Suck3.Value;
+                    XinJieIn[3] = (bool)Suck4.Value;
+                    XinJieIn[4] = (bool)Suck5.Value;
+                    XinJieIn[5] = (bool)Suck6.Value;
+                    XinJieIn[6] = (bool)Suck7.Value;
+                    XinJieIn[7] = (bool)Suck8.Value;
+                    XinJieIn[8] = (bool)Suck9.Value;
+                    XinJieIn[9] = (bool)Suck10.Value;
+
+                    SuckValue1.Value = XinJieOut[0];
+                    SuckValue2.Value = XinJieOut[1];
+                    SuckValue3.Value = XinJieOut[2];
+                    SuckValue4.Value = XinJieOut[3];
+                    SuckValue5.Value = XinJieOut[4];
+                    SuckValue6.Value = XinJieOut[5];
+                    SuckValue7.Value = XinJieOut[6];
+                    SuckValue8.Value = XinJieOut[7];
+                    SuckValue9.Value = XinJieOut[12];
+                    SuckValue10.Value = XinJieOut[13];
+
+                    //测试机测试结果信号，从PLC X10210读出
+                    epsonRC90.Rc90In[20] = XinJieOut[40];
+                    epsonRC90.Rc90In[21] = XinJieOut[41];
+                    epsonRC90.Rc90In[22] = XinJieOut[42];
+                    epsonRC90.Rc90In[23] = XinJieOut[43];
+                    epsonRC90.Rc90In[24] = XinJieOut[44];
+                    epsonRC90.Rc90In[25] = XinJieOut[45];
+                    epsonRC90.Rc90In[26] = XinJieOut[46];
+                    epsonRC90.Rc90In[27] = XinJieOut[47];
+                    //测试机测试结果信号，从倍服 BFI14读出
+                    epsonRC90.Rc90In[28] = (bool)BFI14.Value;
+                    epsonRC90.Rc90In[29] = (bool)BFI15.Value;
+                    //测试机启动测试信号，向倍服 BFO06写入
+                    BFO6.Value = epsonRC90.Rc90Out[30];
+                    BFO7.Value = epsonRC90.Rc90Out[31];
+                    BFO8.Value = epsonRC90.Rc90Out[32];
+                    BFO9.Value = epsonRC90.Rc90Out[33];
+                }
+                catch
+                {
+
+                   
+                }
+
             }
         }
         #endregion

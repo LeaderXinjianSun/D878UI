@@ -576,6 +576,20 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="SV9">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckValue9.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="SV10">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckValue10.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
     <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck1">
         <Style.Triggers>
             <DataTrigger Binding="{Binding Suck1.Value}" Value="true">
@@ -628,6 +642,22 @@
     <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck8">
         <Style.Triggers>
             <DataTrigger Binding="{Binding Suck8.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck9">
+        <Setter Property="Width" Value="55"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Suck9.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck10">
+        <Setter Property="Width" Value="55"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Suck10.Value}" Value="true">
                 <Setter Property="Background" Value="Yellow"></Setter>
             </DataTrigger>
         </Style.Triggers>

@@ -61,6 +61,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files\MVTec\HALCON-13.0\bin\dotnet35\halcondotnet.dll</HintPath>
     </Reference>
+    <Reference Include="hdevenginedotnet">
+      <HintPath>C:\Program Files\MVTec\HALCON-13.0\bin\dotnet35\hdevenginedotnet.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -77,6 +80,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="FunctionPlot.cs" />
     <Compile Include="GraphicsContext.cs" />
+    <Compile Include="HdevEngine.cs" />
     <Compile Include="HObjectEntry.cs" />
     <Compile Include="HWndCtrl.cs" />
     <Compile Include="ROI.cs" />

@@ -21,7 +21,7 @@ namespace HS9上料机UI.model
         public TcpIpClient CtrlNet = new TcpIpClient();
         public TcpIpClient IOReceiveNet = new TcpIpClient();
         string ip = "192.168.1.2";
-        public bool CtrlStatus = false, IOReceiveStatus = false;
+        public bool CtrlStatus = false, IOReceiveStatus = false,TestSendStatus = false, TestSendFlexStatus = true, TestReceiveStatus = true, TestReceiveFlexStatus = true, MsgReceiveStatus = true;
         private bool isLogined = false;
         public bool[] Rc90In = new bool[100];
         public bool[] Rc90Out = new bool[100];
@@ -43,9 +43,16 @@ namespace HS9上料机UI.model
         {
             ip = Inifile.INIGetStringValue(iniParameterPath, "Epson", "EpsonIp", "192.168.1.2");
             Async.RunFuncAsync(checkCtrlNet, null);
+            Async.RunFuncAsync(checkTestSentNet, null);
+            Async.RunFuncAsync(checkTestReceiveNet, null);
+            Async.RunFuncAsync(checkTestSentFlexNet, null);
+            Async.RunFuncAsync(checkTestReceiveFlexNet, null);
+            Async.RunFuncAsync(checkMsgReceiveNet, null);
             Async.RunFuncAsync(checkIOReceiveNet, null);
+
             Async.RunFuncAsync(GetStatus, null);
             Async.RunFuncAsync(IORevAnalysis, null);
+            Async.RunFuncAsync(MsgRevAnalysis, null);
         }
         #region 网口监控
         public async void checkCtrlNet()
@@ -102,6 +109,131 @@ namespace HS9上料机UI.model
                         }
                         else
                             IOReceiveStatus = false;
+                    }
+                }
+                else
+                { await Task.Delay(15000); }
+            }
+        }
+        public async void checkTestSentNet()
+        {
+            while (true)
+            {
+                await Task.Delay(400);
+                if (!TestSentNet.tcpConnected)
+                {
+                    await Task.Delay(1000);
+                    if (!TestSentNet.tcpConnected)
+                    {
+                        bool r1 = await TestSentNet.Connect(ip, 2000);
+                        if (r1)
+                        {
+                            TestSendStatus = true;
+                            ModelPrint("机械手TestSentNet连接");
+
+                        }
+                        else
+                            TestSendStatus = false;
+                    }
+                }
+                else
+                { await Task.Delay(15000); }
+            }
+        }
+        public async void checkTestSentFlexNet()
+        {
+            while (true)
+            {
+                await Task.Delay(400);
+                if (!TestSentFlexNet.tcpConnected)
+                {
+                    await Task.Delay(1000);
+                    if (!TestSentFlexNet.tcpConnected)
+                    {
+                        bool r1 = await TestSentFlexNet.Connect(ip, 2004);
+                        if (r1)
+                        {
+                            TestSendFlexStatus = true;
+                            ModelPrint("机械手TestSentFlexNet连接");
+
+                        }
+                        else
+                            TestSendFlexStatus = false;
+                    }
+                }
+                else
+                { await Task.Delay(15000); }
+            }
+        }
+        public async void checkTestReceiveNet()
+        {
+            while (true)
+            {
+                await Task.Delay(400);
+                if (!TestReceiveNet.tcpConnected)
+                {
+                    await Task.Delay(1000);
+                    if (!TestReceiveNet.tcpConnected)
+                    {
+                        bool r1 = await TestReceiveNet.Connect(ip, 2001);
+                        if (r1)
+                        {
+                            TestReceiveStatus = true;
+                            ModelPrint("机械手TestReceiveNet连接");
+
+                        }
+                        else
+                            TestReceiveStatus = false;
+                    }
+                }
+                else
+                { await Task.Delay(15000); }
+            }
+        }
+        public async void checkTestReceiveFlexNet()
+        {
+            while (true)
+            {
+                await Task.Delay(400);
+                if (!TestReceiveFlexNet.tcpConnected)
+                {
+                    await Task.Delay(1000);
+                    if (!TestReceiveFlexNet.tcpConnected)
+                    {
+                        bool r1 = await TestReceiveFlexNet.Connect(ip, 2005);
+                        if (r1)
+                        {
+                            TestReceiveFlexStatus = true;
+                            ModelPrint("机械手TestReceiveFlexNet连接");
+
+                        }
+                        else
+                            TestReceiveFlexStatus = false;
+                    }
+                }
+                else
+                { await Task.Delay(15000); }
+            }
+        }
+        public async void checkMsgReceiveNet()
+        {
+            while (true)
+            {
+                await Task.Delay(400);
+                if (!MsgReceiveNet.tcpConnected)
+                {
+                    await Task.Delay(1000);
+                    if (!MsgReceiveNet.tcpConnected)
+                    {
+                        bool r1 = await MsgReceiveNet.Connect(ip, 2003);
+                        if (r1)
+                        {
+                            MsgReceiveStatus = true;
+                            ModelPrint("机械手MsgReceiveNet连接");
+
+                        }
+                        else
+                            MsgReceiveStatus = false;
                     }
                 }
                 else
@@ -182,6 +314,42 @@ namespace HS9上料机UI.model
                         //ModelPrint("IORev: " + s);
 
 
+                    }
+                }
+                else
+                {
+                    await Task.Delay(100);
+                }
+            }
+        }
+        private async void MsgRevAnalysis()
+        {
+            while (true)
+            {
+                //await Task.Delay(100);
+                if (MsgReceiveStatus == true)
+                {
+                    string s = await MsgReceiveNet.ReceiveAsync();
+
+                    string[] ss = s.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    try
+                    {
+                        s = ss[0];
+                    }
+                    catch
+                    {
+                        s = "error";
+                    }
+
+                    if (s == "error")
+                    {
+                        MsgReceiveNet.tcpConnected = false;
+                        MsgReceiveStatus = false;
+                        ModelPrint("机械手MsgReceiveNet断开");
+                    }
+                    else
+                    {
+                        ModelPrint("MsgRev: " + s);
                     }
                 }
                 else

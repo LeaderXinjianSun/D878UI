@@ -126,6 +126,13 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="U_SVN">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PowerOn7.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
     <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="F_SVN">
         <Style.Triggers>
             <DataTrigger Binding="{Binding PowerOn3.Value}" Value="true">

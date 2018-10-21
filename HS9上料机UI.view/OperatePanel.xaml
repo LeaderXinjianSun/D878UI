@@ -74,28 +74,28 @@
                     <Ellipse Style="{StaticResource EpsonStatusReadyColor}"></Ellipse>
                 </StackPanel>
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Vertical">
+            <StackPanel VerticalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Vertical" Margin="15,0,0,0">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="X: "></TextBlock>
-                    <TextBlock Text="{Binding XErrorCode.Value}" Width="80"></TextBlock>
-                    <TextBlock Text="H: "></TextBlock>
-                    <TextBlock Text="{Binding HErrorCode.Value}" Width="80"></TextBlock>
+                    <TextBlock Text="X" Width="20"></TextBlock>
+                    <TextBlock Text="{Binding XErrorCode.Value}" Width="60"></TextBlock>
+                    <TextBlock Text="H" Width="20"></TextBlock>
+                    <TextBlock Text="{Binding HErrorCode.Value}" Width="60"></TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Y: "></TextBlock>
-                    <TextBlock Text="{Binding YErrorCode.Value}" Width="80"></TextBlock>
-                    <TextBlock Text="S: "></TextBlock>
-                    <TextBlock Text="{Binding SErrorCode.Value}" Width="80"></TextBlock>
+                    <TextBlock Text="Y" Width="20"></TextBlock>
+                    <TextBlock Text="{Binding YErrorCode.Value}" Width="60"></TextBlock>
+                    <TextBlock Text="S" Width="20"></TextBlock>
+                    <TextBlock Text="{Binding SErrorCode.Value}" Width="60"></TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="F: "></TextBlock>
-                    <TextBlock Text="{Binding FErrorCode.Value}" Width="80"></TextBlock>
-                    <TextBlock Text="U: "></TextBlock>
-                    <TextBlock Text="{Binding UErrorCode.Value}" Width="80"></TextBlock>
+                    <TextBlock Text="F" Width="20"></TextBlock>
+                    <TextBlock Text="{Binding FErrorCode.Value}" Width="60"></TextBlock>
+                    <TextBlock Text="U" Width="20"></TextBlock>
+                    <TextBlock Text="{Binding UErrorCode.Value}" Width="60"></TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="T: "></TextBlock>
-                    <TextBlock Text="{Binding TErrorCode.Value}" Width="80"></TextBlock>
+                    <TextBlock Text="T" Width="20"></TextBlock>
+                    <TextBlock Text="{Binding TErrorCode.Value}" Width="60"></TextBlock>
                 </StackPanel>
             </StackPanel>
         </Grid>

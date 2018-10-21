@@ -12,6 +12,7 @@ using BingLibrary.hjb.tools;
 using System.Collections.ObjectModel;
 using BingLibrary.hjb.file;
 using System.Windows.Threading;
+using ViewROI;
 
 namespace HS9上料机UI.viewmodel
 {
@@ -19,6 +20,18 @@ namespace HS9上料机UI.viewmodel
     {
         #region 属性
         #region Twincat
+        public TwinCATCoil1 PhotoCMD { set; get; }
+        public TwinCATCoil1 PhotoComplete { set; get; }
+        public TwinCATCoil1 PhotoHave1 { set; get; }
+        public TwinCATCoil1 PhotoHave2 { set; get; }
+        public TwinCATCoil1 PhotoHave3 { set; get; }
+        public TwinCATCoil1 PhotoHave4 { set; get; }
+        public TwinCATCoil1 PhotoHave5 { set; get; }
+        public TwinCATCoil1 PhotoHave6 { set; get; }
+        public TwinCATCoil1 PhotoHave7 { set; get; }
+        public TwinCATCoil1 PhotoHave8 { set; get; }
+        public TwinCATCoil1 PhotoHave9 { set; get; }
+        public TwinCATCoil1 PhotoHave10 { set; get; }
         public TwinCATCoil1 XErrorCode { set; get; }
         public TwinCATCoil1 YErrorCode { set; get; }
         public TwinCATCoil1 HErrorCode { set; get; }
@@ -38,6 +51,16 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 SuckValue8 { set; get; }
         public TwinCATCoil1 SuckValue9 { set; get; }
         public TwinCATCoil1 SuckValue10 { set; get; }
+        public TwinCATCoil1 RSuckValue1 { set; get; }
+        public TwinCATCoil1 RSuckValue2 { set; get; }
+        public TwinCATCoil1 RSuckValue3 { set; get; }
+        public TwinCATCoil1 RSuckValue4 { set; get; }
+        public TwinCATCoil1 RSuckValue5 { set; get; }
+        public TwinCATCoil1 RSuckValue6 { set; get; }
+        public TwinCATCoil1 RSuckValue7 { set; get; }
+        public TwinCATCoil1 RSuckValue8 { set; get; }
+        public TwinCATCoil1 RSuckValue9 { set; get; }
+        public TwinCATCoil1 RSuckValue10 { set; get; }
         public TwinCATCoil1 Suck1 { set; get; }
         public TwinCATCoil1 Suck2 { set; get; }
         public TwinCATCoil1 Suck3 { set; get; }
@@ -88,6 +111,7 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 TPos { set; get; }
         public TwinCATCoil1 HPos { set; get; }
         public TwinCATCoil1 SPos { set; get; }
+        public TwinCATCoil1 UPos { set; get; }
 
         public TwinCATCoil1 PickPositionX { set; get; }
         public TwinCATCoil1 PickPositionY { set; get; }
@@ -114,6 +138,7 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 PowerOn4 { set; get; }
         public TwinCATCoil1 PowerOn5 { set; get; }
         public TwinCATCoil1 PowerOn6 { set; get; }
+        public TwinCATCoil1 PowerOn7 { set; get; }
 
         public TwinCATCoil1 ServoRst1 { set; get; }
         public TwinCATCoil1 ServoRst2 { set; get; }
@@ -121,6 +146,7 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 ServoRst4 { set; get; }
         public TwinCATCoil1 ServoRst5 { set; get; }
         public TwinCATCoil1 ServoRst6 { set; get; }
+        public TwinCATCoil1 ServoRst7 { set; get; }
 
         public TwinCATCoil1 ServoSVN1 { set; get; }
         public TwinCATCoil1 ServoSVN2 { set; get; }
@@ -128,6 +154,7 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 ServoSVN4 { set; get; }
         public TwinCATCoil1 ServoSVN5 { set; get; }
         public TwinCATCoil1 ServoSVN6 { set; get; }
+        public TwinCATCoil1 ServoSVN7 { set; get; }
 
         public TwinCATCoil1 XRDY { set; get; }
         public TwinCATCoil1 YRDY { set; get; }
@@ -185,6 +212,8 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 EF111 { set; get; }
         public TwinCATCoil1 EF112 { set; get; }
 
+        public TwinCATCoil1 EFU0 { set; get; }
+
         public TwinCATCoil1 HS100 { set; get; }
         public TwinCATCoil1 HS101 { set; get; }
         public TwinCATCoil1 HS102 { set; get; }
@@ -208,8 +237,12 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 DebugSTargetPositon { set; get; }
         public TwinCATCoil1 DebugFTargetPositon { set; get; }
         public TwinCATCoil1 DebugTTargetPositon { set; get; }
+        public TwinCATCoil1 DebugUTargetPositon { set; get; }
 
         public virtual TwinCATCoil1 Calc_Start { set; get; }
+
+        public TwinCATCoil1 UPDirect { set; get; }
+        public TwinCATCoil1 UNDirect { set; get; }
         #endregion
         #region 界面
         public string HomePageVisibility { set; get; } = "Visible";
@@ -255,6 +288,10 @@ namespace HS9上料机UI.viewmodel
         double DebugTargetY = 0;
         double DebugTargetF = 0;
         double DebugTargetT = 0;
+        double DebugTargetU = 0;
+        private HdevEngine hdevEngine = new HdevEngine();
+        public HObject curImage;
+        private bool[] FindFill = new bool[10];
         #endregion
         #region 功能
         #region 初始化
@@ -263,6 +300,7 @@ namespace HS9上料机UI.viewmodel
         {
             TwincatVarInit();
             Init();
+            cameraHcInit();
             Async.RunFuncAsync(PLCWork, null);
             Async.RunFuncAsync(Run, null);
         }
@@ -284,6 +322,7 @@ namespace HS9上料机UI.viewmodel
             TPos = new TwinCATCoil1(new TwinCATCoil("MAIN.TPos", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
             HPos = new TwinCATCoil1(new TwinCATCoil("MAIN.HPos", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
             SPos = new TwinCATCoil1(new TwinCATCoil("MAIN.SPos", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            UPos = new TwinCATCoil1(new TwinCATCoil("MAIN.UPos", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             PickPositionX = new TwinCATCoil1(new TwinCATCoil("MAIN.PickPositionX", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
             PickPositionY = new TwinCATCoil1(new TwinCATCoil("MAIN.PickPositionY", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -311,6 +350,7 @@ namespace HS9上料机UI.viewmodel
             PowerOn4 = new TwinCATCoil1(new TwinCATCoil("MAIN.PowerOn4", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             PowerOn5 = new TwinCATCoil1(new TwinCATCoil("MAIN.PowerOn5", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             PowerOn6 = new TwinCATCoil1(new TwinCATCoil("MAIN.PowerOn6", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PowerOn7 = new TwinCATCoil1(new TwinCATCoil("MAIN.PowerOn7", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             ServoRst1 = new TwinCATCoil1(new TwinCATCoil("MAIN.E2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             ServoRst2 = new TwinCATCoil1(new TwinCATCoil("MAIN.F2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -318,6 +358,7 @@ namespace HS9上料机UI.viewmodel
             ServoRst4 = new TwinCATCoil1(new TwinCATCoil("MAIN.H2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             ServoRst5 = new TwinCATCoil1(new TwinCATCoil("MAIN.K2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             ServoRst6 = new TwinCATCoil1(new TwinCATCoil("MAIN.J2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            ServoRst7 = new TwinCATCoil1(new TwinCATCoil("MAIN.U2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             ServoSVN1 = new TwinCATCoil1(new TwinCATCoil("MAIN.E1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             ServoSVN2 = new TwinCATCoil1(new TwinCATCoil("MAIN.F1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -325,6 +366,7 @@ namespace HS9上料机UI.viewmodel
             ServoSVN4 = new TwinCATCoil1(new TwinCATCoil("MAIN.H1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             ServoSVN5 = new TwinCATCoil1(new TwinCATCoil("MAIN.K1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             ServoSVN6 = new TwinCATCoil1(new TwinCATCoil("MAIN.J1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            ServoSVN7 = new TwinCATCoil1(new TwinCATCoil("MAIN.U1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             XRDY = new TwinCATCoil1(new TwinCATCoil("MAIN.XRDY", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             YRDY = new TwinCATCoil1(new TwinCATCoil("MAIN.YRDY", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -349,6 +391,9 @@ namespace HS9上料机UI.viewmodel
             TPosition5 = new TwinCATCoil1(new TwinCATCoil("MAIN.TPosition5", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
             TPosition6 = new TwinCATCoil1(new TwinCATCoil("MAIN.TPosition6", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
             TPosition7 = new TwinCATCoil1(new TwinCATCoil("MAIN.TPosition7", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            UPDirect = new TwinCATCoil1(new TwinCATCoil("MAIN.UPDirect", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            UNDirect = new TwinCATCoil1(new TwinCATCoil("MAIN.UNDirect", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             XYInDebug = new TwinCATCoil1(new TwinCATCoil("MAIN.XYInDebug", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             HSInDebug = new TwinCATCoil1(new TwinCATCoil("MAIN.HSInDebug", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -393,6 +438,7 @@ namespace HS9上料机UI.viewmodel
             DebugSTargetPositon = new TwinCATCoil1(new TwinCATCoil("MAIN.DebugSTargetPositon", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
             DebugFTargetPositon = new TwinCATCoil1(new TwinCATCoil("MAIN.DebugFTargetPositon", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
             DebugTTargetPositon = new TwinCATCoil1(new TwinCATCoil("MAIN.DebugTTargetPositon", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            DebugUTargetPositon = new TwinCATCoil1(new TwinCATCoil("MAIN.DebugUTargetPositon", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             EF104 = new TwinCATCoil1(new TwinCATCoil("MAIN.EF104", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             EF114 = new TwinCATCoil1(new TwinCATCoil("MAIN.EF114", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -405,6 +451,8 @@ namespace HS9上料机UI.viewmodel
             EF110 = new TwinCATCoil1(new TwinCATCoil("MAIN.EF110", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             EF111 = new TwinCATCoil1(new TwinCATCoil("MAIN.EF111", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             EF112 = new TwinCATCoil1(new TwinCATCoil("MAIN.EF112", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            EFU0 = new TwinCATCoil1(new TwinCATCoil("MAIN.EFU0", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             BFI1 = new TwinCATCoil1(new TwinCATCoil("MAIN.BFI1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             BFI2 = new TwinCATCoil1(new TwinCATCoil("MAIN.BFI2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -462,10 +510,35 @@ namespace HS9上料机UI.viewmodel
             SuckValue9 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue9", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             SuckValue10 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue10", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
+            RSuckValue1 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            RSuckValue2 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            RSuckValue3 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue3", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            RSuckValue4 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue4", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            RSuckValue5 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue5", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            RSuckValue6 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue6", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            RSuckValue7 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue7", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            RSuckValue8 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue8", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            RSuckValue9 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue9", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            RSuckValue10 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue10", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
             Calc_Start = new TwinCATCoil1(new TwinCATCoil("MAIN.Calc_Start", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             SaveButton = new TwinCATCoil1(new TwinCATCoil("MAIN.SaveButton", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
+            PhotoCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            PhotoComplete = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoComplete", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            PhotoHave1 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PhotoHave2 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PhotoHave3 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave3", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PhotoHave4 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave4", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PhotoHave5 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave5", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PhotoHave6 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave6", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PhotoHave7 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave7", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PhotoHave8 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave8", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PhotoHave9 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave9", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PhotoHave10 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave10", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             _TwinCATAds.StartNotice();
         }
         #endregion
@@ -543,6 +616,50 @@ namespace HS9上料机UI.viewmodel
             {
                 case "0":
                     WriteParameter();
+                    break;
+                default:
+                    break;
+            }
+        }
+        public async void EpsonOpetate(object p)
+        {
+            switch (p.ToString())
+            {
+                case "1":
+                    if (epsonRC90.CtrlStatus && EpsonStatusReady && !EpsonStatusEStop)
+                    {
+                        await epsonRC90.CtrlNet.SendAsync("$start,2");
+                    }
+                    if (epsonRC90.TestSendStatus)
+                    {
+                        await epsonRC90.TestSentNet.SendAsync("IndexArray_i;" + "0;1;2;3");
+                    }
+                    break;
+                //暂停
+                case "2":
+                    if (epsonRC90.CtrlStatus)
+                    {
+                        await epsonRC90.CtrlNet.SendAsync("$pause");
+                    }
+                    break;
+                case "3":
+                    if (epsonRC90.CtrlStatus)
+                    {
+                        await epsonRC90.CtrlNet.SendAsync("$continue");            
+                    }
+                    break;
+                case "4":
+                    GlobalVar.metro.ChangeAccent("Red");
+                    var r = await GlobalVar.metro.ShowConfirm("确认","确定进行停止机械手重启操作吗？");
+                    if (r && epsonRC90.CtrlStatus)
+                    {
+                        await epsonRC90.CtrlNet.SendAsync("$stop");
+                        await Task.Delay(300);
+                        await epsonRC90.CtrlNet.SendAsync("$SetMotorOff,1");
+                        await Task.Delay(400);
+                        await epsonRC90.CtrlNet.SendAsync("$reset");
+                    }
+                    GlobalVar.metro.ChangeAccent("Blue");
                     break;
                 default:
                     break;
@@ -630,6 +747,12 @@ namespace HS9上料机UI.viewmodel
                         break;
                     case "11":
                         ServoRst2.Value = !(bool)ServoRst2.Value;
+                        break;
+                    case "20":
+                        ServoSVN7.Value = !(bool)ServoSVN7.Value;
+                        break;
+                    case "21":
+                        ServoRst7.Value = !(bool)ServoRst7.Value;
                         break;
                     case "12":
                         if ((bool)FRDYtoDebug.Value)
@@ -778,6 +901,11 @@ namespace HS9上料机UI.viewmodel
             EF102.Value = true;
             EF112.Value = true;
 
+        }
+        private void ServoPTPU()
+        {
+            DebugUTargetPositon.Value = DebugTargetU;
+            EFU0.Value = true;
         }
         private void ServoPTPH()
         {
@@ -1029,6 +1157,14 @@ namespace HS9上料机UI.viewmodel
                             DebugTargetY = (double)WaitPositionY.Value;
                             ServoPTPXY();
                             break;
+                        case "26":
+                            DebugTargetU = (double)UPDirect.Value;
+                            ServoPTPU();
+                            break;
+                        case "27":
+                            DebugTargetU = (double)UNDirect.Value;
+                            ServoPTPU();
+                            break;
                         default:
                             break;
                     }
@@ -1231,6 +1367,12 @@ namespace HS9上料机UI.viewmodel
                     case "23":
                         SDownReleasePosition1.Value = (double)SPos.Value;
                         break;
+                    case "26":
+                        UPDirect.Value = (double)UPos.Value;
+                        break;
+                    case "27":
+                        UNDirect.Value = (double)UPos.Value;
+                        break;
                     default:
                         break;
                 }
@@ -1370,6 +1512,9 @@ namespace HS9上料机UI.viewmodel
                 Inifile.INIWriteValue(TwincatParameterPath, "S", "SDownReleasePosition", SDownReleasePosition.Value.ToString());
                 Inifile.INIWriteValue(TwincatParameterPath, "S", "SDownReleasePosition1", SDownReleasePosition1.Value.ToString());
 
+                Inifile.INIWriteValue(TwincatParameterPath, "U", "UPDirect", UPDirect.Value.ToString());
+                Inifile.INIWriteValue(TwincatParameterPath, "U", "UNDirect", UNDirect.Value.ToString());
+
                 //TPosition1
                 //FPosition1
                 //PickPositionX
@@ -1418,6 +1563,9 @@ namespace HS9上料机UI.viewmodel
                 SDownSuckPosition.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "S", "SDownSuckPosition", "106.12"));
                 SDownReleasePosition.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "S", "SDownReleasePosition", "85.43"));
                 SDownReleasePosition1.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "S", "SDownReleasePosition1", "85.43"));
+
+                UPDirect.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "U", "UPDirect", "85.43"));
+                UNDirect.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "U", "UNDirect", "85.43"));
 
 
                 Calc_Start.Value = true;
@@ -1494,6 +1642,7 @@ namespace HS9上料机UI.viewmodel
                 System.Threading.Thread.Sleep(10);
                 try
                 {
+                    #region 映射
                     XinJieIn[0] = (bool)Suck1.Value;
                     XinJieIn[1] = (bool)Suck2.Value;
                     XinJieIn[2] = (bool)Suck3.Value;
@@ -1533,6 +1682,29 @@ namespace HS9上料机UI.viewmodel
                     BFO7.Value = epsonRC90.Rc90Out[31];
                     BFO8.Value = epsonRC90.Rc90Out[32];
                     BFO9.Value = epsonRC90.Rc90Out[33];
+                    //倍服告知机械手是否有料
+                    epsonRC90.Rc90In[5] = (bool)RSuckValue1.Value;
+                    epsonRC90.Rc90In[6] = (bool)RSuckValue2.Value;
+                    epsonRC90.Rc90In[7] = (bool)RSuckValue3.Value;
+                    epsonRC90.Rc90In[8] = (bool)RSuckValue4.Value;
+                    epsonRC90.Rc90In[9] = (bool)RSuckValue5.Value;
+                    epsonRC90.Rc90In[10] = (bool)RSuckValue6.Value;
+                    epsonRC90.Rc90In[11] = (bool)RSuckValue7.Value;
+                    epsonRC90.Rc90In[12] = (bool)RSuckValue8.Value;
+                    epsonRC90.Rc90In[13] = (bool)RSuckValue9.Value;
+                    epsonRC90.Rc90In[14] = (bool)RSuckValue10.Value;
+
+                    IsTCPConnect = epsonRC90.TestSendStatus & epsonRC90.TestReceiveStatus & epsonRC90.MsgReceiveStatus & epsonRC90.IOReceiveStatus & epsonRC90.CtrlStatus & epsonRC90.TestSendFlexStatus & epsonRC90.TestReceiveFlexStatus;
+                    #endregion
+                    #region 任务
+                    if ((bool)PhotoCMD.Value)
+                    {
+                        PhotoCMD.Value = false;
+                        MsgText = AddMessage("开始拍照 自动");
+                        Async.RunFuncAsync(cameraHcInspect, TakePhoteCallback);
+
+                    }
+                    #endregion
                 }
                 catch
                 {
@@ -1541,6 +1713,90 @@ namespace HS9上料机UI.viewmodel
                 }
 
             }
+        }
+        private void TakePhoteCallback()
+        {
+            if (FindFill[0])
+            {
+                PhotoHave1.Value = true;
+            }
+            else
+            {
+                PhotoHave1.Value = false;
+            }
+            if (FindFill[1])
+            {
+                PhotoHave2.Value = true;
+            }
+            else
+            {
+                PhotoHave2.Value = false;
+            }
+            if (FindFill[2])
+            {
+                PhotoHave3.Value = true;
+            }
+            else
+            {
+                PhotoHave3.Value = false;
+            }
+            if (FindFill[3])
+            {
+                PhotoHave4.Value = true;
+            }
+            else
+            {
+                PhotoHave4.Value = false;
+            }
+            if (FindFill[4])
+            {
+                PhotoHave5.Value = true;
+            }
+            else
+            {
+                PhotoHave5.Value = false;
+            }
+            if (FindFill[5])
+            {
+                PhotoHave6.Value = true;
+            }
+            else
+            {
+                PhotoHave6.Value = false;
+            }
+            if (FindFill[6])
+            {
+                PhotoHave7.Value = true;
+            }
+            else
+            {
+                PhotoHave7.Value = false;
+            }
+            if (FindFill[7])
+            {
+                PhotoHave8.Value = true;
+            }
+            else
+            {
+                PhotoHave8.Value = false;
+            }
+            if (FindFill[8])
+            {
+                PhotoHave9.Value = true;
+            }
+            else
+            {
+                PhotoHave9.Value = false;
+            }
+            if (FindFill[9])
+            {
+                PhotoHave10.Value = true;
+            }
+            else
+            {
+                PhotoHave10.Value = false;
+            }
+            PhotoComplete.Value = true;
         }
         #endregion
         #region 应用函数
@@ -1570,8 +1826,86 @@ namespace HS9上料机UI.viewmodel
             }
         }
         #endregion
+        #region 相机
+        public void cameraHcInit()
+        {
+            hdevEngine.initialengine("检测相机脚本");
+            hdevEngine.loadengine();
+            try
+            {
+                if (!Directory.Exists(@"E:\images"))
+                {
+                    Directory.CreateDirectory(@"E:\images");
+                }
+                string[] imagefilenames = Directory.GetFiles(@"E:\images");
+                if (imagefilenames.Length >= 200)
+                {
+                    for (int i = 0; i < imagefilenames.Length; i++)
+                    {
+                        File.Delete(imagefilenames[i]);
+                    }
+                    MsgText = AddMessage("清理照片");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                MsgText = AddMessage(ex.Message);
+            }
+
+        }
+        public void CameraHcInspect()
+        {
+            MsgText = AddMessage("开始拍照 手动");
+            Async.RunFuncAsync(cameraHcInspect, null);
+        }
+        public void cameraHcInspect()
+        {
+            try
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    FindFill[i] = false;
+                }
+                
+                hdevEngine.inspectengine();
+                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getImage("Image"));
+                GlobalVar.hWndCtrl.repaint();
+                string rst = "";
+                for (int i = 0; i < 10; i++)
+                {
+                    FindFill[i] = hdevEngine.getmeasurements("fill" + (i + 1).ToString()).ToString() == "1";
+                    if (FindFill[i])
+                    {
+                        rst += "1";
+                    }
+                    else
+                    {
+                        rst += "0";
+                    }
+                }
+                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions1"));
+                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions2"));
+                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions3"));
+                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions4"));
+                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions5"));
+                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions6"));
+                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions7"));
+                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions8"));
+                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions9"));
+                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions10"));
+                GlobalVar.hWndCtrl.repaint();
+                MsgText = AddMessage("拍照完成: " + rst);
+            }
+            catch(Exception ex)
+            {
+                MsgText = AddMessage(ex.Message);
+            }
+
+        }
         #endregion
-        public HObject curImage;
+        #endregion
+
         public void OpenImage()
         {
             if (File.Exists(System.Environment.CurrentDirectory + "\\image_1.tiff"))

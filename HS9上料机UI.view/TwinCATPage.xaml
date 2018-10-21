@@ -163,7 +163,7 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="1.5*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -185,6 +185,11 @@
                                     <TextBlock Text="Y轴：" Style="{StaticResource  TextBlockParameterName}"></TextBlock>
                                     <TextBlock Text="{Binding YPos.Value}" Style="{StaticResource  TextBlockParameterLoneName}"></TextBlock>
                                     <TextBlock Text=" mm" Style="{StaticResource  TextBlockParameterName}"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="U轴：" Style="{StaticResource  TextBlockParameterName}"></TextBlock>
+                                    <TextBlock Text="{Binding UPos.Value}" Style="{StaticResource  TextBlockParameterLoneName}"></TextBlock>
+                                    <TextBlock Text=" °" Style="{StaticResource  TextBlockParameterName}"></TextBlock>
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Grid.Row="1" Orientation="Vertical" VerticalAlignment="Center">
@@ -215,6 +220,10 @@
                                 <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="X轴："></TextBlock>
                                 <Button Style="{StaticResource X_SVN}" Content="SVN" Command="{bing:ActionAutoWithParam TwinCATButtonOperate}" CommandParameter="8"></Button>
                                 <Button Style="{StaticResource  TwinCATButtonBase}" Content="RST"  Command="{bing:ActionAutoWithParam TwinCATButtonOperate}" CommandParameter="9"></Button>
+
+                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="U轴："></TextBlock>
+                                <Button Style="{StaticResource U_SVN}" Content="SVN" Command="{bing:ActionAutoWithParam TwinCATButtonOperate}" CommandParameter="20"></Button>
+                                <Button Style="{StaticResource  TwinCATButtonBase}" Content="RST"  Command="{bing:ActionAutoWithParam TwinCATButtonOperate}" CommandParameter="21"></Button>
                             </StackPanel>
                             <StackPanel Grid.Row="2" Orientation="Horizontal">
                                 <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="Y轴："></TextBlock>
@@ -250,9 +259,11 @@
                                 <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
                                     <Button Style="{StaticResource DebugButton1}" Content="点1" Margin="0" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="1"></Button>
                                     <Button Style="{StaticResource DebugButton1}" Content="点4" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="2"></Button>
-                                    <Button Style="{StaticResource DebugButton1}" Content="点9" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="3"></Button>
+                                    <Button Style="{StaticResource DebugButton1}" Content="点21" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="3"></Button>
                                     <Button Style="{StaticResource DebugButton1}" Content="吸取点" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="4"></Button>
                                     <Button Style="{StaticResource DebugButton1}" Content="等待点" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="5"></Button>
+                                    <Button Style="{StaticResource DebugButton1}" Content="正向" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="26"></Button>
+                                    <Button Style="{StaticResource DebugButton1}" Content="反向" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="27"></Button>
                                 </StackPanel>
                             </Grid>
                         </Grid>
@@ -273,7 +284,7 @@
                                     <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="2"></Button>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="点9："></TextBlock>
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="点21："></TextBlock>
                                     <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding ReleasePositionX3.Value}"></TextBox>
                                     <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding ReleasePositionY3.Value}"></TextBox>
                                     <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="3"></Button>
@@ -289,6 +300,16 @@
                                     <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding WaitPositionX.Value}"></TextBox>
                                     <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding WaitPositionY.Value}"></TextBox>
                                     <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="5"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="U轴正向："></TextBlock>
+                                    <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding UPDirect.Value}"></TextBox>
+                                    <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="26"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="U轴反向："></TextBlock>
+                                    <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding UNDirect.Value}"></TextBox>
+                                    <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="27"></Button>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
@@ -373,6 +394,7 @@
                                     <Button Style="{StaticResource DebugButton1}" Content="穴3" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="9"></Button>
                                     <Button Style="{StaticResource DebugButton1}" Content="穴4" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="10"></Button>
                                     <Button Style="{StaticResource DebugButton1}" Content="NG盘" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="11"></Button>
+                                    <Button Style="{StaticResource DebugButton1}" Content="抛料盘" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="24"></Button>
                                     <Button Style="{StaticResource DebugButton1}" Content="样本盘" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="12"></Button>
                                 </StackPanel>
                             </Grid>
@@ -416,6 +438,12 @@
                                     <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding FPosition6.Value}"></TextBox>
 
                                     <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="11"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="抛料盘："></TextBlock>
+                                    <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding FPosition8.Value}"></TextBox>
+
+                                    <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="24"></Button>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="样本盘："></TextBlock>

@@ -21,9 +21,9 @@
             <hwind:HWindowControlWPF x:Name="WPF_HWindow"></hwind:HWindowControlWPF>
         </GroupBox>
         <GroupBox Grid.Column="1" Header="操作">
-            <StackPanel>
-                <Button Content="Open" Width="100" Command="{bing:ActionAuto OpenImage}"></Button>
-            </StackPanel>
+            <Grid>
+                <Button Content="检测" Width="100" Height=" 50" Command="{bing:ActionAuto CameraHcInspect}"></Button>
+            </Grid>
         </GroupBox>
     </Grid>
 </UserControl>

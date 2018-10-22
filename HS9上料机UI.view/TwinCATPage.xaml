@@ -394,7 +394,7 @@
                                     <Button Style="{StaticResource DebugButton1}" Content="穴3" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="9"></Button>
                                     <Button Style="{StaticResource DebugButton1}" Content="穴4" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="10"></Button>
                                     <Button Style="{StaticResource DebugButton1}" Content="NG盘" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="11"></Button>
-                                    <Button Style="{StaticResource DebugButton1}" Content="抛料盘" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="24"></Button>
+                                    <Button Style="{StaticResource DebugButton1}" Content="Noise盘" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="24"></Button>
                                     <Button Style="{StaticResource DebugButton1}" Content="样本盘" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="12"></Button>
                                 </StackPanel>
                             </Grid>
@@ -440,7 +440,7 @@
                                     <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="11"></Button>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="抛料盘："></TextBlock>
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="Noise盘："></TextBlock>
                                     <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding FPosition8.Value}"></TextBox>
 
                                     <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="24"></Button>

@@ -63,6 +63,20 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="SuckFail">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckFailedFlag.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="PanFail">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding M1202_1.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
     <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="S_SVN">
         <Style.Triggers>
             <DataTrigger Binding="{Binding PowerOn6.Value}" Value="true">
@@ -668,5 +682,10 @@
                 <Setter Property="Background" Value="Yellow"></Setter>
             </DataTrigger>
         </Style.Triggers>
+    </Style>
+    <Style TargetType="CheckBox" x:Key="CheckBoxBase">
+        <Setter Property="Margin" Value="20,0"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
     </Style>
 </ResourceDictionary>

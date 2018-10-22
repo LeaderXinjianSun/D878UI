@@ -39,5 +39,14 @@
                 <Button  Grid.Column="1" Grid.Row="0" Style="{StaticResource OperationButton}" Content="保存" Command="{bing:ActionAutoWithParam FuncButton}" CommandParameter="0" Width="100" Height="100"></Button>
             </Grid>
         </GroupBox>
+        <GroupBox Grid.Column="1" Header="机械手">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Margin="5,5,5,0" Orientation="Horizontal">
+                    <CheckBox Content="测试机A" Style="{StaticResource CheckBoxBase}" IsChecked="{Binding TestCheckedAL}"></CheckBox>
+                    <CheckBox Content="测试机B" Style="{StaticResource CheckBoxBase}" IsChecked="{Binding TestCheckedBL}"></CheckBox>
+                    <Button Margin="20,0,0,0" Content="更新" Command="{bing:ActionAuto UpdateSelectFlexer}"></Button>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
     </Grid>
 </UserControl>

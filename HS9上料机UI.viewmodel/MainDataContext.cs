@@ -20,6 +20,29 @@ namespace HS9上料机UI.viewmodel
     {
         #region 属性
         #region Twincat
+        public TwinCATCoil1 M1202 { set; get; }
+        public TwinCATCoil1 SuckAlarmRst { set; get; }
+        public TwinCATCoil1 M1202_1 { set; get; }
+        public TwinCATCoil1 SuckFailedFlag { set; get; }
+        public TwinCATCoil1 PLCPreSuck { set; get; }
+        public TwinCATCoil1 UnloadTrayCMD { set; get; }
+        public TwinCATCoil1 UnloadTrayFinish { set; get; }
+        public TwinCATCoil1 EmptyCMD { set; get; }
+        public TwinCATCoil1 XYStared { set; get; }
+        public TwinCATCoil1 SuckCMD { set; get; }
+        public TwinCATCoil1 TRAYEmpty { set; get; }
+        public TwinCATCoil1 RollSet { set; get; }
+        public TwinCATCoil1 RollReset { set; get; }
+        public TwinCATCoil1 FCmdIndex { set; get; }
+        public TwinCATCoil1 FMoveCMD { set; get; }
+        public TwinCATCoil1 FMoveCompleted { set; get; }
+        public TwinCATCoil1 TCmdIndex { set; get; }
+        public TwinCATCoil1 TMoveCMD { set; get; }
+        public TwinCATCoil1 TMoveCompleted { set; get; }
+        public TwinCATCoil1 TUnloadCMD { set; get; }
+        public TwinCATCoil1 TUnloadCompleted { set; get; }
+        public TwinCATCoil1 ResetCMDComplete { set; get; }
+        public TwinCATCoil1 ResetCMD { set; get; }
         public TwinCATCoil1 PhotoCMD { set; get; }
         public TwinCATCoil1 PhotoComplete { set; get; }
         public TwinCATCoil1 PhotoHave1 { set; get; }
@@ -266,6 +289,8 @@ namespace HS9上料机UI.viewmodel
         public bool EpsonStatusPaused { set; get; } = false;
         public bool EpsonStatusRunning { set; get; } = false;
         public bool EpsonStatusReady { set; get; } = false;
+        public bool TestCheckedAL { set; get; } = true;
+        public bool TestCheckedBL { set; get; } = true;
         #endregion
         #region 参数
         public string SerialPortCom { set; get; }
@@ -292,6 +317,7 @@ namespace HS9上料机UI.viewmodel
         private HdevEngine hdevEngine = new HdevEngine();
         public HObject curImage;
         private bool[] FindFill = new bool[10];
+        bool EStop = false;
         #endregion
         #region 功能
         #region 初始化
@@ -539,6 +565,41 @@ namespace HS9上料机UI.viewmodel
             PhotoHave8 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave8", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             PhotoHave9 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave9", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             PhotoHave10 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave10", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            FMoveCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.FMoveCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            FMoveCompleted = new TwinCATCoil1(new TwinCATCoil("MAIN.FMoveCompleted", typeof(bool), TwinCATCoil.Mode.Notice, 1), _TwinCATAds);
+            FCmdIndex = new TwinCATCoil1(new TwinCATCoil("MAIN.FCmdIndex", typeof(ushort), TwinCATCoil.Mode.Notice, 1), _TwinCATAds);
+
+            TMoveCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.TMoveCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            TMoveCompleted = new TwinCATCoil1(new TwinCATCoil("MAIN.TMoveCompleted", typeof(bool), TwinCATCoil.Mode.Notice, 1), _TwinCATAds);
+            TCmdIndex = new TwinCATCoil1(new TwinCATCoil("MAIN.TCmdIndex", typeof(ushort), TwinCATCoil.Mode.Notice, 1), _TwinCATAds);
+
+            TUnloadCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.TUnloadCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            TUnloadCompleted = new TwinCATCoil1(new TwinCATCoil("MAIN.TUnloadCompleted", typeof(bool), TwinCATCoil.Mode.Notice, 1), _TwinCATAds);
+
+            ResetCMDComplete = new TwinCATCoil1(new TwinCATCoil("MAIN.ResetCMDComplete", typeof(bool), TwinCATCoil.Mode.Notice, 1), _TwinCATAds);
+            ResetCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.ResetCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            SuckCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            TRAYEmpty = new TwinCATCoil1(new TwinCATCoil("MAIN.TRAYEmpty", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            RollSet = new TwinCATCoil1(new TwinCATCoil("MAIN.RollSet", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            RollReset = new TwinCATCoil1(new TwinCATCoil("MAIN.RollReset", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            XYStared = new TwinCATCoil1(new TwinCATCoil("MAIN.XYStared", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            EmptyCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.EmptyCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            UnloadTrayCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.UnloadTrayCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            UnloadTrayFinish = new TwinCATCoil1(new TwinCATCoil("MAIN.UnloadTrayFinish", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PLCPreSuck = new TwinCATCoil1(new TwinCATCoil("MAIN.PLCPreSuck", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            SuckFailedFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckFailedFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            M1202_1 = new TwinCATCoil1(new TwinCATCoil("MAIN.M1202_1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            SuckAlarmRst = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckAlarmRst", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            M1202 = new TwinCATCoil1(new TwinCATCoil("MAIN.M1202", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
             _TwinCATAds.StartNotice();
         }
         #endregion
@@ -550,6 +611,7 @@ namespace HS9上料机UI.viewmodel
             epsonRC90 = new EpsonRC90();
             epsonRC90.ModelPrint += ModelPrintEventProcess;
             epsonRC90.EpsonStatusUpdate += EpsonStatusUpdateProcess;
+            epsonRC90.EPSONCommTwincat += EPSONCommTwincatEventProcess;
             dispatcherTimer.Tick += new EventHandler(DispatcherTimerTickUpdateUi);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 6);
             dispatcherTimer.Start();
@@ -678,6 +740,38 @@ namespace HS9上料机UI.viewmodel
             passwordstr += ss;
             return passwordstr;
         }
+        public async void UpdateSelectFlexer()
+        {
+            if (!TestCheckedAL && !TestCheckedBL)
+            {
+                TestCheckedAL = true;
+            }
+            string str = "Select;";
+            if (TestCheckedAL)
+            {
+                str += "1;1;";
+            }
+            else
+            {
+                str += "0;0;";
+
+            }
+            if (TestCheckedBL)
+            {
+                str += "1;1";
+            }
+            else
+            {
+                str += "0;0";         
+
+            }
+            if (epsonRC90.TestSendStatus)
+            {
+                await epsonRC90.TestSentNet.SendAsync(str);
+            }
+            Inifile.INIWriteValue(iniParameterPath, "Tester", "TestCheckedAL", TestCheckedAL.ToString());
+            Inifile.INIWriteValue(iniParameterPath, "Tester", "TestCheckedBL", TestCheckedBL.ToString());
+        }
         private string AddMessage(string str)
         {
             string[] s = MessageStr.Split('\n');
@@ -691,8 +785,33 @@ namespace HS9上料机UI.viewmodel
             }
             MessageStr += System.DateTime.Now.ToString() + " " + str;
             return MessageStr;
-        }        
+        }
         #region TwinCATOperate
+        public void TwinCATAlarmOperate(object p)
+        {
+            try
+            {
+                switch (p.ToString())
+                {
+                    case "0":
+                        if ((bool)SuckFailedFlag.Value)
+                        {
+                            SuckAlarmRst.Value = true;
+                        }
+                        break;
+                    case "1":
+                        M1202_1.Value = !(bool)M1202_1.Value;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch
+            {
+
+               
+            }
+        }
         public void TwinCATButtonOperate(object p)
         {
             try
@@ -1597,6 +1716,147 @@ namespace HS9上料机UI.viewmodel
             EpsonStatusRunning = str[9] == '1';
             EpsonStatusReady = str[10] == '1';
         }
+        private void EPSONCommTwincatEventProcess(string str)
+        {
+            string[] strs = str.Split(',');
+            switch (strs[0])
+            {
+                case "FMOVE":
+                    FMoveProcessStart(TwinCatProcessStartCallback, strs[1]);
+                    break;
+                case "TMOVE":
+                    TMoveProcessStart(TwinCatProcessStartCallback, strs[1]);
+                    break;
+                case "ULOAD":
+                    ULoadProcessStart(TwinCatProcessStartCallback);
+                    break;
+                case "ResetCMD":
+                    ResetCMDProcessStart(TwinCatProcessStartCallback);
+                    break;
+                default:
+                    break;
+            }
+        }
+        public delegate void TwinCatProcessedDelegate(string s);
+        public async void FMoveProcessStart(TwinCatProcessedDelegate callback, string s)
+        {
+            Func<Task> startTask = () =>
+            {
+                return Task.Run(async () =>
+                {
+                    FCmdIndex.Value = ushort.Parse(s);
+                    await Task.Delay(100);
+                    FMoveCMD.Value = true;
+                    FMoveCompleted.Value = false;
+
+                    while (!(bool)FMoveCompleted.Value)
+                    {
+                        await Task.Delay(100);
+                        if (EStop)
+                        {
+                            break;
+                        }
+                    }
+                    if (!EStop)
+                    {
+                        callback("FMOVE;" + s);
+                    }
+
+                }
+                );
+            };
+            await startTask();
+        }
+        public async void TMoveProcessStart(TwinCatProcessedDelegate callback, string s)
+        {
+            Func<Task> startTask = () =>
+            {
+                return Task.Run(async () =>
+                {
+                    TCmdIndex.Value = ushort.Parse(s);
+                    await Task.Delay(100);
+                    TMoveCMD.Value = true;
+                    TMoveCompleted.Value = false;
+
+                    while (!(bool)TMoveCompleted.Value)
+                    {
+                        await Task.Delay(100);
+                        if (EStop)
+                        {
+                            break;
+                        }
+                    }
+                    if (!EStop)
+                    {
+                        callback("TMOVE;" + s);
+                    }
+
+                }
+                );
+            };
+            await startTask();
+        }
+        public async void ULoadProcessStart(TwinCatProcessedDelegate callback)
+        {
+            Func<Task> startTask = () =>
+            {
+                return Task.Run(async () =>
+                {
+                    TUnloadCMD.Value = true;
+                    TUnloadCompleted.Value = false;
+
+                    while (!(bool)TUnloadCompleted.Value)
+                    {
+                        await Task.Delay(100);
+                        if (EStop)
+                        {
+                            break;
+                        }
+                    }
+                    if (!EStop)
+                    {
+                        callback("ULOAD");
+                    }
+
+                }
+                );
+            };
+            await startTask();
+        }
+        public async void ResetCMDProcessStart(TwinCatProcessedDelegate callback)
+        {
+            Func<Task> startTask = () =>
+            {
+                return Task.Run(async () =>
+                {
+                    ResetCMD.Value = true;
+                    ReadTwinCatDatafromIni();
+
+                    while (!(bool)ResetCMDComplete.Value)
+                    {
+                        await Task.Delay(100);
+                        if (EStop)
+                        {
+                            break;
+                        }
+                    }
+                    if (!EStop)
+                    {
+                        callback("ResetCMD");
+                    }
+
+                }
+                );
+            };
+            await startTask();
+        }
+        public async void TwinCatProcessStartCallback(string str)
+        {
+            if (epsonRC90.TestSendStatus)
+            {
+                await epsonRC90.TestSentNet.SendAsync(str);
+            }
+        }
         private void DispatcherTimerTickUpdateUi(Object sender, EventArgs e)
         {
             if (Isloagin || !(LoginString != "登出"))
@@ -1695,6 +1955,24 @@ namespace HS9上料机UI.viewmodel
                     epsonRC90.Rc90In[14] = (bool)RSuckValue10.Value;
 
                     IsTCPConnect = epsonRC90.TestSendStatus & epsonRC90.TestReceiveStatus & epsonRC90.MsgReceiveStatus & epsonRC90.IOReceiveStatus & epsonRC90.CtrlStatus & epsonRC90.TestSendFlexStatus & epsonRC90.TestReceiveFlexStatus;
+
+                    EStop = XinJieOut[25];//急停信号
+                    SuckCMD.Value = XinJieOut[8];//上料准备好
+                    TRAYEmpty.Value = XinJieOut[11];//上料盘空
+                    RollReset.Value = epsonRC90.Rc90Out[1];
+                    RollSet.Value = epsonRC90.Rc90Out[0];
+
+                    double ps = (double)WaitPositionY.Value < (double)PickPositionY.Value ? (double)WaitPositionY.Value : (double)PickPositionY.Value;
+                    XinJieIn[18] = (double)YPos.Value > ps - 1 && (bool)XYStared.Value;
+
+                    XinJieIn[16] = (bool)EmptyCMD.Value;
+                    XinJieIn[17] = (bool)UnloadTrayCMD.Value;
+                    XinJieIn[19] = (bool)PLCPreSuck.Value;
+                    XinJieIn[21] = (bool)SuckFailedFlag.Value;
+                    XinJieIn[22] = (bool)M1202_1.Value;
+
+                    UnloadTrayFinish.Value = XinJieOut[9];
+                    M1202.Value = XinJieOut[10];
                     #endregion
                     #region 任务
                     if ((bool)PhotoCMD.Value)
@@ -1805,6 +2083,8 @@ namespace HS9上料机UI.viewmodel
             try
             {
                 SerialPortCom = Inifile.INIGetStringValue(iniParameterPath, "System", "PLCCOM", "COM7");
+                TestCheckedAL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedAL", "True"));
+                TestCheckedBL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedBL", "True"));
             }
             catch (Exception ex)
             {

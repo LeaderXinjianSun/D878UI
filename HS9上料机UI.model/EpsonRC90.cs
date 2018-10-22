@@ -33,6 +33,7 @@ namespace HS9上料机UI.model
         public delegate void PrintEventHandler(string ModelMessageStr);
         public event PrintEventHandler ModelPrint;
         public event PrintEventHandler EpsonStatusUpdate;
+        public event PrintEventHandler EPSONCommTwincat;
         #endregion
         #region 功能
 
@@ -53,6 +54,8 @@ namespace HS9上料机UI.model
             Async.RunFuncAsync(GetStatus, null);
             Async.RunFuncAsync(IORevAnalysis, null);
             Async.RunFuncAsync(MsgRevAnalysis, null);
+            Async.RunFuncAsync(TestRevAnalysis, null);
+            
         }
         #region 网口监控
         public async void checkCtrlNet()
@@ -357,6 +360,141 @@ namespace HS9上料机UI.model
                     await Task.Delay(100);
                 }
             }
+        }
+        private async void TestRevAnalysis()
+        {
+            while (true)
+            {
+                if (TestReceiveStatus == true)
+                {
+                    string s = await TestReceiveNet.ReceiveAsync();
+
+                    string[] ss = s.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    try
+                    {
+                        s = ss[0];
+                    }
+                    catch
+                    {
+                        s = "error";
+                    }
+
+                    if (s == "error")
+                    {
+                        TestReceiveNet.tcpConnected = false;
+                        TestReceiveStatus = false;
+                        ModelPrint("机械手TestReceiveNet断开");
+                    }
+                    else
+                    {
+                        ModelPrint("TestRev: " + s);
+                        try
+                        {
+                            string[] strs = s.Split(',');
+                            switch (strs[0])
+                            {
+                                case "FMOVE":
+                                    EPSONCommTwincat(s);
+                                    break;
+                                case "TMOVE":
+                                    EPSONCommTwincat(s);
+                                    break;
+                                case "ULOAD":
+                                    EPSONCommTwincat(s);
+                                    break;
+                                case "ResetCMD":
+                                    EPSONCommTwincat(s);
+                                    break;
+                                case "StatusOfUpload":
+                                    AnswerStatusOfUpload();
+                                    break;
+                                case "StatusOfYield":
+                                    AnswerStatusOfYield();
+                                    break;
+                                case "StatusOfDiaoLiao":
+                                    AnsverStatusOfDiaoLiao();
+                                    break;
+                                default:
+                                    ModelPrint("无效指令： " + s);
+                                    break;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            ModelPrint("TestRevAnalysis " + ex.Message);
+                        }
+                    }
+                }
+                else
+                {
+                    await Task.Delay(100);
+                }
+            }
+        }
+        #endregion
+        #region 功能函数
+        private async void AnswerStatusOfUpload()
+        {
+            string str = "StatusOfUpload";
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    if (uploadSoftwareStatus[i].status || !isCheckUpload)
+            //    {
+            //        str += ";1";
+            //    }
+            //    else
+            //    {
+            //        str += ";0";
+            //    }
+            //}
+            for (int i = 0; i < 4; i++)
+            {
+                str += ";1";
+            }
+            if (TestSendStatus)
+            {
+                await TestSentNet.SendAsync(str);
+            }
+        }
+        private async void AnswerStatusOfYield()
+        {
+            string str = "StatusOfYield";
+
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    if (testerwith4item[i / 2].Yield_Nomal[i % 2] >= PassLowLimitStop || !IsPassLowLimitStop || testerwith4item[i / 2].TestCount_Nomal[i % 2] < PassLowLimitStopNum + AdminAddNum[i])
+            //    {
+            //        str += ";1";
+            //    }
+            //    else
+            //    {
+            //        str += ";0";
+            //    }
+            //}
+            for (int i = 0; i < 4; i++)
+            {
+                str += ";1";
+            }
+            if (TestSendStatus)
+            {
+                await TestSentNet.SendAsync(str);
+            }
+        }
+        private async void AnsverStatusOfDiaoLiao()
+        {
+            if (TestSendStatus)
+            {
+                //if (DiaoLiaoStatus)
+                //{
+                //    await TestSentNet.SendAsync("StatusOfDiaoLiao;1");
+                //}
+                //else
+                //{
+                //    await TestSentNet.SendAsync("StatusOfDiaoLiao;2");
+                //}
+                await TestSentNet.SendAsync("StatusOfDiaoLiao;1");
+            }
+
         }
         #endregion
         #endregion

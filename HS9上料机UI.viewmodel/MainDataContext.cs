@@ -20,6 +20,8 @@ namespace HS9上料机UI.viewmodel
     {
         #region 属性
         #region Twincat
+        public TwinCATCoil1 CloseCMD { set; get; }
+        public TwinCATCoil1 WaitCmd1 { set; get; }
         public TwinCATCoil1 M1202 { set; get; }
         public TwinCATCoil1 SuckAlarmRst { set; get; }
         public TwinCATCoil1 M1202_1 { set; get; }
@@ -318,6 +320,7 @@ namespace HS9上料机UI.viewmodel
         public HObject curImage;
         private bool[] FindFill = new bool[10];
         bool EStop = false;
+        bool isUpdateImage = false;
         #endregion
         #region 功能
         #region 初始化
@@ -599,6 +602,9 @@ namespace HS9上料机UI.viewmodel
 
             SuckAlarmRst = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckAlarmRst", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             M1202 = new TwinCATCoil1(new TwinCATCoil("MAIN.M1202", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            WaitCmd1 = new TwinCATCoil1(new TwinCATCoil("MAIN.WaitCmd1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            CloseCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.CloseCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             _TwinCATAds.StartNotice();
         }
@@ -1973,6 +1979,9 @@ namespace HS9上料机UI.viewmodel
 
                     UnloadTrayFinish.Value = XinJieOut[9];
                     M1202.Value = XinJieOut[10];
+
+                    epsonRC90.Rc90In[3] = XinJieOut[14] && (bool)WaitCmd1.Value;//自动排料
+                    epsonRC90.Rc90In[2] = (bool)CloseCMD.Value;
                     #endregion
                     #region 任务
                     if ((bool)PhotoCMD.Value)
@@ -1981,6 +1990,10 @@ namespace HS9上料机UI.viewmodel
                         MsgText = AddMessage("开始拍照 自动");
                         Async.RunFuncAsync(cameraHcInspect, TakePhoteCallback);
 
+                    }
+                    if (CameraPageVisibility == "Visible")
+                    {
+                        isUpdateImage = true;
                     }
                     #endregion
                 }
@@ -2149,8 +2162,8 @@ namespace HS9上料机UI.viewmodel
                 }
                 
                 hdevEngine.inspectengine();
-                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getImage("Image"));
-                GlobalVar.hWndCtrl.repaint();
+
+
                 string rst = "";
                 for (int i = 0; i < 10; i++)
                 {
@@ -2164,17 +2177,23 @@ namespace HS9上料机UI.viewmodel
                         rst += "0";
                     }
                 }
-                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions1"));
-                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions2"));
-                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions3"));
-                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions4"));
-                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions5"));
-                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions6"));
-                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions7"));
-                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions8"));
-                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions9"));
-                GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions10"));
-                GlobalVar.hWndCtrl.repaint();
+                if (isUpdateImage)
+                {
+                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getImage("Image"));
+                    GlobalVar.hWndCtrl.repaint();
+                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions1"));
+                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions2"));
+                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions3"));
+                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions4"));
+                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions5"));
+                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions6"));
+                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions7"));
+                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions8"));
+                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions9"));
+                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions10"));
+                    GlobalVar.hWndCtrl.repaint();
+                }
+
                 MsgText = AddMessage("拍照完成: " + rst);
             }
             catch(Exception ex)

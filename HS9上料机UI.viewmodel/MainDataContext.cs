@@ -732,6 +732,7 @@ namespace HS9上料机UI.viewmodel
             switch (p.ToString())
             {
                 case "1":
+                    AlarmTextGridShow = "Collapsed";
                     if (epsonRC90.CtrlStatus && EpsonStatusReady && !EpsonStatusEStop)
                     {
                         await epsonRC90.CtrlNet.SendAsync("$start,2");
@@ -749,12 +750,14 @@ namespace HS9上料机UI.viewmodel
                     }
                     break;
                 case "3":
+                    AlarmTextGridShow = "Collapsed";
                     if (epsonRC90.CtrlStatus)
                     {
                         await epsonRC90.CtrlNet.SendAsync("$continue");            
                     }
                     break;
                 case "4":
+                    AlarmTextGridShow = "Collapsed";
                     GlobalVar.metro.ChangeAccent("Red");
                     var r = await GlobalVar.metro.ShowConfirm("确认","确定进行停止机械手重启操作吗？");
                     if (r && epsonRC90.CtrlStatus)

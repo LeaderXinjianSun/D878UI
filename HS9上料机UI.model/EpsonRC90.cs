@@ -46,8 +46,8 @@ namespace HS9上料机UI.model
             Async.RunFuncAsync(checkCtrlNet, null);
             Async.RunFuncAsync(checkTestSentNet, null);
             Async.RunFuncAsync(checkTestReceiveNet, null);
-            Async.RunFuncAsync(checkTestSentFlexNet, null);
-            Async.RunFuncAsync(checkTestReceiveFlexNet, null);
+            //Async.RunFuncAsync(checkTestSentFlexNet, null);
+            //Async.RunFuncAsync(checkTestReceiveFlexNet, null);
             Async.RunFuncAsync(checkMsgReceiveNet, null);
             Async.RunFuncAsync(checkIOReceiveNet, null);
 

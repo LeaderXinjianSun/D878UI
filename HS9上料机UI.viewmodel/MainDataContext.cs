@@ -13,6 +13,8 @@ using System.Collections.ObjectModel;
 using BingLibrary.hjb.file;
 using System.Windows.Threading;
 using ViewROI;
+using System.Data;
+using 臻鼎科技OraDB;
 
 namespace HS9上料机UI.viewmodel
 {
@@ -20,6 +22,8 @@ namespace HS9上料机UI.viewmodel
     {
         #region 属性
         #region Twincat
+        public TwinCATCoil1 ProductLostAlarmFlag { set; get; }
+        public TwinCATCoil1 PhotoTimeoutFlag { set; get; }
         public TwinCATCoil1 CloseCMD { set; get; }
         public TwinCATCoil1 WaitCmd1 { set; get; }
         public TwinCATCoil1 M1202 { set; get; }
@@ -274,12 +278,24 @@ namespace HS9上料机UI.viewmodel
         public string CameraPageVisibility { set; get; } = "Collapsed";
         public string ParameterPageVisibility { set; get; } = "Collapsed";
         public string TwinCATPageVisibility { set; get; } = "Collapsed";
+        public string AlarmPageVisibility { set; get; } = "Collapsed";
         public string LoginString { set; get; } = "登录";
         public bool Isloagin { set; get; } = false;
         public string MsgText { set; get; }
         public bool IsPLCConnect { set; get; }
         public bool IsTCPConnect { set; get; }
         public bool IsDBConnect { set; get; }
+        public string AlarmTextString { set; get; }
+        public string AlarmTextGridShow { set; get; } = "Collapsed";
+        public ObservableCollection<AlarmRecord> alarmRecord { set; get; } = new ObservableCollection<AlarmRecord>();
+        public string LastBanci { set; get; }
+        public string M20027 { set; get; } = "Collapsed";
+        public string M20028 { set; get; } = "Collapsed";
+        public string M20029 { set; get; } = "Collapsed";
+        public string M20030 { set; get; } = "Collapsed";
+        public string AdminButtonVisibility { set; get; } = "Collapsed";
+        public virtual string PLCMessageVisibility { set; get; } = "Collapsed";
+        public virtual string PLCMessage { set; get; }
         #endregion
         #region EPSON
         public bool EpsonStatusAuto { set; get; } = false;
@@ -308,6 +324,7 @@ namespace HS9上料机UI.viewmodel
         private string iniParameterPath = System.Environment.CurrentDirectory + "\\Parameter.ini";
         private string TwincatParameterPath = System.Environment.CurrentDirectory + "\\TwincatParameter.ini";
         public static DispatcherTimer dispatcherTimer = new DispatcherTimer();
+        bool autoClean = false;
         int loadintimes = 0;
         double DebugTargetX = 0;
         double DebugTargetH = 0;
@@ -321,6 +338,10 @@ namespace HS9上料机UI.viewmodel
         private bool[] FindFill = new bool[10];
         bool EStop = false;
         bool isUpdateImage = false;
+        Queue<AlarmRecord> myAlarmRecordQueue = new Queue<AlarmRecord>();
+        string barstr = "";
+        DateTime lastEpsonAlarm;
+        short MinTick = 0;
         #endregion
         #region 功能
         #region 初始化
@@ -330,6 +351,7 @@ namespace HS9上料机UI.viewmodel
             TwincatVarInit();
             Init();
             cameraHcInit();
+            Async.RunFuncAsync(ConnectDBTest, null);
             Async.RunFuncAsync(PLCWork, null);
             Async.RunFuncAsync(Run, null);
         }
@@ -606,6 +628,9 @@ namespace HS9上料机UI.viewmodel
             WaitCmd1 = new TwinCATCoil1(new TwinCATCoil("MAIN.WaitCmd1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             CloseCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.CloseCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
+            ProductLostAlarmFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.ProductLostAlarmFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PhotoTimeoutFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoTimeoutFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
             _TwinCATAds.StartNotice();
         }
         #endregion
@@ -613,6 +638,7 @@ namespace HS9上料机UI.viewmodel
         private void Init()
         {
             ReadParameter();
+            ReadAlarmRecordfromCSV();
             Xinjie = new ThingetPLC();           
             epsonRC90 = new EpsonRC90();
             epsonRC90.ModelPrint += ModelPrintEventProcess;
@@ -621,6 +647,7 @@ namespace HS9上料机UI.viewmodel
             dispatcherTimer.Tick += new EventHandler(DispatcherTimerTickUpdateUi);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 6);
             dispatcherTimer.Start();
+            lastEpsonAlarm = System.DateTime.Now;
         }
         #endregion
         #endregion
@@ -634,6 +661,7 @@ namespace HS9上料机UI.viewmodel
                     CameraPageVisibility = "Collapsed";
                     ParameterPageVisibility = "Collapsed";
                     TwinCATPageVisibility = "Collapsed";
+                    AlarmPageVisibility = "Collapsed";
                     LoginString = "登录";
                     Isloagin = false;
                     break;
@@ -642,6 +670,7 @@ namespace HS9上料机UI.viewmodel
                     CameraPageVisibility = "Visible";
                     ParameterPageVisibility = "Collapsed";
                     TwinCATPageVisibility = "Collapsed";
+                    AlarmPageVisibility = "Collapsed";
                     LoginString = "登录";
                     Isloagin = false;
                     break;
@@ -650,6 +679,7 @@ namespace HS9上料机UI.viewmodel
                     CameraPageVisibility = "Collapsed";
                     ParameterPageVisibility = "Collapsed";
                     TwinCATPageVisibility = "Visible";
+                    AlarmPageVisibility = "Collapsed";
                     break;
                 case "5":
                     if (LoginString != "登出")
@@ -673,6 +703,14 @@ namespace HS9上料机UI.viewmodel
                     CameraPageVisibility = "Collapsed";
                     ParameterPageVisibility = "Visible";
                     TwinCATPageVisibility = "Collapsed";
+                    AlarmPageVisibility = "Collapsed";
+                    break;
+                case "7":
+                    HomePageVisibility = "Collapsed";
+                    CameraPageVisibility = "Collapsed";
+                    ParameterPageVisibility = "Collapsed";
+                    TwinCATPageVisibility = "Collapsed";
+                    AlarmPageVisibility = "Visible";
                     break;
                 default:
                     break;
@@ -726,6 +764,15 @@ namespace HS9上料机UI.viewmodel
                         await epsonRC90.CtrlNet.SendAsync("$SetMotorOff,1");
                         await Task.Delay(400);
                         await epsonRC90.CtrlNet.SendAsync("$reset");
+                    }
+                    GlobalVar.metro.ChangeAccent("Blue");
+                    break;
+                case "5":
+                    GlobalVar.metro.ChangeAccent("Red");
+                    r = await GlobalVar.metro.ShowConfirm("确认", "确定进行排料操作吗？");
+                    if (r && epsonRC90.TestSendStatus && (EpsonStatusRunning || EpsonStatusPaused))
+                    {
+                        await epsonRC90.TestSentNet.SendAsync("Discharge");
                     }
                     GlobalVar.metro.ChangeAccent("Blue");
                     break;
@@ -791,6 +838,68 @@ namespace HS9上料机UI.viewmodel
             }
             MessageStr += System.DateTime.Now.ToString() + " " + str;
             return MessageStr;
+        }
+        private void ShowAlarmTextGrid(string str)
+        {
+            AlarmTextString = str;
+            AlarmTextGridShow = "Visible";
+        }
+        private void SaveAlarm(string str)
+        {
+            TimeSpan ts = System.DateTime.Now - lastEpsonAlarm;
+            if (barstr != str || ts.TotalMinutes > 2)
+            {
+                RecordAlarmString(str);
+                barstr = str;
+                lastEpsonAlarm = System.DateTime.Now;
+            }
+        }
+        private void RecordAlarmString(string str)
+        {
+            AlarmRecord ar = new AlarmRecord(System.DateTime.Now.ToString(), str);
+            lock (this)
+            {
+                myAlarmRecordQueue.Enqueue(ar);
+                SaveCSVfileAlarm(str);
+            }
+        }
+        private void SaveCSVfileAlarm(string alrstr)
+        {
+            string filepath = "D:\\报警记录\\报警记录" + GetBanci() + ".csv";
+            try
+            {
+                if (!File.Exists(filepath))
+                {
+                    string[] heads = { "Time", "Content" };
+                    Csvfile.AddNewLine(filepath, heads);
+                }
+                string[] conte = { System.DateTime.Now.ToString(), alrstr };
+                Csvfile.AddNewLine(filepath, conte);
+            }
+            catch (Exception ex)
+            {
+                MsgText = AddMessage(ex.Message);
+            }
+        }
+        private string GetBanci()
+        {
+            string rs = "";
+            if (DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20)
+            {
+                rs += DateTime.Now.ToString("yyyyMMdd") + "Day";
+            }
+            else
+            {
+                if (DateTime.Now.Hour >= 0 && DateTime.Now.Hour < 8)
+                {
+                    rs += DateTime.Now.AddDays(-1).ToString("yyyyMMdd") + "Night";
+                }
+                else
+                {
+                    rs += DateTime.Now.ToString("yyyyMMdd") + "Night";
+                }
+            }
+            return rs;
         }
         #region TwinCATOperate
         public void TwinCATAlarmOperate(object p)
@@ -1709,6 +1818,114 @@ namespace HS9上料机UI.viewmodel
         private void ModelPrintEventProcess(string str)
         {
             MsgText = AddMessage(str);
+            switch (str)
+            {
+                case "MsgRev: 请确认，不得取走上料盘产品":
+                    ShowAlarmTextGrid("请确认，\n不得取走上料盘产品！");
+                    break;
+                case "MsgRev: 测试机1，吸取失败":
+                    ShowAlarmTextGrid("测试机1，吸取失败\n请将产品取走，防止叠料！");
+                    RecordAlarmString("测试机1，吸取失败");
+                    break;
+                case "MsgRev: 测试机2，吸取失败":
+                    ShowAlarmTextGrid("测试机2，吸取失败\n请将产品取走，防止叠料！");
+                    RecordAlarmString("测试机2，吸取失败");
+                    break;
+                case "MsgRev: 测试机3，吸取失败":
+                    ShowAlarmTextGrid("测试机3，吸取失败\n请将产品取走，防止叠料！");
+                    RecordAlarmString("测试机3，吸取失败");
+                    break;
+                case "MsgRev: 测试机4，吸取失败":
+                    ShowAlarmTextGrid("测试机4，吸取失败\n请将产品取走，防止叠料！");
+                    RecordAlarmString("测试机4，吸取失败");
+                    break;
+                case "MsgRev: 测试机1，吸取失败1":
+                    ShowAlarmTextGrid("放料，测试机1，吸取失败\n请将产品取走，防止叠料！");
+                    RecordAlarmString("放料，测试机1，吸取失败");
+                    break;
+                case "MsgRev: 测试机2，吸取失败1":
+                    ShowAlarmTextGrid("放料，测试机2，吸取失败\n请将产品取走，防止叠料！");
+                    RecordAlarmString("放料，测试机2，吸取失败");
+                    break;
+                case "MsgRev: 测试机3，吸取失败1":
+                    ShowAlarmTextGrid("放料，测试机3，吸取失败\n请将产品取走，防止叠料！");
+                    RecordAlarmString("放料，测试机3，吸取失败");
+                    break;
+                case "MsgRev: 测试机4，吸取失败1":
+                    ShowAlarmTextGrid("放料，测试机4，吸取失败\n请将产品取走，防止叠料！");
+                    RecordAlarmString("放料，测试机4，吸取失败");
+                    break;
+                case "MsgRev: 上料盘1，吸取失败":
+                    ShowAlarmTextGrid("上料盘1，吸取失败\n请将产品放回原位");
+                    RecordAlarmString("上料盘1，吸取失败");
+                    break;
+                case "MsgRev: 上料盘2，吸取失败":
+                    ShowAlarmTextGrid("上料盘2，吸取失败\n请将产品放回原位");
+                    RecordAlarmString("上料盘2，吸取失败");
+                    break;
+                case "MsgRev: 上料盘3，吸取失败":
+                    ShowAlarmTextGrid("上料盘3，吸取失败\n请将产品放回原位");
+                    RecordAlarmString("上料盘3，吸取失败");
+                    break;
+                case "MsgRev: 上料盘4，吸取失败":
+                    ShowAlarmTextGrid("上料盘4，吸取失败\n请将产品放回原位");
+                    RecordAlarmString("上料盘4，吸取失败");
+                    break;
+                case "MsgRev: 上料盘5，吸取失败":
+                    ShowAlarmTextGrid("上料盘5，吸取失败\n请将产品放回原位");
+                    RecordAlarmString("上料盘5，吸取失败");
+                    break;
+                case "MsgRev: 上料盘6，吸取失败":
+                    ShowAlarmTextGrid("上料盘6，吸取失败\n请将产品放回原位");
+                    RecordAlarmString("上料盘6，吸取失败");
+                    break;
+                case "MsgRev: 上料盘7，吸取失败":
+                    ShowAlarmTextGrid("上料盘7，吸取失败\n请将产品放回原位");
+                    RecordAlarmString("上料盘7，吸取失败");
+                    break;
+                case "MsgRev: 上料盘8，吸取失败":
+                    ShowAlarmTextGrid("上料盘8，吸取失败\n请将产品放回原位");
+                    RecordAlarmString("上料盘8，吸取失败");
+                    break;
+                case "MsgRev: 上料盘9，吸取失败":
+                    ShowAlarmTextGrid("上料盘9，吸取失败\n请将产品放回原位");
+                    RecordAlarmString("上料盘9，吸取失败");
+                    break;
+                case "MsgRev: 上料盘10，吸取失败":
+                    ShowAlarmTextGrid("上料盘10，吸取失败\n请将产品放回原位");
+                    RecordAlarmString("上料盘10，吸取失败");
+                    break;
+                case "MsgRev: 测试机1，连续NG":
+                    ShowAlarmTextGrid("测试机1，连续NG");
+                    RecordAlarmString("测试机1，连续NG");
+                    break;
+                case "MsgRev: 测试机2，连续NG":
+                    ShowAlarmTextGrid("测试机2，连续NG");
+                    RecordAlarmString("测试机2，连续NG");
+                    break;
+                case "MsgRev: 测试机3，连续NG":
+                    ShowAlarmTextGrid("测试机3，连续NG");
+                    RecordAlarmString("测试机3，连续NG");
+                    break;
+                case "MsgRev: 测试机4，连续NG":
+                    ShowAlarmTextGrid("测试机4，连续NG");
+                    RecordAlarmString("测试机4，连续NG");
+                    break;
+                case "MsgRev: 黑色盘满，换盘":
+                    ShowAlarmTextGrid("黑色盘满，换盘");
+                    break;
+                case "MsgRev: 红色盘满，换盘":
+                    ShowAlarmTextGrid("红色盘满，换盘");
+                    break;
+                case "MsgRev: A爪手掉料":
+                    ShowAlarmTextGrid("A爪手掉料");
+                    break;
+                case "MsgRev: B爪手掉料":
+                    ShowAlarmTextGrid("B爪手掉料");
+                    break;
+                default:
+                    break;
+            }
         }
         private void EpsonStatusUpdateProcess(string str)
         {
@@ -1865,6 +2082,165 @@ namespace HS9上料机UI.viewmodel
         }
         private void DispatcherTimerTickUpdateUi(Object sender, EventArgs e)
         {
+            //bool _PLCAlarmStatus = false;
+            PLCMessageVisibility = "Collapsed";
+            PLCMessage = "";
+            if (XinJieOut != null)
+            {
+                for (int i = 0; i < 50; i++)
+                {
+                    if (XinJieOut[50 + i])
+                    {
+                        switch (i)
+                        {
+                            case 0:
+                                PLCMessage = "上料满盘缺料";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 1:
+                                PLCMessage = "上料空盘满";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 2:
+                                PLCMessage = "下料满盘满";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 3:
+                                PLCMessage = "下料空盘缺";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 4:
+                                PLCMessage = "上料吸空盘失败";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 5:
+                                PLCMessage = "下料吸空盘失败";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 6:
+                                PLCMessage = "上料空盘轴未准备好";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 7:
+                                PLCMessage = "下料蓝盘轴未准备好";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 8:
+                                PLCMessage = "上料无杆气缸置位超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 9:
+                                PLCMessage = "上料无杆气缸复位超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 10:
+                                PLCMessage = "上料上下气缸复位超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 11:
+                                PLCMessage = "下料无杆气缸置位超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 12:
+                                PLCMessage = "下料无杆气缸复位超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 13:
+                                PLCMessage = "下料上下气缸复位超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 14:
+                                PLCMessage = "上料满盘电机上升超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 15:
+                                PLCMessage = "上料满盘电机下降超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 16:
+                                PLCMessage = "上料空盘电机上升超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 17:
+                                PLCMessage = "上料空盘电机下降超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 18:
+                                PLCMessage = "下料满盘电机上升超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 19:
+                                PLCMessage = "下料空盘电机下降超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 20:
+                                PLCMessage = "下料满盘电机上升超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 21:
+                                PLCMessage = "下料空盘电机下降超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 22:
+                                PLCMessage = "下料XY吸取失败报警";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 23:
+                                PLCMessage = "下料XY未准备好报警";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 33:
+                                PLCMessage = "测试机良率超下限";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 24:
+                                PLCMessage = "机械手暂停报警";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 34:
+                                PLCMessage = "上料满盘未准备好";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 35:
+                                PLCMessage = "上料盘漏吸料报警";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 36:
+                                PLCMessage = "相机拍照超时";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            case 32:
+                                PLCMessage = "测试机被屏蔽";
+                                PLCMessageVisibility = "Visible";
+                                break;
+                            default:
+                                break;
+                        }
+
+                        break;
+                    }
+
+                }
+            }
+
+            //PLCAlarmStatus = PLCMessageVisibility == "Visible";
+            //if (_PLCAlarmStatus != PLCAlarmStatus)
+            //{
+            //    _PLCAlarmStatus = PLCAlarmStatus;
+            //    if (_PLCAlarmStatus && (PLCMessage == "上料满盘缺料" || PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料满盘满" || PLCMessage == "下料XY吸取失败报警" || PLCMessage == "下料空盘缺") && !Wait_PLCAlarmStatus_Off)
+            //    {
+            //        WriteAlarmCSV_PLC(PLCMessage);
+            //        Inifile.INIWriteValue(iniFClient, "Alarm", "Name", PLCMessage);
+            //        TotalAlarmNum++;
+            //    }
+
+            //}
+
+            if (++MinTick > 10)
+            {
+                MinTick = 0;
+                ConnectDBTest();
+            }
             if (Isloagin || !(LoginString != "登出"))
             {
                 if (++loadintimes > 5)
@@ -1877,6 +2253,23 @@ namespace HS9上料机UI.viewmodel
             else
             {
                 loadintimes = 0;
+            }
+            if (myAlarmRecordQueue.Count > 0)
+            {
+                lock (this)
+                {
+                    foreach (AlarmRecord item in myAlarmRecordQueue)
+                    {
+                        alarmRecord.Add(item);
+                    }
+                    myAlarmRecordQueue.Clear();
+                }
+            }
+            if (autoClean)
+            {
+                MsgText = AddMessage("换班，数据清零");
+                alarmRecord.Clear();
+                autoClean = false;
             }
         }
         #endregion
@@ -1960,7 +2353,7 @@ namespace HS9上料机UI.viewmodel
                     epsonRC90.Rc90In[13] = (bool)RSuckValue9.Value;
                     epsonRC90.Rc90In[14] = (bool)RSuckValue10.Value;
 
-                    IsTCPConnect = epsonRC90.TestSendStatus & epsonRC90.TestReceiveStatus & epsonRC90.MsgReceiveStatus & epsonRC90.IOReceiveStatus & epsonRC90.CtrlStatus & epsonRC90.TestSendFlexStatus & epsonRC90.TestReceiveFlexStatus;
+                    IsTCPConnect = epsonRC90.TestSendStatus & epsonRC90.TestReceiveStatus & epsonRC90.MsgReceiveStatus & epsonRC90.IOReceiveStatus & epsonRC90.CtrlStatus;
 
                     EStop = XinJieOut[25];//急停信号
                     SuckCMD.Value = XinJieOut[8];//上料准备好
@@ -1977,11 +2370,35 @@ namespace HS9上料机UI.viewmodel
                     XinJieIn[21] = (bool)SuckFailedFlag.Value;
                     XinJieIn[22] = (bool)M1202_1.Value;
 
+                    XinJieIn[38] = EpsonStatusPaused;
+
+                    XinJieIn[39] = epsonRC90.Rc90Out[8];
+                    XinJieIn[40] = epsonRC90.Rc90Out[22];
+                    XinJieIn[41] = epsonRC90.Rc90Out[23];
+                    XinJieIn[42] = epsonRC90.Rc90Out[24];
+                    XinJieIn[43] = epsonRC90.Rc90Out[25];
+                    XinJieIn[44] = epsonRC90.Rc90Out[26];
+                    XinJieIn[45] = epsonRC90.Rc90Out[27];
+
+                    XinJieIn[47] = AdminButtonVisibility == "Visible";
+                    XinJieIn[46] = !TestCheckedAL || !TestCheckedBL;
+
+                    XinJieIn[48] = (bool)ProductLostAlarmFlag.Value;
+                    XinJieIn[49] = (bool)PhotoTimeoutFlag.Value;
+
                     UnloadTrayFinish.Value = XinJieOut[9];
                     M1202.Value = XinJieOut[10];
 
                     epsonRC90.Rc90In[3] = XinJieOut[14] && (bool)WaitCmd1.Value;//自动排料
                     epsonRC90.Rc90In[2] = (bool)CloseCMD.Value;
+
+                    if (IsPLCConnect)
+                    {
+                        M20027 = XinJieOut[27] ? "Visible" : "Collapsed";
+                        M20028 = XinJieOut[28] ? "Visible" : "Collapsed";
+                        M20029 = XinJieOut[29] ? "Visible" : "Collapsed";
+                        M20030 = XinJieOut[30] ? "Visible" : "Collapsed";
+                    }
                     #endregion
                     #region 任务
                     if ((bool)PhotoCMD.Value)
@@ -1995,9 +2412,16 @@ namespace HS9上料机UI.viewmodel
                     {
                         isUpdateImage = true;
                     }
+                    string banci = GetBanci();
+                    if (banci != LastBanci)
+                    {
+                        LastBanci = banci;
+                        Inifile.INIWriteValue(iniParameterPath, "System", "Banci", LastBanci);
+                        autoClean = true;
+                    }
                     #endregion
                 }
-                catch
+                catch (Exception ex)
                 {
 
                    
@@ -2090,11 +2514,82 @@ namespace HS9上料机UI.viewmodel
             PhotoComplete.Value = true;
         }
         #endregion
+        #region 数据库
+        private void ConnectDBTest()
+        {
+            try
+            {
+                OraDB oraDB = new OraDB("zdtdb", "ictdata", "ictdata*168");
+                if (oraDB.isConnect())
+                {
+                    string dbtime = oraDB.sfc_getServerDateTime();
+                    setLocalTime(dbtime);
+
+                    IsDBConnect = true;
+                }
+                else
+                {
+                    MsgText = AddMessage("数据库未连接");
+
+                    IsDBConnect = false;
+                }
+                oraDB.disconnect();
+            }
+            catch (Exception ex)
+            {
+                MsgText = AddMessage(ex.Message);
+                IsDBConnect = false;
+            }
+        }
+        private void setLocalTime(string strDateTime)
+        {
+            DateTimeUtility.SYSTEMTIME st = new DateTimeUtility.SYSTEMTIME();
+            DateTime dt = Convert.ToDateTime(strDateTime);
+            st.FromDateTime(dt);
+            DateTimeUtility.SetLocalTime(ref st);
+        }
+        #endregion
         #region 应用函数
+        private void ReadAlarmRecordfromCSV()
+        {
+            string filepath = "D:\\报警记录\\报警记录" + GetBanci() + ".csv";
+            DataTable dt = new DataTable();
+            DataTable dt1;
+            dt.Columns.Add("Time", typeof(string));
+            dt.Columns.Add("Content", typeof(string));
+            try
+            {
+                if (File.Exists(filepath))
+                {
+                    dt1 = Csvfile.GetFromCsv(filepath, 1, dt);
+                    if (dt1.Rows.Count > 0)
+                    {
+                        foreach (DataRow item in dt1.Rows)
+                        {
+                            AlarmRecord tr = new AlarmRecord(item[0].ToString(), item[1].ToString());
+                            lock (this)
+                            {
+                                myAlarmRecordQueue.Enqueue(tr);
+                            }
+                        }
+                        MsgText = AddMessage("读取报警记录完成");
+                    }
+                }
+                else
+                {
+                    MsgText = AddMessage("报警记录不存在");
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgText = AddMessage(ex.Message);
+            }
+        }
         private void ReadParameter()
         {
             try
             {
+                LastBanci = Inifile.INIGetStringValue(iniParameterPath, "System", "Banci", "0");
                 SerialPortCom = Inifile.INIGetStringValue(iniParameterPath, "System", "PLCCOM", "COM7");
                 TestCheckedAL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedAL", "True"));
                 TestCheckedBL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedBL", "True"));
@@ -2204,16 +2699,15 @@ namespace HS9上料机UI.viewmodel
         }
         #endregion
         #endregion
-
-        public void OpenImage()
+    }
+    public class AlarmRecord
+    {
+        public string AlarmTime { set; get; }
+        public string Content { set; get; }
+        public AlarmRecord(string alarmTime, string content)
         {
-            if (File.Exists(System.Environment.CurrentDirectory + "\\image_1.tiff"))
-            {
-                curImage?.Dispose();
-                HOperatorSet.ReadImage(out curImage, System.Environment.CurrentDirectory + "\\image_1.tiff");
-                GlobalVar.hWndCtrl.addIconicVar(new HImage(curImage));
-                GlobalVar.hWndCtrl.repaint();
-            }
+            AlarmTime = alarmTime;
+            Content = content;
         }
     }
 }

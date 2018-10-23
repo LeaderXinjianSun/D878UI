@@ -27,9 +27,27 @@
             <Grid.Background>
                 <ImageBrush ImageSource="x1023.bmp"></ImageBrush>
             </Grid.Background>
-            
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Visibility="{Binding AlarmTextGridShow,FallbackValue=Collapsed}" Grid.Row="2" Background="Red">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Text="{Binding AlarmTextString}" FontSize="26"></TextBlock>
+            </Grid>
+            <Grid Grid.Row="1" Visibility="{Binding PLCMessageVisibility,FallbackValue=Collapsed}" Background="Gray">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Text="{Binding PLCMessage}" FontSize="36"></TextBlock>
+            </Grid>
         </Grid>
         <TextBox Grid.Row="1" Margin="1" x:Name="MsgTextBox" IsReadOnly="True" TextChanged="MsgTextBox_TextChanged"  FontSize="14" Background="Black" FontFamily="宋体" Foreground="White" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding MsgText}"></TextBox>
         <local:OperatePanel Grid.Column="1" Grid.RowSpan="2"></local:OperatePanel>
+        <Canvas>
+            <TextBlock Visibility="{Binding M20028}" Canvas.Left="10" Canvas.Top="10" Text="收空盘轴，降到底&#x000A;满空盘，请拿空盘" FontSize="20" Background="Red" Foreground="White"></TextBlock>
+            <TextBlock Visibility="{Binding M20030}" Canvas.Right="10" Canvas.Top="10" Text="上空盘轴，降到底&#x000A;无空盘，请上空盘" FontSize="20" Background="Red" Foreground="White"></TextBlock>
+            <TextBlock Visibility="{Binding M20027}" Canvas.Left="10" Canvas.Bottom="10" Text="上满盘轴，降到底&#x000A;无满盘，请上满盘" FontSize="20" Background="Red" Foreground="White"></TextBlock>
+            <TextBlock Visibility="{Binding M20029}" Canvas.Right="10" Canvas.Bottom="10" Text="收满盘轴，降到底&#x000A;满盘满，请拿满盘" FontSize="20" Background="Red" Foreground="White"></TextBlock>
+        </Canvas>
     </Grid>
 </UserControl>

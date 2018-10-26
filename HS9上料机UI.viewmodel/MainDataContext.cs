@@ -279,6 +279,7 @@ namespace HS9上料机UI.viewmodel
         public string ParameterPageVisibility { set; get; } = "Collapsed";
         public string TwinCATPageVisibility { set; get; } = "Collapsed";
         public string AlarmPageVisibility { set; get; } = "Collapsed";
+        public string TestRecordPageVisibility { set; get; } = "Collapsed";
         public string LoginString { set; get; } = "登录";
         public bool Isloagin { set; get; } = false;
         public string MsgText { set; get; }
@@ -288,14 +289,57 @@ namespace HS9上料机UI.viewmodel
         public string AlarmTextString { set; get; }
         public string AlarmTextGridShow { set; get; } = "Collapsed";
         public ObservableCollection<AlarmRecord> alarmRecord { set; get; } = new ObservableCollection<AlarmRecord>();
+        public ObservableCollection<TestRecord> testRecord { set; get; } = new ObservableCollection<TestRecord>();
         public string LastBanci { set; get; }
         public string M20027 { set; get; } = "Collapsed";
         public string M20028 { set; get; } = "Collapsed";
         public string M20029 { set; get; } = "Collapsed";
         public string M20030 { set; get; } = "Collapsed";
         public string AdminButtonVisibility { set; get; } = "Collapsed";
-        public virtual string PLCMessageVisibility { set; get; } = "Collapsed";
-        public virtual string PLCMessage { set; get; }
+        public string PLCMessageVisibility { set; get; } = "Collapsed";
+        public string PLCMessage { set; get; }
+        #endregion
+        #region 统计
+        public string PassStatusDisplay1 { set; get; }
+        public string PassStatusDisplay2 { set; get; }
+        public string PassStatusDisplay3 { set; get; }
+        public string PassStatusDisplay4 { set; get; }
+        public string PassStatusColor1 { set; get; }
+        public string PassStatusColor2 { set; get; }
+        public string PassStatusColor3 { set; get; }
+        public string PassStatusColor4 { set; get; }
+
+        public double TestTime0 { set; get; }
+        public double TestTime1 { set; get; }
+        public double TestTime2 { set; get; }
+        public double TestTime3 { set; get; }
+
+        public double TestIdle0 { set; get; }
+        public double TestIdle1 { set; get; }
+        public double TestIdle2 { set; get; }
+        public double TestIdle3 { set; get; }
+
+        public double TestCycle0 { set; get; } 
+        public double TestCycle1 { set; get; }
+        public double TestCycle2 { set; get; }
+        public double TestCycle3 { set; get; }
+
+        public double TestCycleAve { set; get; }
+
+        public string TesterResult0 { set; get; } = "Unknow";
+        public string TesterResult1 { set; get; } = "Unknow";
+        public string TesterResult2 { set; get; } = "Unknow";
+        public string TesterResult3 { set; get; } = "Unknow";
+
+        public string TesterStatusForeground0 { set; get; } = "Yellow";
+        public string TesterStatusForeground1 { set; get; } = "Yellow";
+        public string TesterStatusForeground2 { set; get; } = "Yellow";
+        public string TesterStatusForeground3 { set; get; } = "Yellow";
+
+        public string TesterStatusBackGround0 { set; get; } = "Gray";
+        public string TesterStatusBackGround1 { set; get; } = "Gray";
+        public string TesterStatusBackGround2 { set; get; } = "Gray";
+        public string TesterStatusBackGround3 { set; get; } = "Gray";
         #endregion
         #region EPSON
         public bool EpsonStatusAuto { set; get; } = false;
@@ -323,6 +367,7 @@ namespace HS9上料机UI.viewmodel
         bool[] XinJieIn = new bool[64];
         private string iniParameterPath = System.Environment.CurrentDirectory + "\\Parameter.ini";
         private string TwincatParameterPath = System.Environment.CurrentDirectory + "\\TwincatParameter.ini";
+        private string iniFClient = @"C:\FClient.ini";
         public static DispatcherTimer dispatcherTimer = new DispatcherTimer();
         bool autoClean = false;
         int loadintimes = 0;
@@ -339,9 +384,12 @@ namespace HS9上料机UI.viewmodel
         bool EStop = false;
         bool isUpdateImage = false;
         Queue<AlarmRecord> myAlarmRecordQueue = new Queue<AlarmRecord>();
+        Queue<TestRecord> myTestRecordQueue = new Queue<TestRecord>();
         string barstr = "";
         DateTime lastEpsonAlarm;
-        short MinTick = 0;
+        short MinTick = 0,DecTick = 0;
+        double down_min = 0, jigdown_min = 0, waitinput_min = 0, waittray_min = 0, waittake_min = 0, run_min = 0, world_min = 0, work_min = 0;
+        bool down_flag = false, jigdown_flag = false, waitinput_flag = false, waittray_flag = false, waittake_flag = false, work_flag = false;
         #endregion
         #region 功能
         #region 初始化
@@ -639,13 +687,15 @@ namespace HS9上料机UI.viewmodel
         {
             ReadParameter();
             ReadAlarmRecordfromCSV();
+            ReadRecordfromCSV();
             Xinjie = new ThingetPLC();           
             epsonRC90 = new EpsonRC90();
             epsonRC90.ModelPrint += ModelPrintEventProcess;
             epsonRC90.EpsonStatusUpdate += EpsonStatusUpdateProcess;
             epsonRC90.EPSONCommTwincat += EPSONCommTwincatEventProcess;
+            epsonRC90.TestFinished += StartUpdateProcess;
             dispatcherTimer.Tick += new EventHandler(DispatcherTimerTickUpdateUi);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 6);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
             lastEpsonAlarm = System.DateTime.Now;
         }
@@ -662,6 +712,7 @@ namespace HS9上料机UI.viewmodel
                     ParameterPageVisibility = "Collapsed";
                     TwinCATPageVisibility = "Collapsed";
                     AlarmPageVisibility = "Collapsed";
+                    TestRecordPageVisibility = "Collapsed";
                     LoginString = "登录";
                     Isloagin = false;
                     break;
@@ -671,6 +722,7 @@ namespace HS9上料机UI.viewmodel
                     ParameterPageVisibility = "Collapsed";
                     TwinCATPageVisibility = "Collapsed";
                     AlarmPageVisibility = "Collapsed";
+                    TestRecordPageVisibility = "Collapsed";
                     LoginString = "登录";
                     Isloagin = false;
                     break;
@@ -680,6 +732,7 @@ namespace HS9上料机UI.viewmodel
                     ParameterPageVisibility = "Collapsed";
                     TwinCATPageVisibility = "Visible";
                     AlarmPageVisibility = "Collapsed";
+                    TestRecordPageVisibility = "Collapsed";
                     break;
                 case "5":
                     if (LoginString != "登出")
@@ -704,6 +757,7 @@ namespace HS9上料机UI.viewmodel
                     ParameterPageVisibility = "Visible";
                     TwinCATPageVisibility = "Collapsed";
                     AlarmPageVisibility = "Collapsed";
+                    TestRecordPageVisibility = "Collapsed";
                     break;
                 case "7":
                     HomePageVisibility = "Collapsed";
@@ -711,6 +765,15 @@ namespace HS9上料机UI.viewmodel
                     ParameterPageVisibility = "Collapsed";
                     TwinCATPageVisibility = "Collapsed";
                     AlarmPageVisibility = "Visible";
+                    TestRecordPageVisibility = "Collapsed";
+                    break;
+                case "8":
+                    HomePageVisibility = "Collapsed";
+                    CameraPageVisibility = "Collapsed";
+                    ParameterPageVisibility = "Collapsed";
+                    TwinCATPageVisibility = "Collapsed";
+                    AlarmPageVisibility = "Collapsed";
+                    TestRecordPageVisibility = "Visible";
                     break;
                 default:
                     break;
@@ -869,6 +932,10 @@ namespace HS9上料机UI.viewmodel
         private void SaveCSVfileAlarm(string alrstr)
         {
             string filepath = "D:\\报警记录\\报警记录" + GetBanci() + ".csv";
+            if (!Directory.Exists("D:\\报警记录"))
+            {
+                Directory.CreateDirectory("D:\\报警记录");
+            }
             try
             {
                 if (!File.Exists(filepath))
@@ -903,6 +970,38 @@ namespace HS9上料机UI.viewmodel
                 }
             }
             return rs;
+        }
+        private string[] PassStatusProcess(double f)
+        {
+            string[] strs = new string[2];
+            if (f > 98)
+            {
+                strs[0] = "良率" + f.ToString() + "% 优秀";
+                strs[1] = "Blue";
+            }
+            else
+            {
+                if (f > 95)
+                {
+                    strs[0] = "良率" + f.ToString() + "% 正常";
+                    strs[1] = "Green";
+                }
+                else
+                {
+                    if (f == 0)
+                    {
+                        strs[0] = "良率" + f.ToString() + "% 未知";
+                        strs[1] = "Black";
+                    }
+                    else
+                    {
+                        strs[0] = "良率" + f.ToString() + "% 异常";
+                        strs[1] = "Red";
+                    }
+
+                }
+            }
+            return strs;
         }
         #region TwinCATOperate
         public void TwinCATAlarmOperate(object p)
@@ -2085,7 +2184,8 @@ namespace HS9上料机UI.viewmodel
         }
         private void DispatcherTimerTickUpdateUi(Object sender, EventArgs e)
         {
-            //bool _PLCAlarmStatus = false;
+            #region PLC报警显示
+            bool _PLCAlarmStatus = false;
             PLCMessageVisibility = "Collapsed";
             PLCMessage = "";
             if (XinJieOut != null)
@@ -2224,7 +2324,11 @@ namespace HS9上料机UI.viewmodel
                     }
 
                 }
+
+
+
             }
+
 
             //PLCAlarmStatus = PLCMessageVisibility == "Visible";
             //if (_PLCAlarmStatus != PLCAlarmStatus)
@@ -2238,15 +2342,23 @@ namespace HS9上料机UI.viewmodel
             //    }
 
             //}
+            #endregion
+            #region 及时雨
+            if (++DecTick >= 6)
+            {
+                DecTick = 0;
 
-            if (++MinTick > 10)
+            }
+            #endregion
+            #region 其他
+            if (++MinTick > 60)
             {
                 MinTick = 0;
                 ConnectDBTest();
             }
             if (Isloagin || !(LoginString != "登出"))
             {
-                if (++loadintimes > 5)
+                if (++loadintimes > 30)
                 {
                     Isloagin = false;
                     LoginString = "登录";
@@ -2257,6 +2369,7 @@ namespace HS9上料机UI.viewmodel
             {
                 loadintimes = 0;
             }
+
             if (myAlarmRecordQueue.Count > 0)
             {
                 lock (this)
@@ -2268,12 +2381,41 @@ namespace HS9上料机UI.viewmodel
                     myAlarmRecordQueue.Clear();
                 }
             }
+            if (myTestRecordQueue.Count > 0)
+            {
+                lock (this)
+                {
+                    foreach (TestRecord item in myTestRecordQueue)
+                    {
+                        testRecord.Add(item);
+                    }
+                    myTestRecordQueue.Clear();
+                }
+            }
             if (autoClean)
             {
                 MsgText = AddMessage("换班，数据清零");
                 alarmRecord.Clear();
+                testRecord.Clear();
+                for (int i = 0; i < 4; i++)
+                {
+                    epsonRC90.YanmadeTester[i].Clean();
+                }
+                
                 autoClean = false;
+
             }
+            #endregion
+
+        }
+        private void StartUpdateProcess(int index)
+        {
+            TestRecord tr = new TestRecord(DateTime.Now.ToString(), "***********", epsonRC90.YanmadeTester[index - 1].TestResult.ToString(), epsonRC90.YanmadeTester[index - 1].TestSpan.ToString() + " s", index.ToString());
+            lock (this)
+            {
+                myTestRecordQueue.Enqueue(tr);
+            }
+            SaveCSVfileRecord(tr);
         }
         #endregion
         #region 后台
@@ -2422,7 +2564,128 @@ namespace HS9上料机UI.viewmodel
                         Inifile.INIWriteValue(iniParameterPath, "System", "Banci", LastBanci);
                         autoClean = true;
                     }
+
                     #endregion
+                    #region 界面数据显示
+                    //良率界面显示
+                    string[] Yieldstrs1 = PassStatusProcess(epsonRC90.YanmadeTester[0].Yield_Nomal);
+                    PassStatusDisplay1 = "测试机1" + Yieldstrs1[0];
+                    PassStatusColor1 = Yieldstrs1[1];
+                    string[] Yieldstrs2 = PassStatusProcess(epsonRC90.YanmadeTester[1].Yield_Nomal);
+                    PassStatusDisplay2 = "测试机2" + Yieldstrs2[0];
+                    PassStatusColor2 = Yieldstrs2[1];
+                    string[] Yieldstrs3 = PassStatusProcess(epsonRC90.YanmadeTester[2].Yield_Nomal);
+                    PassStatusDisplay3 = "测试机3" + Yieldstrs3[0];
+                    PassStatusColor3 = Yieldstrs3[1];
+                    string[] Yieldstrs4 = PassStatusProcess(epsonRC90.YanmadeTester[3].Yield_Nomal);
+                    PassStatusDisplay4 = "测试机4" + Yieldstrs4[0];
+                    PassStatusColor4 = Yieldstrs1[1];
+
+                    TesterResult0 = epsonRC90.YanmadeTester[0].TestResult.ToString();
+                    switch (TesterResult0)
+                    {
+                        case "Ng":
+                            TesterStatusBackGround0 = "Red";
+                            TesterStatusForeground0 = "White";
+                            break;
+                        case "Pass":
+                            TesterStatusBackGround0 = "Green";
+                            TesterStatusForeground0 = "White";
+                            break;
+                        case "Unknow":
+                            TesterStatusBackGround0 = "Wheat";
+                            TesterStatusForeground0 = "Yellow";
+                            break;
+                        case "TimeOut":
+                            TesterStatusBackGround0 = "Wheat";
+                            TesterStatusForeground0 = "Maroon";
+                            break;
+                        default:
+                            break;
+                    }
+                    TesterResult1 = epsonRC90.YanmadeTester[1].TestResult.ToString();
+                    switch (TesterResult1)
+                    {
+                        case "Ng":
+                            TesterStatusBackGround1 = "Red";
+                            TesterStatusForeground1 = "White";
+                            break;
+                        case "Pass":
+                            TesterStatusBackGround1 = "Green";
+                            TesterStatusForeground1 = "White";
+                            break;
+                        case "Unknow":
+                            TesterStatusBackGround1 = "Wheat";
+                            TesterStatusForeground1 = "Yellow";
+                            break;
+                        case "TimeOut":
+                            TesterStatusBackGround1 = "Wheat";
+                            TesterStatusForeground1 = "Maroon";
+                            break;
+                        default:
+                            break;
+                    }
+                    TesterResult2 = epsonRC90.YanmadeTester[2].TestResult.ToString();
+                    switch (TesterResult2)
+                    {
+                        case "Ng":
+                            TesterStatusBackGround2 = "Red";
+                            TesterStatusForeground2 = "White";
+                            break;
+                        case "Pass":
+                            TesterStatusBackGround2 = "Green";
+                            TesterStatusForeground2 = "White";
+                            break;
+                        case "Unknow":
+                            TesterStatusBackGround2 = "Wheat";
+                            TesterStatusForeground2 = "Yellow";
+                            break;
+                        case "TimeOut":
+                            TesterStatusBackGround2 = "Wheat";
+                            TesterStatusForeground2 = "Maroon";
+                            break;
+                        default:
+                            break;
+                    }
+                    TesterResult3 = epsonRC90.YanmadeTester[3].TestResult.ToString();
+                    switch (TesterResult3)
+                    {
+                        case "Ng":
+                            TesterStatusBackGround3 = "Red";
+                            TesterStatusForeground3 = "White";
+                            break;
+                        case "Pass":
+                            TesterStatusBackGround3 = "Green";
+                            TesterStatusForeground3 = "White";
+                            break;
+                        case "Unknow":
+                            TesterStatusBackGround3 = "Wheat";
+                            TesterStatusForeground3 = "Yellow";
+                            break;
+                        case "TimeOut":
+                            TesterStatusBackGround3 = "Wheat";
+                            TesterStatusForeground3 = "Maroon";
+                            break;
+                        default:
+                            break;
+                    }
+                    //时间统计
+                    TestTime0 = epsonRC90.YanmadeTester[0].TestSpan;
+                    TestTime1 = epsonRC90.YanmadeTester[1].TestSpan;
+                    TestTime2 = epsonRC90.YanmadeTester[2].TestSpan;
+                    TestTime3 = epsonRC90.YanmadeTester[3].TestSpan;
+                    TestIdle0 = epsonRC90.YanmadeTester[0].TestIdle;
+                    TestIdle1 = epsonRC90.YanmadeTester[1].TestIdle;
+                    TestIdle2 = epsonRC90.YanmadeTester[2].TestIdle;
+                    TestIdle3 = epsonRC90.YanmadeTester[3].TestIdle;
+                    TestCycle0 = epsonRC90.YanmadeTester[0].TestCycle;
+                    TestCycle1 = epsonRC90.YanmadeTester[1].TestCycle;
+                    TestCycle2 = epsonRC90.YanmadeTester[2].TestCycle;
+                    TestCycle3 = epsonRC90.YanmadeTester[3].TestCycle;
+
+                    TestCycleAve = Math.Round((TestCycle0 + TestCycle1 + TestCycle2 + TestCycle3) / 4, 2);
+                    #endregion
+
                 }
                 catch (Exception ex)
                 {
@@ -2432,6 +2695,39 @@ namespace HS9上料机UI.viewmodel
 
             }
         }
+        //void Write及时雨()
+        //{
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_1", epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString());
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "Yield_1", epsonRC90.YanmadeTester[0].Yield_Nomal.ToString());
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_2", epsonRC90.YanmadeTester[1].TestCount_Nomal.ToString());
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "Yield_2", epsonRC90.YanmadeTester[1].Yield_Nomal.ToString());
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_3", epsonRC90.YanmadeTester[2].TestCount_Nomal.ToString());
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "Yield_3", epsonRC90.YanmadeTester[2].Yield_Nomal.ToString());
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_4", epsonRC90.YanmadeTester[3].TestCount_Nomal.ToString());
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "Yield_4", epsonRC90.YanmadeTester[3].Yield_Nomal.ToString());
+
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "Downtime ", down_min.ToString("F2"));
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "Jigdowntime ", jigdown_min.ToString("F2"));
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "Waitforinput", waitinput_min.ToString("F2"));
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "Waitfortray", waittray_min.ToString("F2"));
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "Waitfortake", waittake_min.ToString("F2"));
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_Total", (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString());
+        //    if (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal > 0)
+        //    {
+        //        Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", ((double)(epsonRC90.YanmadeTester[0].PassCount_Nomal + epsonRC90.YanmadeTester[1].PassCount_Nomal + epsonRC90.YanmadeTester[2].PassCount_Nomal + epsonRC90.YanmadeTester[3].PassCount_Nomal) / (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal) * 100).ToString("F2"));
+        //    }
+        //    else
+        //    {
+        //        Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", "0");
+        //    }
+        //    //Inifile.INIWriteValue(iniFClient, "DataList", "Input", liaoinput.ToString());
+        //    //Inifile.INIWriteValue(iniFClient, "DataList", "Output", liaooutput.ToString());
+        //    Inifile.INIWriteValue(iniFClient, "Alarm", "count", TotalAlarmNum.ToString());
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "AchievingRate", AchievingRate.ToString("F2"));
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate", ProperRate.ToString("F2"));
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate_AutoMation", ProperRate_AutoMation.ToString("F2"));
+        //    Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate_Jig", ProperRate_Jig.ToString("F2"));
+        //}
         private void TakePhoteCallback()
         {
             if (FindFill[0])
@@ -2588,6 +2884,67 @@ namespace HS9上料机UI.viewmodel
                 MsgText = AddMessage(ex.Message);
             }
         }
+        private void SaveCSVfileRecord(TestRecord tr)
+        {
+            string filepath = "D:\\生产记录\\生产记录" + GetBanci() + ".csv";
+            if (!Directory.Exists("D:\\生产记录"))
+            {
+                Directory.CreateDirectory("D:\\生产记录");
+            }
+            try
+            {
+
+                if (!File.Exists(filepath))
+                {
+                    string[] heads = { "Time", "Barcode", "Result", "Cycle", "Index" };
+                    Csvfile.AddNewLine(filepath, heads);
+                }
+                string[] conte = { tr.TestTime, tr.Barcode, tr.TestResult, tr.TestCycleTime, tr.Index };
+                Csvfile.AddNewLine(filepath, conte);
+            }
+            catch (Exception ex)
+            {
+                MsgText = AddMessage(ex.Message);
+            }
+        }
+        private void ReadRecordfromCSV()
+        {
+            string filepath = "D:\\生产记录\\生产记录" + GetBanci() + ".csv";
+            DataTable dt = new DataTable();
+            DataTable dt1;
+            dt.Columns.Add("Time", typeof(string));
+            dt.Columns.Add("Barcode", typeof(string));
+            dt.Columns.Add("Result", typeof(string));
+            dt.Columns.Add("Cycle", typeof(string));
+            dt.Columns.Add("Index", typeof(string));
+            try
+            {
+                if (File.Exists(filepath))
+                {
+                    dt1 = Csvfile.GetFromCsv(filepath, 1, dt);
+                    if (dt1.Rows.Count > 0)
+                    {
+                        foreach (DataRow item in dt1.Rows)
+                        {
+                            TestRecord tr = new TestRecord(item[0].ToString(), item[1].ToString(), item[2].ToString(), item[3].ToString(), item[4].ToString());
+                            lock (this)
+                            {
+                                myTestRecordQueue.Enqueue(tr);
+                            }
+                        }
+                        MsgText = AddMessage("读取测试记录完成");
+                    }
+                }
+                else
+                {
+                    MsgText = AddMessage("测试记录不存在");
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgText = AddMessage(ex.Message);
+            }
+        }
         private void ReadParameter()
         {
             try
@@ -2711,6 +3068,22 @@ namespace HS9上料机UI.viewmodel
         {
             AlarmTime = alarmTime;
             Content = content;
+        }
+    }
+    public class TestRecord
+    {
+        public string TestTime { set; get; }
+        public string Barcode { set; get; }
+        public string TestResult { set; get; }
+        public string TestCycleTime { set; get; }
+        public string Index { set; get; }
+        public TestRecord(string testTime, string barcode, string testResult, string testCycleTime, string index)
+        {
+            TestTime = testTime;
+            Barcode = barcode;
+            TestResult = testResult;
+            TestCycleTime = testCycleTime;
+            Index = index;
         }
     }
 }

@@ -75,6 +75,9 @@
     <Compile Include="AlarmPage.xaml.cs">
       <DependentUpon>AlarmPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TestRecordPage.xaml.cs">
+      <DependentUpon>TestRecordPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TwinCATPage.xaml.cs">
       <DependentUpon>TwinCATPage.xaml</DependentUpon>
     </Compile>
@@ -113,6 +116,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ParameterPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TestRecordPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

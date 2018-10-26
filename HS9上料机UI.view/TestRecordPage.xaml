@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="HS9上料机UI.view.TestRecordPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HS9上料机UI.view"
+             mc:Ignorable="d" 
+   d:DesignHeight="708" d:DesignWidth="1024">
+    <Grid>
+        <DataGrid GridLinesVisibility="All" ItemsSource="{Binding testRecord}" AutoGenerateColumns="True"></DataGrid>
+    </Grid>   
+</UserControl>

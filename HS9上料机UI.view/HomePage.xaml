@@ -40,6 +40,57 @@
             <Grid Grid.Row="1" Visibility="{Binding PLCMessageVisibility,FallbackValue=Collapsed}" Background="Gray">
                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Text="{Binding PLCMessage}" FontSize="36"></TextBlock>
             </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid Margin="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="1.4*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource LabelBase1}" Text="①"></TextBlock>
+                        <Rectangle Grid.Row="1" Fill="{Binding TesterStatusBackGround0}"></Rectangle>
+                        <TextBlock Grid.Row="1" Style="{StaticResource TesterStatus}" Foreground="{Binding TesterStatusForeground0}" Text="{Binding TesterResult0}"></TextBlock>
+                    </Grid>
+                    <Grid Grid.Column="1" Margin="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="1.4*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Rectangle Grid.Row="1" Fill="{Binding TesterStatusBackGround1}"></Rectangle>
+                        <TextBlock Style="{StaticResource LabelBase1}" Text="②"></TextBlock>
+                        <TextBlock Grid.Row="1" Style="{StaticResource TesterStatus}" Foreground="{Binding TesterStatusForeground1}" Text="{Binding TesterResult1}"></TextBlock>
+                    </Grid>
+                    <Grid Grid.Column="2" Margin="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="1.4*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Rectangle Grid.Row="1" Fill="{Binding TesterStatusBackGround2}"></Rectangle>
+                        <TextBlock Style="{StaticResource LabelBase1}" Text="③"></TextBlock>
+                        <TextBlock Grid.Row="1" Style="{StaticResource TesterStatus}" Foreground="{Binding TesterStatusForeground2}" Text="{Binding TesterResult2}"></TextBlock>
+                    </Grid>
+                    <Grid Grid.Column="3" Margin="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="1.4*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Rectangle Grid.Row="1" Fill="{Binding TesterStatusBackGround3}"></Rectangle>
+                        <TextBlock Style="{StaticResource LabelBase1}" Text="④"></TextBlock>
+                        <TextBlock Grid.Row="1" Style="{StaticResource TesterStatus}" Foreground="{Binding TesterStatusForeground3}" Text="{Binding TesterResult3}"></TextBlock>
+                    </Grid>
+                </Grid>
+            </Grid>
         </Grid>
         <TextBox Grid.Row="1" Margin="1" x:Name="MsgTextBox" IsReadOnly="True" TextChanged="MsgTextBox_TextChanged"  FontSize="14" Background="Black" FontFamily="宋体" Foreground="White" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding MsgText}"></TextBox>
         <local:OperatePanel Grid.Column="1" Grid.RowSpan="2"></local:OperatePanel>

@@ -39,7 +39,7 @@ namespace BingLibrary.hjb.file
 
         public static DataTable GetFromCsv(string filePath, int n, DataTable dt)
         {
-            StreamReader reader = new StreamReader(filePath, System.Text.Encoding.UTF8, false);
+            StreamReader reader = new StreamReader(filePath, Encoding.Default, false);
             int i = 0, m = 0;
             reader.Peek();
             while (reader.Peek() > 0)

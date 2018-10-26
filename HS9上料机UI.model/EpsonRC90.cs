@@ -25,6 +25,7 @@ namespace HS9上料机UI.model
         private bool isLogined = false;
         public bool[] Rc90In = new bool[100];
         public bool[] Rc90Out = new bool[100];
+        public Tester[] YanmadeTester = new Tester[4];
         #endregion
         private string iniParameterPath = System.Environment.CurrentDirectory + "\\Parameter.ini";
 
@@ -34,6 +35,8 @@ namespace HS9上料机UI.model
         public event PrintEventHandler ModelPrint;
         public event PrintEventHandler EpsonStatusUpdate;
         public event PrintEventHandler EPSONCommTwincat;
+        public delegate void TestFinishedHandler(int index);
+        public event TestFinishedHandler TestFinished;
         #endregion
         #region 功能
 
@@ -42,12 +45,16 @@ namespace HS9上料机UI.model
         /// </summary>
         public EpsonRC90()
         {
+            for (int i = 0; i < 4; i++)
+            {
+                YanmadeTester[i] = new Tester(i + 1);
+            }
             ip = Inifile.INIGetStringValue(iniParameterPath, "Epson", "EpsonIp", "192.168.1.2");
             Async.RunFuncAsync(checkCtrlNet, null);
             Async.RunFuncAsync(checkTestSentNet, null);
             Async.RunFuncAsync(checkTestReceiveNet, null);
             //Async.RunFuncAsync(checkTestSentFlexNet, null);
-            //Async.RunFuncAsync(checkTestReceiveFlexNet, null);
+            Async.RunFuncAsync(checkTestReceiveFlexNet, null);
             Async.RunFuncAsync(checkMsgReceiveNet, null);
             Async.RunFuncAsync(checkIOReceiveNet, null);
 
@@ -55,7 +62,9 @@ namespace HS9上料机UI.model
             Async.RunFuncAsync(IORevAnalysis, null);
             Async.RunFuncAsync(MsgRevAnalysis, null);
             Async.RunFuncAsync(TestRevAnalysis, null);
+            Async.RunFuncAsync(TestRevFlexAnalysis, null);
             
+
         }
         #region 网口监控
         public async void checkCtrlNet()
@@ -414,6 +423,10 @@ namespace HS9上料机UI.model
                                 case "StatusOfDiaoLiao":
                                     AnsverStatusOfDiaoLiao();
                                     break;
+                                case "TestResultCount":
+                                    TestResult tr = strs[2] == "OK" ? TestResult.Pass : TestResult.Ng;
+                                    YanmadeTester[int.Parse(strs[1]) - 1].Update(tr);
+                                    break;
                                 default:
                                     ModelPrint("无效指令： " + s);
                                     break;
@@ -430,6 +443,69 @@ namespace HS9上料机UI.model
                     await Task.Delay(100);
                 }
             }
+        }
+        private async void TestRevFlexAnalysis()
+        {
+            while (true)
+            {
+                //await Task.Delay(100);
+                if (TestReceiveFlexStatus == true)
+                {
+                    string s = await TestReceiveFlexNet.ReceiveAsync();
+
+                    string[] ss = s.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    try
+                    {
+                        s = ss[0];
+                    }
+                    catch
+                    {
+                        s = "error";
+                    }
+
+                    if (s == "error")
+                    {
+                        TestReceiveFlexNet.tcpConnected = false;
+                        TestReceiveFlexStatus = false;
+                        ModelPrint("机械手TestReceiveFlexNet断开");
+                    }
+                    else
+                    {
+                        ModelPrint("TestRevFlex: " + s);
+                        try
+                        {
+                            string[] strs = s.Split(',');
+                            switch (strs[0])
+                            {
+
+                                case "Start":
+                                    YanmadeTester[int.Parse(strs[1]) - 1].Start(TestFinishOperate);
+                                    break;
+                                case "Finish":
+                                    YanmadeTester[int.Parse(strs[1]) - 1].TestResult = strs[2] == "1" ? TestResult.Pass : TestResult.Ng;
+                                    YanmadeTester[int.Parse(strs[1]) - 1].TestStatus = TestStatus.Tested;
+                                    break;
+                                default:
+                                    ModelPrint("无效指令： " + s);
+                                    break;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ModelPrint(ex.Message);
+                        }
+
+                    }
+                }
+                else
+                {
+                    await Task.Delay(100);
+                }
+            }
+        }
+        private void TestFinishOperate(int index)
+        {
+            TestFinished(index);
         }
         #endregion
         #region 功能函数

@@ -743,11 +743,11 @@
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="250" Text="上料负压表9"></TextBlock>
-                                <Ellipse Style="{StaticResource SV8}"></Ellipse>
+                                <Ellipse Style="{StaticResource SV9}"></Ellipse>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="250" Text="上料负压表10"></TextBlock>
-                                <Ellipse Style="{StaticResource SV8}"></Ellipse>
+                                <Ellipse Style="{StaticResource SV10}"></Ellipse>
                             </StackPanel>
                         </StackPanel>
 

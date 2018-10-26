@@ -7,7 +7,7 @@
         xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:HS9上料机UI.view"
         mc:Ignorable="d"
-        Title="HS9上料机UI 2018102302" WindowStartupLocation="CenterScreen" WindowState="Normal"
+        Title="HS9上料机UI 2018102601" WindowStartupLocation="CenterScreen" WindowState="Normal"
                      BorderThickness="0" GlowBrush="Black"  ResizeMode="CanResizeWithGrip" WindowTransitionsEnabled="True"
                      Height="768" Width="1024" DataContext="{bing:Data md}" Icon="dog.ico" Closing="MetroWindow_Closing">
     <metro:MetroWindow.Resources>
@@ -27,7 +27,7 @@
             <MenuItem Header="主页" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="0"></MenuItem>
             <MenuItem Header="检测相机" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="1"></MenuItem>
             <MenuItem Header="轴控" IsEnabled="{Binding Isloagin}" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="2"></MenuItem>
-            <MenuItem Header="记录" ></MenuItem>
+            <MenuItem Header="记录" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="8"></MenuItem>
             <MenuItem Header="报警" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="7"></MenuItem>
             <MenuItem Header="{Binding LoginString}" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="5"></MenuItem>
             <MenuItem Header="参数" IsEnabled="{Binding Isloagin}" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="6"/>
@@ -46,6 +46,9 @@
         </Grid>
         <Grid Grid.Row="1"  Visibility="{Binding AlarmPageVisibility}">
             <local:AlarmPage></local:AlarmPage>
+        </Grid>
+        <Grid Grid.Row="1"  Visibility="{Binding TestRecordPageVisibility}">
+            <local:TestRecordPage></local:TestRecordPage>
         </Grid>
         <StatusBar Grid.Row="2">
             <StatusBarItem>

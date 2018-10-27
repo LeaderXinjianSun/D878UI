@@ -298,6 +298,26 @@ namespace HS9上料机UI.viewmodel
         public string AdminButtonVisibility { set; get; } = "Collapsed";
         public string PLCMessageVisibility { set; get; } = "Collapsed";
         public string PLCMessage { set; get; }
+        public uint UPH { set; get; }
+        public string TestCount_1 { set; get; }
+        public string Yield_1 { set; get; }
+        public string TestCount_2 { set; get; }
+        public string Yield_2 { set; get; }
+        public string TestCount_3 { set; get; }
+        public string Yield_3 { set; get; }
+        public string TestCount_4 { set; get; }
+        public string Yield_4 { set; get; }
+        public string Downtime { set; get; }
+        public string Jigdowntime { set; get; }
+        public string Waitforinput { set; get; }
+        public string Waitfortray { set; get; }
+        public string Waitfortake { set; get; }
+        public string TestCount_Total { set; get; }
+        public string Yield_Total { set; get; }
+        public string AchievingRate_ { set; get; }
+        public string ProperRate_ { set; get; }
+        public string ProperRate_AutoMation_ { set; get; }
+        public string ProperRate_Jig_ { set; get; }
         #endregion
         #region 统计
         public string PassStatusDisplay1 { set; get; }
@@ -341,6 +361,9 @@ namespace HS9上料机UI.viewmodel
         public string TesterStatusBackGround2 { set; get; } = "Gray";
         public string TesterStatusBackGround3 { set; get; } = "Gray";
         #endregion
+        #region 及时雨
+        public int TotalAlarmNum { set; get; } = 0;
+        #endregion
         #region EPSON
         public bool EpsonStatusAuto { set; get; } = false;
         public bool EpsonStatusWarning { set; get; } = false;
@@ -367,6 +390,7 @@ namespace HS9上料机UI.viewmodel
         bool[] XinJieIn = new bool[64];
         private string iniParameterPath = System.Environment.CurrentDirectory + "\\Parameter.ini";
         private string TwincatParameterPath = System.Environment.CurrentDirectory + "\\TwincatParameter.ini";
+        private string iniTimeCalcPath = System.Environment.CurrentDirectory + "\\TimeCalc.ini";
         private string iniFClient = @"C:\FClient.ini";
         public static DispatcherTimer dispatcherTimer = new DispatcherTimer();
         bool autoClean = false;
@@ -388,8 +412,13 @@ namespace HS9上料机UI.viewmodel
         string barstr = "";
         DateTime lastEpsonAlarm;
         short MinTick = 0,DecTick = 0;
-        double down_min = 0, jigdown_min = 0, waitinput_min = 0, waittray_min = 0, waittake_min = 0, run_min = 0, world_min = 0, work_min = 0;
+        double down_min = 0, jigdown_min = 0, waitinput_min = 0, waittray_min = 0, waittake_min = 0, run_min = 0,  work_min = 0;
         bool down_flag = false, jigdown_flag = false, waitinput_flag = false, waittray_flag = false, waittake_flag = false, work_flag = false;
+        bool PLCAlarmStatus = false;
+        double AchievingRate, ProperRate, ProperRate_AutoMation, ProperRate_Jig;
+        string DangbanFirstProduct = "";
+        uint liaoinput = 0, liaooutput = 0;
+        bool _PLCAlarmStatus = false;
         #endregion
         #region 功能
         #region 初始化
@@ -693,6 +722,7 @@ namespace HS9上料机UI.viewmodel
             epsonRC90.ModelPrint += ModelPrintEventProcess;
             epsonRC90.EpsonStatusUpdate += EpsonStatusUpdateProcess;
             epsonRC90.EPSONCommTwincat += EPSONCommTwincatEventProcess;
+            epsonRC90.DiaoLiaoEvent += DiaoLiaoEventProcess;
             epsonRC90.TestFinished += StartUpdateProcess;
             dispatcherTimer.Tick += new EventHandler(DispatcherTimerTickUpdateUi);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
@@ -908,7 +938,10 @@ namespace HS9上料机UI.viewmodel
         private void ShowAlarmTextGrid(string str)
         {
             AlarmTextString = str;
+
             AlarmTextGridShow = "Visible";
+            string ss = str.Replace("\n", "");
+            Inifile.INIWriteValue(iniFClient, "Alarm", "Name", ss);
         }
         private void SaveAlarm(string str)
         {
@@ -923,11 +956,14 @@ namespace HS9上料机UI.viewmodel
         private void RecordAlarmString(string str)
         {
             AlarmRecord ar = new AlarmRecord(System.DateTime.Now.ToString(), str);
+            TotalAlarmNum++;
+            Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
             lock (this)
             {
                 myAlarmRecordQueue.Enqueue(ar);
                 SaveCSVfileAlarm(str);
             }
+
         }
         private void SaveCSVfileAlarm(string alrstr)
         {
@@ -1920,6 +1956,15 @@ namespace HS9上料机UI.viewmodel
         private void ModelPrintEventProcess(string str)
         {
             MsgText = AddMessage(str);
+            if (DangbanFirstProduct != GetBanci())
+            {
+                if (str.Contains("Start"))
+                {
+                    DangbanFirstProduct = GetBanci();
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "DangbanFirstProduct", DangbanFirstProduct);
+                    MsgText = AddMessage(DangbanFirstProduct + " 开班第1片");
+                }
+            }
             switch (str)
             {
                 case "MsgRev: 请确认，不得取走上料盘产品":
@@ -2062,6 +2107,11 @@ namespace HS9上料机UI.viewmodel
                     break;
             }
         }
+        private void DiaoLiaoEventProcess(string xitou)
+        {
+            liaooutput++;
+            Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaooutput", liaooutput.ToString());
+        }
         public delegate void TwinCatProcessedDelegate(string s);
         public async void FMoveProcessStart(TwinCatProcessedDelegate callback, string s)
         {
@@ -2185,7 +2235,7 @@ namespace HS9上料机UI.viewmodel
         private void DispatcherTimerTickUpdateUi(Object sender, EventArgs e)
         {
             #region PLC报警显示
-            bool _PLCAlarmStatus = false;
+            
             PLCMessageVisibility = "Collapsed";
             PLCMessage = "";
             if (XinJieOut != null)
@@ -2330,24 +2380,82 @@ namespace HS9上料机UI.viewmodel
             }
 
 
-            //PLCAlarmStatus = PLCMessageVisibility == "Visible";
-            //if (_PLCAlarmStatus != PLCAlarmStatus)
-            //{
-            //    _PLCAlarmStatus = PLCAlarmStatus;
-            //    if (_PLCAlarmStatus && (PLCMessage == "上料满盘缺料" || PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料满盘满" || PLCMessage == "下料XY吸取失败报警" || PLCMessage == "下料空盘缺") && !Wait_PLCAlarmStatus_Off)
-            //    {
-            //        WriteAlarmCSV_PLC(PLCMessage);
-            //        Inifile.INIWriteValue(iniFClient, "Alarm", "Name", PLCMessage);
-            //        TotalAlarmNum++;
-            //    }
+            PLCAlarmStatus = PLCMessageVisibility == "Visible" && (PLCMessage == "上料满盘缺料" || PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料满盘满" || PLCMessage == "下料XY吸取失败报警" || PLCMessage == "下料空盘缺");
+            if (_PLCAlarmStatus != PLCAlarmStatus)
+            {
+                _PLCAlarmStatus = PLCAlarmStatus;
+                if (_PLCAlarmStatus && (PLCMessage == "上料满盘缺料" || PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料满盘满" || PLCMessage == "下料XY吸取失败报警" || PLCMessage == "下料空盘缺"))
+                {
+                    //WriteAlarmCSV_PLC(PLCMessage);
+                    Inifile.INIWriteValue(iniFClient, "Alarm", "Name", PLCMessage);
+                    TotalAlarmNum++;
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
+                }
 
-            //}
+            }
             #endregion
             #region 及时雨
             if (++DecTick >= 6)
             {
                 DecTick = 0;
+                work_flag = DangbanFirstProduct == GetBanci();
+                if (work_flag && !EpsonStatusPaused && !waitinput_flag)
+                {
+                    run_min += 0.1;
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "run_min", run_min.ToString("F2"));
+                }
+                if (work_flag)
+                {
+                    work_min += 0.1;
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "work_min", work_min.ToString("F2"));
+                }
+                if (down_flag)
+                {
+                    down_min += 0.1;
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "down_min", down_min.ToString("F2"));
+                }
+                if (jigdown_flag)
+                {
+                    jigdown_min += 0.1;
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "jigdown_min", jigdown_min.ToString("F2"));
+                }
+                if (waitinput_flag)
+                {
+                    waitinput_min += 0.1;
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waitinput_min", waitinput_min.ToString("F2"));
+                }
+                if (waittray_flag)
+                {
+                    waittray_min += 0.1;
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittray_min", waittray_min.ToString("F2"));
+                }
+                if (waittake_flag)
+                {
+                    waittake_min += 0.1;
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittake_min", waittake_min.ToString("F2"));
+                }
+                if (run_min == 0 || UPH == 0)
+                    AchievingRate = 100;
+                else
+                    AchievingRate = Math.Round(liaooutput / ((double)UPH / 60 * run_min) * 100, 2);
+                if (work_min == 0)
+                {
+                    ProperRate = 0;
+                    ProperRate_AutoMation = 0;
+                    ProperRate_Jig = 0;
+                }
+                else
+                {
+                    ProperRate = Math.Round((1 - (down_min + jigdown_min) / work_min) * 100, 2);
+                    ProperRate_AutoMation = Math.Round((1 - down_min / work_min) * 100, 2);
+                    ProperRate_Jig = Math.Round((1 - jigdown_min / work_min) * 100, 2);
+                }
 
+                if (AlarmTextGridShow != "Visible" && PLCMessageVisibility != "Visible")
+                {
+                    Inifile.INIWriteValue(iniFClient, "Alarm", "Name", "NULL");
+                }
+                Write及时雨();
             }
             #endregion
             #region 其他
@@ -2401,7 +2509,39 @@ namespace HS9上料机UI.viewmodel
                 {
                     epsonRC90.YanmadeTester[i].Clean();
                 }
-                
+
+                run_min = 0;
+                work_min = 0;
+                down_min = 0;
+                jigdown_min = 0;
+                waitinput_min = 0;
+                waittray_min = 0;
+                waittake_min = 0;
+                liaooutput = 0;
+                TotalAlarmNum = 0;
+
+                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "run_min", run_min.ToString("F2"));
+                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "work_min", work_min.ToString("F2"));
+                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "down_min", down_min.ToString("F2"));
+                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "jigdown_min", jigdown_min.ToString("F2"));
+                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waitinput_min", waitinput_min.ToString("F2"));
+                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittray_min", waittray_min.ToString("F2"));
+                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittake_min", waittake_min.ToString("F2"));
+                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaooutput", liaooutput.ToString());
+                Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
+
+
+
+
+
+
+
+
+
+
+
+                //liaoinput = 0;
+
                 autoClean = false;
 
             }
@@ -2544,6 +2684,11 @@ namespace HS9上料机UI.viewmodel
                         M20029 = XinJieOut[29] ? "Visible" : "Collapsed";
                         M20030 = XinJieOut[30] ? "Visible" : "Collapsed";
                     }
+                    down_flag = EpsonStatusSafeGuard || EpsonStatusEStop;
+                    waitinput_flag = XinJieOut[15] || (!EpsonStatusSafeGuard && EpsonStatusPaused);
+                    jigdown_flag = !TestCheckedAL || !TestCheckedBL;
+                    waittray_flag = XinJieOut[16];
+                    waittake_flag = XinJieOut[17];
                     #endregion
                     #region 任务
                     if ((bool)PhotoCMD.Value)
@@ -2695,39 +2840,61 @@ namespace HS9上料机UI.viewmodel
 
             }
         }
-        //void Write及时雨()
-        //{
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_1", epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString());
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "Yield_1", epsonRC90.YanmadeTester[0].Yield_Nomal.ToString());
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_2", epsonRC90.YanmadeTester[1].TestCount_Nomal.ToString());
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "Yield_2", epsonRC90.YanmadeTester[1].Yield_Nomal.ToString());
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_3", epsonRC90.YanmadeTester[2].TestCount_Nomal.ToString());
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "Yield_3", epsonRC90.YanmadeTester[2].Yield_Nomal.ToString());
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_4", epsonRC90.YanmadeTester[3].TestCount_Nomal.ToString());
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "Yield_4", epsonRC90.YanmadeTester[3].Yield_Nomal.ToString());
+        void Write及时雨()
+        {
+            TestCount_1 = epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString();
+            Yield_1 = epsonRC90.YanmadeTester[0].Yield_Nomal.ToString();
+            TestCount_2 = epsonRC90.YanmadeTester[1].TestCount_Nomal.ToString();
+            Yield_2 = epsonRC90.YanmadeTester[1].Yield_Nomal.ToString();
+            TestCount_3 = epsonRC90.YanmadeTester[2].TestCount_Nomal.ToString();
+            Yield_3 = epsonRC90.YanmadeTester[2].Yield_Nomal.ToString();
+            TestCount_4 = epsonRC90.YanmadeTester[3].TestCount_Nomal.ToString();
+            Yield_4 = epsonRC90.YanmadeTester[3].Yield_Nomal.ToString();
+            TestCount_Total = (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString();
+            
 
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "Downtime ", down_min.ToString("F2"));
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "Jigdowntime ", jigdown_min.ToString("F2"));
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "Waitforinput", waitinput_min.ToString("F2"));
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "Waitfortray", waittray_min.ToString("F2"));
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "Waitfortake", waittake_min.ToString("F2"));
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_Total", (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString());
-        //    if (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal > 0)
-        //    {
-        //        Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", ((double)(epsonRC90.YanmadeTester[0].PassCount_Nomal + epsonRC90.YanmadeTester[1].PassCount_Nomal + epsonRC90.YanmadeTester[2].PassCount_Nomal + epsonRC90.YanmadeTester[3].PassCount_Nomal) / (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal) * 100).ToString("F2"));
-        //    }
-        //    else
-        //    {
-        //        Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", "0");
-        //    }
-        //    //Inifile.INIWriteValue(iniFClient, "DataList", "Input", liaoinput.ToString());
-        //    //Inifile.INIWriteValue(iniFClient, "DataList", "Output", liaooutput.ToString());
-        //    Inifile.INIWriteValue(iniFClient, "Alarm", "count", TotalAlarmNum.ToString());
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "AchievingRate", AchievingRate.ToString("F2"));
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate", ProperRate.ToString("F2"));
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate_AutoMation", ProperRate_AutoMation.ToString("F2"));
-        //    Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate_Jig", ProperRate_Jig.ToString("F2"));
-        //}
+            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_1", epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "Yield_1", epsonRC90.YanmadeTester[0].Yield_Nomal.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_2", epsonRC90.YanmadeTester[1].TestCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "Yield_2", epsonRC90.YanmadeTester[1].Yield_Nomal.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_3", epsonRC90.YanmadeTester[2].TestCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "Yield_3", epsonRC90.YanmadeTester[2].Yield_Nomal.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_4", epsonRC90.YanmadeTester[3].TestCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "Yield_4", epsonRC90.YanmadeTester[3].Yield_Nomal.ToString());
+
+            Downtime = down_min.ToString("F2");
+            Jigdowntime = jigdown_min.ToString("F2");
+            Waitforinput = waitinput_min.ToString("F2");
+            Waitfortray = waittray_min.ToString("F2");
+            Waitfortake = waittake_min.ToString("F2");
+
+            Inifile.INIWriteValue(iniFClient, "DataList", "Downtime ", down_min.ToString("F2"));
+            Inifile.INIWriteValue(iniFClient, "DataList", "Jigdowntime ", jigdown_min.ToString("F2"));
+            Inifile.INIWriteValue(iniFClient, "DataList", "Waitforinput", waitinput_min.ToString("F2"));
+            Inifile.INIWriteValue(iniFClient, "DataList", "Waitfortray", waittray_min.ToString("F2"));
+            Inifile.INIWriteValue(iniFClient, "DataList", "Waitfortake", waittake_min.ToString("F2"));
+            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_Total", (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString());
+            if (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal > 0)
+            {
+                Yield_Total = ((double)(epsonRC90.YanmadeTester[0].PassCount_Nomal + epsonRC90.YanmadeTester[1].PassCount_Nomal + epsonRC90.YanmadeTester[2].PassCount_Nomal + epsonRC90.YanmadeTester[3].PassCount_Nomal) / (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal) * 100).ToString("F2");
+                Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", ((double)(epsonRC90.YanmadeTester[0].PassCount_Nomal + epsonRC90.YanmadeTester[1].PassCount_Nomal + epsonRC90.YanmadeTester[2].PassCount_Nomal + epsonRC90.YanmadeTester[3].PassCount_Nomal) / (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal) * 100).ToString("F2"));
+            }
+            else
+            {
+                Yield_Total = "0";
+                Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", "0");
+            }
+
+            AchievingRate_ = AchievingRate.ToString("F2");
+            ProperRate_ = ProperRate.ToString("F2");
+            ProperRate_AutoMation_ = ProperRate_AutoMation.ToString("F2");
+            ProperRate_Jig_ = ProperRate_Jig.ToString("F2");
+            Inifile.INIWriteValue(iniFClient, "Alarm", "count", TotalAlarmNum.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "AchievingRate", AchievingRate.ToString("F2"));
+            Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate", ProperRate.ToString("F2"));
+            Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate_AutoMation", ProperRate_AutoMation.ToString("F2"));
+            Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate_Jig", ProperRate_Jig.ToString("F2"));
+        }
         private void TakePhoteCallback()
         {
             if (FindFill[0])
@@ -2953,6 +3120,22 @@ namespace HS9上料机UI.viewmodel
                 SerialPortCom = Inifile.INIGetStringValue(iniParameterPath, "System", "PLCCOM", "COM7");
                 TestCheckedAL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedAL", "True"));
                 TestCheckedBL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedBL", "True"));
+
+                run_min = double.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "run_min", "0"));
+                work_min = double.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "work_min", "0"));
+                waittake_min = double.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "waittake_min", "0"));
+                waittray_min = double.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "waittray_min", "0"));
+                waitinput_min = double.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "waitinput_min", "0"));
+                jigdown_min = double.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "jigdown_min", "0"));
+                down_min = double.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "down_min", "0"));
+                DangbanFirstProduct = Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "DangbanFirstProduct", "null");
+
+                liaoinput = uint.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "liaoinput", "0"));
+                liaooutput = uint.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "liaooutput", "0"));
+
+                TotalAlarmNum = int.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", "0"));
+
+                UPH = uint.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "UPH", "250"));
             }
             catch (Exception ex)
             {
@@ -2965,6 +3148,7 @@ namespace HS9上料机UI.viewmodel
             try
             {
                 Inifile.INIWriteValue(iniParameterPath, "System", "PLCCOM", SerialPortCom);
+                Inifile.INIWriteValue(iniParameterPath, "System", "UPH", UPH.ToString());
                 MsgText = AddMessage("参数保存完成");
             }
             catch (Exception ex)

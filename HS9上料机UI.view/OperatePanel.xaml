@@ -81,7 +81,7 @@
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.5*"></RowDefinition>
-                <RowDefinition></RowDefinition>
+                <RowDefinition Height="0.8*"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <Grid>
@@ -137,9 +137,95 @@
                 <TextBlock Grid.Column="2" Grid.Row="3" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestCycle1}"></Run></TextBlock>
                 <TextBlock Grid.Column="3" Grid.Row="3" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestCycle2}"></Run></TextBlock>
                 <TextBlock Grid.Column="4" Grid.Row="3" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestCycle3}"></Run></TextBlock>
-
-
                 <TextBlock Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="4" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestCycleAve}"></Run></TextBlock>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.3*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.3*"></ColumnDefinition>
+                    <ColumnDefinition Width="1.3*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.3*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="穴1数量" Style="{StaticResource TextBlockGrid}"></TextBlock>
+                <TextBlock Text="{Binding TestCount_1,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Column="2"></TextBlock>
+                <TextBlock Text="穴1良率" Style="{StaticResource TextBlockGrid}" Grid.Column="3"></TextBlock>
+                <TextBlock Text="{Binding Yield_1,FallbackValue= 999}" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Column="5"></TextBlock>
+                <TextBlock Text="穴2数量" Grid.Row="1" Style="{StaticResource TextBlockGrid}"></TextBlock>
+                <TextBlock Text="{Binding TestCount_2,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Row="1" Grid.Column="2"></TextBlock>
+                <TextBlock Text="穴2良率" Style="{StaticResource TextBlockGrid}" Grid.Row="1" Grid.Column="3"></TextBlock>
+                <TextBlock Text="{Binding Yield_2,FallbackValue= 999}" Grid.Row="1" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="1" Grid.Column="5"></TextBlock>
+
+                <TextBlock Text="穴3数量" Grid.Row="2" Style="{StaticResource TextBlockGrid}"></TextBlock>
+                <TextBlock Text="{Binding TestCount_3,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="2"></TextBlock>
+                <TextBlock Text="穴3良率" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="3"></TextBlock>
+                <TextBlock Text="{Binding Yield_3,FallbackValue= 999}" Grid.Row="2" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="5"></TextBlock>
+
+                <TextBlock Text="穴4数量" Grid.Row="3" Style="{StaticResource TextBlockGrid}"></TextBlock>
+                <TextBlock Text="{Binding TestCount_4,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="2"></TextBlock>
+                <TextBlock Text="穴4良率" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="3"></TextBlock>
+                <TextBlock Text="{Binding Yield_4,FallbackValue= 999}" Grid.Row="3" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="5"></TextBlock>
+
+                <TextBlock Text="测试总数" Grid.Row="4" Style="{StaticResource TextBlockGrid}"></TextBlock>
+                <TextBlock Text="{Binding TestCount_Total,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Row="4" Grid.Column="2"></TextBlock>
+                <TextBlock Text="测试总良率" Style="{StaticResource TextBlockGrid}" Grid.Row="4" Grid.Column="3"></TextBlock>
+                <TextBlock Text="{Binding Yield_Total,FallbackValue= 999}" Grid.Row="4" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="4" Grid.Column="5"></TextBlock>
+
+                <TextBlock Text="上料机故障时间" Grid.Row="5" Style="{StaticResource TextBlockGrid}"></TextBlock>
+                <TextBlock Text="{Binding Downtime,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="min" Style="{StaticResource TextBlockGrid}" Grid.Row="5" Grid.Column="2"></TextBlock>
+                <TextBlock Text="治具故障时间" Style="{StaticResource TextBlockGrid}" Grid.Row="5" Grid.Column="3"></TextBlock>
+                <TextBlock Text="{Binding Jigdowntime,FallbackValue= 999}" Grid.Row="5" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="min" Style="{StaticResource TextBlockGrid}" Grid.Row="5" Grid.Column="5"></TextBlock>
+
+                <TextBlock Text="待料时间" Grid.Row="6" Style="{StaticResource TextBlockGrid}"></TextBlock>
+                <TextBlock Text="{Binding Waitforinput,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="min" Style="{StaticResource TextBlockGrid}" Grid.Row="6" Grid.Column="2"></TextBlock>
+                <TextBlock Text="等待处理空TRAY" Style="{StaticResource TextBlockGrid}" Grid.Row="6" Grid.Column="3"></TextBlock>
+                <TextBlock Text="{Binding Waitfortray,FallbackValue= 999}" Grid.Row="6" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="min" Style="{StaticResource TextBlockGrid}" Grid.Row="6" Grid.Column="5"></TextBlock>
+
+                <TextBlock Text="等待满TYAY拿走" Grid.Row="7" Style="{StaticResource TextBlockGrid}"></TextBlock>
+                <TextBlock Text="{Binding Waitfortake,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="min" Style="{StaticResource TextBlockGrid}" Grid.Row="7" Grid.Column="2"></TextBlock>
+
+                <TextBlock Text="达成率" Grid.Row="8" Style="{StaticResource TextBlockGrid}"></TextBlock>
+                <TextBlock Text="{Binding AchievingRate_,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="8" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="8" Grid.Column="2"></TextBlock>
+                <TextBlock Text="妥善率" Style="{StaticResource TextBlockGrid}" Grid.Row="8" Grid.Column="3"></TextBlock>
+                <TextBlock Text="{Binding ProperRate_,FallbackValue= 999}" Grid.Row="8" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="8" Grid.Column="5"></TextBlock>
+
+                <TextBlock Text="上料机妥善率" Grid.Row="9" Style="{StaticResource TextBlockGrid}"></TextBlock>
+                <TextBlock Text="{Binding ProperRate_AutoMation_,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="9" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="9" Grid.Column="2"></TextBlock>
+                <TextBlock Text="治具妥善率" Style="{StaticResource TextBlockGrid}" Grid.Row="9" Grid.Column="3"></TextBlock>
+                <TextBlock Text="{Binding ProperRate_Jig_,FallbackValue= 999}" Grid.Row="9" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="9" Grid.Column="5"></TextBlock>
             </Grid>
         </Grid>
     </Grid>

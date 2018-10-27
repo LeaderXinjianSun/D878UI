@@ -33,6 +33,7 @@ namespace HS9上料机UI.model
         #region 事件
         public delegate void PrintEventHandler(string ModelMessageStr);
         public event PrintEventHandler ModelPrint;
+        public event PrintEventHandler DiaoLiaoEvent;
         public event PrintEventHandler EpsonStatusUpdate;
         public event PrintEventHandler EPSONCommTwincat;
         public delegate void TestFinishedHandler(int index);
@@ -414,6 +415,9 @@ namespace HS9上料机UI.model
                                 case "ResetCMD":
                                     EPSONCommTwincat(s);
                                     break;
+                                case "DiaoLiao":
+                                    DiaoLiaoEvent(strs[1]);
+                                    break;
                                 case "StatusOfUpload":
                                     AnswerStatusOfUpload();
                                     break;
@@ -424,8 +428,8 @@ namespace HS9上料机UI.model
                                     AnsverStatusOfDiaoLiao();
                                     break;
                                 case "TestResultCount":
-                                    TestResult tr = strs[2] == "OK" ? TestResult.Pass : TestResult.Ng;
-                                    YanmadeTester[int.Parse(strs[1]) - 1].Update(tr);
+                                    TestResult tr = strs[1] == "OK" ? TestResult.Pass : TestResult.Ng;
+                                    YanmadeTester[int.Parse(strs[2]) - 1].Update(tr);
                                     break;
                                 default:
                                     ModelPrint("无效指令： " + s);

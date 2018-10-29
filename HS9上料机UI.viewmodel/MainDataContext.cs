@@ -43,6 +43,7 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 FMoveCMD { set; get; }
         public TwinCATCoil1 FMoveCompleted { set; get; }
         public TwinCATCoil1 TCmdIndex { set; get; }
+        public TwinCATCoil1 XYIndex { set; get; }
         public TwinCATCoil1 TMoveCMD { set; get; }
         public TwinCATCoil1 TMoveCompleted { set; get; }
         public TwinCATCoil1 TUnloadCMD { set; get; }
@@ -391,6 +392,7 @@ namespace HS9上料机UI.viewmodel
         private string iniParameterPath = System.Environment.CurrentDirectory + "\\Parameter.ini";
         private string TwincatParameterPath = System.Environment.CurrentDirectory + "\\TwincatParameter.ini";
         private string iniTimeCalcPath = System.Environment.CurrentDirectory + "\\TimeCalc.ini";
+        private string initestPath = @"D:\test.ini";
         private string iniFClient = @"C:\FClient.ini";
         public static DispatcherTimer dispatcherTimer = new DispatcherTimer();
         bool autoClean = false;
@@ -419,6 +421,7 @@ namespace HS9上料机UI.viewmodel
         string DangbanFirstProduct = "";
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
+        string[] FlexId = new string[4];
         #endregion
         #region 功能
         #region 初始化
@@ -675,6 +678,9 @@ namespace HS9上料机UI.viewmodel
             TMoveCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.TMoveCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             TMoveCompleted = new TwinCATCoil1(new TwinCATCoil("MAIN.TMoveCompleted", typeof(bool), TwinCATCoil.Mode.Notice, 1), _TwinCATAds);
             TCmdIndex = new TwinCATCoil1(new TwinCATCoil("MAIN.TCmdIndex", typeof(ushort), TwinCATCoil.Mode.Notice, 1), _TwinCATAds);
+
+            XYIndex = new TwinCATCoil1(new TwinCATCoil("MAIN.XYIndex", typeof(ushort), TwinCATCoil.Mode.Notice, 1), _TwinCATAds);
+
 
             TUnloadCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.TUnloadCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             TUnloadCompleted = new TwinCATCoil1(new TwinCATCoil("MAIN.TUnloadCompleted", typeof(bool), TwinCATCoil.Mode.Notice, 1), _TwinCATAds);
@@ -2098,7 +2104,7 @@ namespace HS9上料机UI.viewmodel
                     TMoveProcessStart(TwinCatProcessStartCallback, strs[1]);
                     break;
                 case "ULOAD":
-                    ULoadProcessStart(TwinCatProcessStartCallback);
+                    ULoadProcessStart(TwinCatProcessStartCallback, strs[1]);
                     break;
                 case "ResetCMD":
                     ResetCMDProcessStart(TwinCatProcessStartCallback);
@@ -2171,18 +2177,43 @@ namespace HS9上料机UI.viewmodel
             };
             await startTask();
         }
-        public async void ULoadProcessStart(TwinCatProcessedDelegate callback)
+        public async void ULoadProcessStart(TwinCatProcessedDelegate callback,string s)
         {
             Func<Task> startTask = () =>
             {
-                return Task.Run(async () =>
+                return Task.Run(() =>
                 {
+                    try
+                    {
+                        ushort nextindex = ushort.Parse(s);
+                        //Inifile.INIWriteValue(initestPath, "Other", "index", "-1");
+                        string ReadIndex1 = Inifile.INIGetStringValue(initestPath, "Other", "index", "-1");
+                        Inifile.INIWriteValue(initestPath, "Other", "trayrequest", "ask" + FlexId[nextindex]);
+                        System.Threading.Thread.Sleep(200);
+                        string ReadIndex = Inifile.INIGetStringValue(initestPath, "Other", "index" , "-1");
+                        while (ReadIndex == ReadIndex1)
+                        {
+                            if (EStop)
+                            {
+                                return;
+                            }
+                            System.Threading.Thread.Sleep(200);
+                            ReadIndex = Inifile.INIGetStringValue(initestPath, "Other", "index", "-1");
+                        }
+                        XYIndex.Value = ushort.Parse(ReadIndex) - 1;
+                        System.Threading.Thread.Sleep(100);
+                    }
+                    catch (Exception ex)
+                    {
+                        MsgText = AddMessage(ex.Message);
+                    }
+
                     TUnloadCMD.Value = true;
                     TUnloadCompleted.Value = false;
 
                     while (!(bool)TUnloadCompleted.Value)
                     {
-                        await Task.Delay(100);
+                        System.Threading.Thread.Sleep(100);
                         if (EStop)
                         {
                             break;
@@ -2581,262 +2612,287 @@ namespace HS9上料机UI.viewmodel
         }
         public void Run()
         {
+            bool restarfirstinit = true, _UnloadTrayFinish = false;
             while (true)
             {
                 System.Threading.Thread.Sleep(10);
-                try
+                if (IsPLCConnect)
                 {
-                    #region 映射
-                    XinJieIn[0] = (bool)Suck1.Value;
-                    XinJieIn[1] = (bool)Suck2.Value;
-                    XinJieIn[2] = (bool)Suck3.Value;
-                    XinJieIn[3] = (bool)Suck4.Value;
-                    XinJieIn[4] = (bool)Suck5.Value;
-                    XinJieIn[5] = (bool)Suck6.Value;
-                    XinJieIn[6] = (bool)Suck7.Value;
-                    XinJieIn[7] = (bool)Suck8.Value;
-                    XinJieIn[8] = (bool)Suck9.Value;
-                    XinJieIn[9] = (bool)Suck10.Value;
-
-                    SuckValue1.Value = XinJieOut[0];
-                    SuckValue2.Value = XinJieOut[1];
-                    SuckValue3.Value = XinJieOut[2];
-                    SuckValue4.Value = XinJieOut[3];
-                    SuckValue5.Value = XinJieOut[4];
-                    SuckValue6.Value = XinJieOut[5];
-                    SuckValue7.Value = XinJieOut[6];
-                    SuckValue8.Value = XinJieOut[7];
-                    SuckValue9.Value = XinJieOut[12];
-                    SuckValue10.Value = XinJieOut[13];
-
-                    //测试机测试结果信号，从PLC X10210读出
-                    epsonRC90.Rc90In[20] = XinJieOut[40];
-                    epsonRC90.Rc90In[21] = XinJieOut[41];
-                    epsonRC90.Rc90In[22] = XinJieOut[42];
-                    epsonRC90.Rc90In[23] = XinJieOut[43];
-                    epsonRC90.Rc90In[24] = XinJieOut[44];
-                    epsonRC90.Rc90In[25] = XinJieOut[45];
-                    epsonRC90.Rc90In[26] = XinJieOut[46];
-                    epsonRC90.Rc90In[27] = XinJieOut[47];
-                    //测试机测试结果信号，从倍服 BFI14读出
-                    epsonRC90.Rc90In[28] = (bool)BFI14.Value;
-                    epsonRC90.Rc90In[29] = (bool)BFI15.Value;
-                    //测试机启动测试信号，向倍服 BFO06写入
-                    BFO6.Value = epsonRC90.Rc90Out[30];
-                    BFO7.Value = epsonRC90.Rc90Out[31];
-                    BFO8.Value = epsonRC90.Rc90Out[32];
-                    BFO9.Value = epsonRC90.Rc90Out[33];
-                    //倍服告知机械手是否有料
-                    epsonRC90.Rc90In[5] = (bool)RSuckValue1.Value;
-                    epsonRC90.Rc90In[6] = (bool)RSuckValue2.Value;
-                    epsonRC90.Rc90In[7] = (bool)RSuckValue3.Value;
-                    epsonRC90.Rc90In[8] = (bool)RSuckValue4.Value;
-                    epsonRC90.Rc90In[9] = (bool)RSuckValue5.Value;
-                    epsonRC90.Rc90In[10] = (bool)RSuckValue6.Value;
-                    epsonRC90.Rc90In[11] = (bool)RSuckValue7.Value;
-                    epsonRC90.Rc90In[12] = (bool)RSuckValue8.Value;
-                    epsonRC90.Rc90In[13] = (bool)RSuckValue9.Value;
-                    epsonRC90.Rc90In[14] = (bool)RSuckValue10.Value;
-
-                    IsTCPConnect = epsonRC90.TestSendStatus & epsonRC90.TestReceiveStatus & epsonRC90.MsgReceiveStatus & epsonRC90.IOReceiveStatus & epsonRC90.CtrlStatus;
-
-                    EStop = XinJieOut[25];//急停信号
-                    SuckCMD.Value = XinJieOut[8];//上料准备好
-                    TRAYEmpty.Value = XinJieOut[11];//上料盘空
-                    RollReset.Value = epsonRC90.Rc90Out[1];
-                    RollSet.Value = epsonRC90.Rc90Out[0];
-
-                    double ps = (double)WaitPositionY.Value < (double)PickPositionY.Value ? (double)WaitPositionY.Value : (double)PickPositionY.Value;
-                    XinJieIn[18] = (double)YPos.Value > ps - 1 && (bool)XYStared.Value;
-
-                    XinJieIn[16] = (bool)EmptyCMD.Value;
-                    XinJieIn[17] = (bool)UnloadTrayCMD.Value;
-                    XinJieIn[19] = (bool)PLCPreSuck.Value;
-                    XinJieIn[21] = (bool)SuckFailedFlag.Value;
-                    XinJieIn[22] = (bool)M1202_1.Value;
-
-                    XinJieIn[38] = EpsonStatusPaused;
-
-                    XinJieIn[39] = epsonRC90.Rc90Out[8];
-                    XinJieIn[40] = epsonRC90.Rc90Out[22];
-                    XinJieIn[41] = epsonRC90.Rc90Out[23];
-                    XinJieIn[42] = epsonRC90.Rc90Out[24];
-                    XinJieIn[43] = epsonRC90.Rc90Out[25];
-                    XinJieIn[44] = epsonRC90.Rc90Out[26];
-                    XinJieIn[45] = epsonRC90.Rc90Out[27];
-
-                    XinJieIn[47] = AdminButtonVisibility == "Visible";
-                    XinJieIn[46] = !TestCheckedAL || !TestCheckedBL;
-
-                    XinJieIn[48] = (bool)ProductLostAlarmFlag.Value;
-                    XinJieIn[49] = (bool)PhotoTimeoutFlag.Value;
-
-                    UnloadTrayFinish.Value = XinJieOut[9];
-                    M1202.Value = XinJieOut[10];
-
-                    epsonRC90.Rc90In[3] = XinJieOut[14] && (bool)WaitCmd1.Value;//自动排料
-                    epsonRC90.Rc90In[2] = (bool)CloseCMD.Value;
-
-                    if (IsPLCConnect)
+                    try
                     {
-                        M20027 = XinJieOut[27] ? "Visible" : "Collapsed";
-                        M20028 = XinJieOut[28] ? "Visible" : "Collapsed";
-                        M20029 = XinJieOut[29] ? "Visible" : "Collapsed";
-                        M20030 = XinJieOut[30] ? "Visible" : "Collapsed";
-                    }
-                    down_flag = EpsonStatusSafeGuard || EpsonStatusEStop;
-                    waitinput_flag = XinJieOut[15] || (!EpsonStatusSafeGuard && EpsonStatusPaused);
-                    jigdown_flag = !TestCheckedAL || !TestCheckedBL;
-                    waittray_flag = XinJieOut[16];
-                    waittake_flag = XinJieOut[17];
-                    #endregion
-                    #region 任务
-                    if ((bool)PhotoCMD.Value)
-                    {
-                        PhotoCMD.Value = false;
-                        MsgText = AddMessage("开始拍照 自动");
-                        Async.RunFuncAsync(cameraHcInspect, TakePhoteCallback);
+                        #region 初始化赋值
+
+    
+                        if (restarfirstinit)
+                        {
+                            _UnloadTrayFinish = XinJieOut[9];
+                            restarfirstinit = false;
+                        }
+                        #endregion
+                        #region 映射
+                        XinJieIn[0] = (bool)Suck1.Value;
+                        XinJieIn[1] = (bool)Suck2.Value;
+                        XinJieIn[2] = (bool)Suck3.Value;
+                        XinJieIn[3] = (bool)Suck4.Value;
+                        XinJieIn[4] = (bool)Suck5.Value;
+                        XinJieIn[5] = (bool)Suck6.Value;
+                        XinJieIn[6] = (bool)Suck7.Value;
+                        XinJieIn[7] = (bool)Suck8.Value;
+                        XinJieIn[8] = (bool)Suck9.Value;
+                        XinJieIn[9] = (bool)Suck10.Value;
+
+                        SuckValue1.Value = XinJieOut[0];
+                        SuckValue2.Value = XinJieOut[1];
+                        SuckValue3.Value = XinJieOut[2];
+                        SuckValue4.Value = XinJieOut[3];
+                        SuckValue5.Value = XinJieOut[4];
+                        SuckValue6.Value = XinJieOut[5];
+                        SuckValue7.Value = XinJieOut[6];
+                        SuckValue8.Value = XinJieOut[7];
+                        SuckValue9.Value = XinJieOut[12];
+                        SuckValue10.Value = XinJieOut[13];
+
+                        //测试机测试结果信号，从PLC X10210读出
+                        epsonRC90.Rc90In[20] = XinJieOut[40];
+                        epsonRC90.Rc90In[21] = XinJieOut[41];
+                        epsonRC90.Rc90In[22] = XinJieOut[42];
+                        epsonRC90.Rc90In[23] = XinJieOut[43];
+                        epsonRC90.Rc90In[24] = XinJieOut[44];
+                        epsonRC90.Rc90In[25] = XinJieOut[45];
+                        epsonRC90.Rc90In[26] = XinJieOut[46];
+                        epsonRC90.Rc90In[27] = XinJieOut[47];
+                        //测试机测试结果信号，从倍服 BFI14读出
+                        epsonRC90.Rc90In[28] = (bool)BFI14.Value;
+                        epsonRC90.Rc90In[29] = (bool)BFI15.Value;
+                        //测试机启动测试信号，向倍服 BFO06写入
+                        BFO6.Value = epsonRC90.Rc90Out[30];
+                        BFO7.Value = epsonRC90.Rc90Out[31];
+                        BFO8.Value = epsonRC90.Rc90Out[32];
+                        BFO9.Value = epsonRC90.Rc90Out[33];
+                        //倍服告知机械手是否有料
+                        epsonRC90.Rc90In[5] = (bool)RSuckValue1.Value;
+                        epsonRC90.Rc90In[6] = (bool)RSuckValue2.Value;
+                        epsonRC90.Rc90In[7] = (bool)RSuckValue3.Value;
+                        epsonRC90.Rc90In[8] = (bool)RSuckValue4.Value;
+                        epsonRC90.Rc90In[9] = (bool)RSuckValue5.Value;
+                        epsonRC90.Rc90In[10] = (bool)RSuckValue6.Value;
+                        epsonRC90.Rc90In[11] = (bool)RSuckValue7.Value;
+                        epsonRC90.Rc90In[12] = (bool)RSuckValue8.Value;
+                        epsonRC90.Rc90In[13] = (bool)RSuckValue9.Value;
+                        epsonRC90.Rc90In[14] = (bool)RSuckValue10.Value;
+
+                        IsTCPConnect = epsonRC90.TestSendStatus & epsonRC90.TestReceiveStatus & epsonRC90.MsgReceiveStatus & epsonRC90.IOReceiveStatus & epsonRC90.CtrlStatus;
+
+                        EStop = XinJieOut[25];//急停信号
+                        SuckCMD.Value = XinJieOut[8];//上料准备好
+                        TRAYEmpty.Value = XinJieOut[11];//上料盘空
+                        RollReset.Value = epsonRC90.Rc90Out[1];
+                        RollSet.Value = epsonRC90.Rc90Out[0];
+
+                        double ps = (double)WaitPositionY.Value < (double)PickPositionY.Value ? (double)WaitPositionY.Value : (double)PickPositionY.Value;
+                        XinJieIn[18] = (double)YPos.Value > ps - 1 && (bool)XYStared.Value;
+
+                        XinJieIn[16] = (bool)EmptyCMD.Value;
+                        XinJieIn[17] = (bool)UnloadTrayCMD.Value;
+                        XinJieIn[19] = (bool)PLCPreSuck.Value;
+                        XinJieIn[21] = (bool)SuckFailedFlag.Value;
+                        XinJieIn[22] = (bool)M1202_1.Value;
+
+                        XinJieIn[38] = EpsonStatusPaused;
+
+                        XinJieIn[39] = epsonRC90.Rc90Out[8];
+                        XinJieIn[40] = epsonRC90.Rc90Out[22];
+                        XinJieIn[41] = epsonRC90.Rc90Out[23];
+                        XinJieIn[42] = epsonRC90.Rc90Out[24];
+                        XinJieIn[43] = epsonRC90.Rc90Out[25];
+                        XinJieIn[44] = epsonRC90.Rc90Out[26];
+                        XinJieIn[45] = epsonRC90.Rc90Out[27];
+
+                        XinJieIn[47] = AdminButtonVisibility == "Visible";
+                        XinJieIn[46] = !TestCheckedAL || !TestCheckedBL;
+
+                        XinJieIn[48] = (bool)ProductLostAlarmFlag.Value;
+                        XinJieIn[49] = (bool)PhotoTimeoutFlag.Value;
+
+                        UnloadTrayFinish.Value = XinJieOut[9];
+                        if (_UnloadTrayFinish != XinJieOut[9])
+                        {
+                            _UnloadTrayFinish = XinJieOut[9];
+                            if (_UnloadTrayFinish)
+                            {
+                                Inifile.INIWriteValue(initestPath, "Other", "traychange", "Y");
+                                MsgText = AddMessage("下料，换盘");
+                            }
+
+                        }
+
+                        M1202.Value = XinJieOut[10];
+
+                        epsonRC90.Rc90In[3] = XinJieOut[14] && (bool)WaitCmd1.Value;//自动排料
+                        epsonRC90.Rc90In[2] = (bool)CloseCMD.Value;
+
+                        if (IsPLCConnect)
+                        {
+                            M20027 = XinJieOut[27] ? "Visible" : "Collapsed";
+                            M20028 = XinJieOut[28] ? "Visible" : "Collapsed";
+                            M20029 = XinJieOut[29] ? "Visible" : "Collapsed";
+                            M20030 = XinJieOut[30] ? "Visible" : "Collapsed";
+                        }
+                        down_flag = EpsonStatusSafeGuard || EpsonStatusEStop;
+                        waitinput_flag = XinJieOut[15] || (!EpsonStatusSafeGuard && EpsonStatusPaused);
+                        jigdown_flag = !TestCheckedAL || !TestCheckedBL;
+                        waittray_flag = XinJieOut[16];
+                        waittake_flag = XinJieOut[17];
+                        #endregion
+                        #region 任务
+                        if ((bool)PhotoCMD.Value)
+                        {
+                            PhotoCMD.Value = false;
+                            MsgText = AddMessage("开始拍照 自动");
+                            Async.RunFuncAsync(cameraHcInspect, TakePhoteCallback);
+
+                        }
+                        if (CameraPageVisibility == "Visible")
+                        {
+                            isUpdateImage = true;
+                        }
+                        string banci = GetBanci();
+                        if (banci != LastBanci)
+                        {
+                            LastBanci = banci;
+                            Inifile.INIWriteValue(iniParameterPath, "System", "Banci", LastBanci);
+                            autoClean = true;
+                        }
+
+                        #endregion
+                        #region 界面数据显示
+                        //良率界面显示
+                        string[] Yieldstrs1 = PassStatusProcess(epsonRC90.YanmadeTester[0].Yield_Nomal);
+                        PassStatusDisplay1 = "测试机1" + Yieldstrs1[0];
+                        PassStatusColor1 = Yieldstrs1[1];
+                        string[] Yieldstrs2 = PassStatusProcess(epsonRC90.YanmadeTester[1].Yield_Nomal);
+                        PassStatusDisplay2 = "测试机2" + Yieldstrs2[0];
+                        PassStatusColor2 = Yieldstrs2[1];
+                        string[] Yieldstrs3 = PassStatusProcess(epsonRC90.YanmadeTester[2].Yield_Nomal);
+                        PassStatusDisplay3 = "测试机3" + Yieldstrs3[0];
+                        PassStatusColor3 = Yieldstrs3[1];
+                        string[] Yieldstrs4 = PassStatusProcess(epsonRC90.YanmadeTester[3].Yield_Nomal);
+                        PassStatusDisplay4 = "测试机4" + Yieldstrs4[0];
+                        PassStatusColor4 = Yieldstrs1[1];
+
+                        TesterResult0 = epsonRC90.YanmadeTester[0].TestResult.ToString();
+                        switch (TesterResult0)
+                        {
+                            case "Ng":
+                                TesterStatusBackGround0 = "Red";
+                                TesterStatusForeground0 = "White";
+                                break;
+                            case "Pass":
+                                TesterStatusBackGround0 = "Green";
+                                TesterStatusForeground0 = "White";
+                                break;
+                            case "Unknow":
+                                TesterStatusBackGround0 = "Wheat";
+                                TesterStatusForeground0 = "Yellow";
+                                break;
+                            case "TimeOut":
+                                TesterStatusBackGround0 = "Wheat";
+                                TesterStatusForeground0 = "Maroon";
+                                break;
+                            default:
+                                break;
+                        }
+                        TesterResult1 = epsonRC90.YanmadeTester[1].TestResult.ToString();
+                        switch (TesterResult1)
+                        {
+                            case "Ng":
+                                TesterStatusBackGround1 = "Red";
+                                TesterStatusForeground1 = "White";
+                                break;
+                            case "Pass":
+                                TesterStatusBackGround1 = "Green";
+                                TesterStatusForeground1 = "White";
+                                break;
+                            case "Unknow":
+                                TesterStatusBackGround1 = "Wheat";
+                                TesterStatusForeground1 = "Yellow";
+                                break;
+                            case "TimeOut":
+                                TesterStatusBackGround1 = "Wheat";
+                                TesterStatusForeground1 = "Maroon";
+                                break;
+                            default:
+                                break;
+                        }
+                        TesterResult2 = epsonRC90.YanmadeTester[2].TestResult.ToString();
+                        switch (TesterResult2)
+                        {
+                            case "Ng":
+                                TesterStatusBackGround2 = "Red";
+                                TesterStatusForeground2 = "White";
+                                break;
+                            case "Pass":
+                                TesterStatusBackGround2 = "Green";
+                                TesterStatusForeground2 = "White";
+                                break;
+                            case "Unknow":
+                                TesterStatusBackGround2 = "Wheat";
+                                TesterStatusForeground2 = "Yellow";
+                                break;
+                            case "TimeOut":
+                                TesterStatusBackGround2 = "Wheat";
+                                TesterStatusForeground2 = "Maroon";
+                                break;
+                            default:
+                                break;
+                        }
+                        TesterResult3 = epsonRC90.YanmadeTester[3].TestResult.ToString();
+                        switch (TesterResult3)
+                        {
+                            case "Ng":
+                                TesterStatusBackGround3 = "Red";
+                                TesterStatusForeground3 = "White";
+                                break;
+                            case "Pass":
+                                TesterStatusBackGround3 = "Green";
+                                TesterStatusForeground3 = "White";
+                                break;
+                            case "Unknow":
+                                TesterStatusBackGround3 = "Wheat";
+                                TesterStatusForeground3 = "Yellow";
+                                break;
+                            case "TimeOut":
+                                TesterStatusBackGround3 = "Wheat";
+                                TesterStatusForeground3 = "Maroon";
+                                break;
+                            default:
+                                break;
+                        }
+                        //时间统计
+                        TestTime0 = epsonRC90.YanmadeTester[0].TestSpan;
+                        TestTime1 = epsonRC90.YanmadeTester[1].TestSpan;
+                        TestTime2 = epsonRC90.YanmadeTester[2].TestSpan;
+                        TestTime3 = epsonRC90.YanmadeTester[3].TestSpan;
+                        TestIdle0 = epsonRC90.YanmadeTester[0].TestIdle;
+                        TestIdle1 = epsonRC90.YanmadeTester[1].TestIdle;
+                        TestIdle2 = epsonRC90.YanmadeTester[2].TestIdle;
+                        TestIdle3 = epsonRC90.YanmadeTester[3].TestIdle;
+                        TestCycle0 = epsonRC90.YanmadeTester[0].TestCycle;
+                        TestCycle1 = epsonRC90.YanmadeTester[1].TestCycle;
+                        TestCycle2 = epsonRC90.YanmadeTester[2].TestCycle;
+                        TestCycle3 = epsonRC90.YanmadeTester[3].TestCycle;
+
+                        TestCycleAve = Math.Round((TestCycle0 + TestCycle1 + TestCycle2 + TestCycle3) / 4, 2);
+                        #endregion
 
                     }
-                    if (CameraPageVisibility == "Visible")
+                    catch (Exception ex)
                     {
-                        isUpdateImage = true;
-                    }
-                    string banci = GetBanci();
-                    if (banci != LastBanci)
-                    {
-                        LastBanci = banci;
-                        Inifile.INIWriteValue(iniParameterPath, "System", "Banci", LastBanci);
-                        autoClean = true;
-                    }
 
-                    #endregion
-                    #region 界面数据显示
-                    //良率界面显示
-                    string[] Yieldstrs1 = PassStatusProcess(epsonRC90.YanmadeTester[0].Yield_Nomal);
-                    PassStatusDisplay1 = "测试机1" + Yieldstrs1[0];
-                    PassStatusColor1 = Yieldstrs1[1];
-                    string[] Yieldstrs2 = PassStatusProcess(epsonRC90.YanmadeTester[1].Yield_Nomal);
-                    PassStatusDisplay2 = "测试机2" + Yieldstrs2[0];
-                    PassStatusColor2 = Yieldstrs2[1];
-                    string[] Yieldstrs3 = PassStatusProcess(epsonRC90.YanmadeTester[2].Yield_Nomal);
-                    PassStatusDisplay3 = "测试机3" + Yieldstrs3[0];
-                    PassStatusColor3 = Yieldstrs3[1];
-                    string[] Yieldstrs4 = PassStatusProcess(epsonRC90.YanmadeTester[3].Yield_Nomal);
-                    PassStatusDisplay4 = "测试机4" + Yieldstrs4[0];
-                    PassStatusColor4 = Yieldstrs1[1];
 
-                    TesterResult0 = epsonRC90.YanmadeTester[0].TestResult.ToString();
-                    switch (TesterResult0)
-                    {
-                        case "Ng":
-                            TesterStatusBackGround0 = "Red";
-                            TesterStatusForeground0 = "White";
-                            break;
-                        case "Pass":
-                            TesterStatusBackGround0 = "Green";
-                            TesterStatusForeground0 = "White";
-                            break;
-                        case "Unknow":
-                            TesterStatusBackGround0 = "Wheat";
-                            TesterStatusForeground0 = "Yellow";
-                            break;
-                        case "TimeOut":
-                            TesterStatusBackGround0 = "Wheat";
-                            TesterStatusForeground0 = "Maroon";
-                            break;
-                        default:
-                            break;
                     }
-                    TesterResult1 = epsonRC90.YanmadeTester[1].TestResult.ToString();
-                    switch (TesterResult1)
-                    {
-                        case "Ng":
-                            TesterStatusBackGround1 = "Red";
-                            TesterStatusForeground1 = "White";
-                            break;
-                        case "Pass":
-                            TesterStatusBackGround1 = "Green";
-                            TesterStatusForeground1 = "White";
-                            break;
-                        case "Unknow":
-                            TesterStatusBackGround1 = "Wheat";
-                            TesterStatusForeground1 = "Yellow";
-                            break;
-                        case "TimeOut":
-                            TesterStatusBackGround1 = "Wheat";
-                            TesterStatusForeground1 = "Maroon";
-                            break;
-                        default:
-                            break;
-                    }
-                    TesterResult2 = epsonRC90.YanmadeTester[2].TestResult.ToString();
-                    switch (TesterResult2)
-                    {
-                        case "Ng":
-                            TesterStatusBackGround2 = "Red";
-                            TesterStatusForeground2 = "White";
-                            break;
-                        case "Pass":
-                            TesterStatusBackGround2 = "Green";
-                            TesterStatusForeground2 = "White";
-                            break;
-                        case "Unknow":
-                            TesterStatusBackGround2 = "Wheat";
-                            TesterStatusForeground2 = "Yellow";
-                            break;
-                        case "TimeOut":
-                            TesterStatusBackGround2 = "Wheat";
-                            TesterStatusForeground2 = "Maroon";
-                            break;
-                        default:
-                            break;
-                    }
-                    TesterResult3 = epsonRC90.YanmadeTester[3].TestResult.ToString();
-                    switch (TesterResult3)
-                    {
-                        case "Ng":
-                            TesterStatusBackGround3 = "Red";
-                            TesterStatusForeground3 = "White";
-                            break;
-                        case "Pass":
-                            TesterStatusBackGround3 = "Green";
-                            TesterStatusForeground3 = "White";
-                            break;
-                        case "Unknow":
-                            TesterStatusBackGround3 = "Wheat";
-                            TesterStatusForeground3 = "Yellow";
-                            break;
-                        case "TimeOut":
-                            TesterStatusBackGround3 = "Wheat";
-                            TesterStatusForeground3 = "Maroon";
-                            break;
-                        default:
-                            break;
-                    }
-                    //时间统计
-                    TestTime0 = epsonRC90.YanmadeTester[0].TestSpan;
-                    TestTime1 = epsonRC90.YanmadeTester[1].TestSpan;
-                    TestTime2 = epsonRC90.YanmadeTester[2].TestSpan;
-                    TestTime3 = epsonRC90.YanmadeTester[3].TestSpan;
-                    TestIdle0 = epsonRC90.YanmadeTester[0].TestIdle;
-                    TestIdle1 = epsonRC90.YanmadeTester[1].TestIdle;
-                    TestIdle2 = epsonRC90.YanmadeTester[2].TestIdle;
-                    TestIdle3 = epsonRC90.YanmadeTester[3].TestIdle;
-                    TestCycle0 = epsonRC90.YanmadeTester[0].TestCycle;
-                    TestCycle1 = epsonRC90.YanmadeTester[1].TestCycle;
-                    TestCycle2 = epsonRC90.YanmadeTester[2].TestCycle;
-                    TestCycle3 = epsonRC90.YanmadeTester[3].TestCycle;
-
-                    TestCycleAve = Math.Round((TestCycle0 + TestCycle1 + TestCycle2 + TestCycle3) / 4, 2);
-                    #endregion
-
                 }
-                catch (Exception ex)
-                {
 
-                   
-                }
 
             }
         }
@@ -3116,6 +3172,11 @@ namespace HS9上料机UI.viewmodel
         {
             try
             {
+                for (int i = 0; i < 4; i++)
+                {
+                    FlexId[i] = Inifile.INIGetStringValue(initestPath, "A", "id" + (i + 1).ToString(), "950951");
+                }
+
                 LastBanci = Inifile.INIGetStringValue(iniParameterPath, "System", "Banci", "0");
                 SerialPortCom = Inifile.INIGetStringValue(iniParameterPath, "System", "PLCCOM", "COM7");
                 TestCheckedAL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedAL", "True"));

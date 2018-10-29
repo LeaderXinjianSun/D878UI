@@ -21,7 +21,7 @@ namespace HS9上料机UI.model
         public TcpIpClient CtrlNet = new TcpIpClient();
         public TcpIpClient IOReceiveNet = new TcpIpClient();
         string ip = "192.168.1.2";
-        public bool CtrlStatus = false, IOReceiveStatus = false,TestSendStatus = false, TestSendFlexStatus = true, TestReceiveStatus = true, TestReceiveFlexStatus = true, MsgReceiveStatus = true;
+        public bool CtrlStatus = false, IOReceiveStatus = false,TestSendStatus = false, TestSendFlexStatus = false, TestReceiveStatus = false, TestReceiveFlexStatus = false, MsgReceiveStatus = false;
         private bool isLogined = false;
         public bool[] Rc90In = new bool[100];
         public bool[] Rc90Out = new bool[100];

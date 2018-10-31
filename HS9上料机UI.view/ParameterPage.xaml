@@ -39,7 +39,7 @@
                 <Button  Grid.Column="1" Grid.Row="0" Style="{StaticResource OperationButton}" Content="保存" Command="{bing:ActionAutoWithParam FuncButton}" CommandParameter="0" Width="100" Height="100"></Button>
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Column="1" Header="机械手">
+        <GroupBox Grid.Column="1" Header="机台参数">
             <StackPanel Orientation="Vertical">
                 <StackPanel Margin="5,5,5,0" Orientation="Horizontal">
                     <CheckBox Content="测试机A" Style="{StaticResource CheckBoxBase}" IsChecked="{Binding TestCheckedAL}"></CheckBox>
@@ -50,6 +50,14 @@
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="理论UPH："></TextBlock>
                     <TextBox Style="{StaticResource TextBoxPort}" Text="{Binding UPH}"></TextBox>
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="PCS/H"></TextBlock>
+                </StackPanel>
+                <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="70" Text="机台类型："></TextBlock>
+                    <ComboBox Style="{StaticResource ComboBoxBase}" Text="{Binding MachineNum}" IsEditable="True" IsReadOnly="True">
+                        <ComboBoxItem Content="1372"></ComboBoxItem>
+                        <ComboBoxItem Content="1373"></ComboBoxItem>
+                        <ComboBoxItem Content="1374"></ComboBoxItem>
+                    </ComboBox>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

@@ -91,6 +91,7 @@ namespace HS9上料机UI.model
         {
             while (true)
             {
+                System.Threading.Thread.Sleep(10);
                 if (idleswflag)
                 {
                     TestIdle= Math.Round(idlesw.Elapsed.TotalSeconds, 2);

@@ -273,6 +273,7 @@ namespace HS9上料机UI.viewmodel
 
         public TwinCATCoil1 UPDirect { set; get; }
         public TwinCATCoil1 UNDirect { set; get; }
+        public TwinCATCoil1 MachineNum_1 { set; get; }
         #endregion
         #region 界面
         public string HomePageVisibility { set; get; } = "Visible";
@@ -380,6 +381,8 @@ namespace HS9上料机UI.viewmodel
         #endregion
         #region 参数
         public string SerialPortCom { set; get; }
+        public string MachineNum { set; get; }
+        public string UITitle { set; get; }
         #endregion
         #endregion
         #region 变量
@@ -422,6 +425,7 @@ namespace HS9上料机UI.viewmodel
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
         string[] FlexId = new string[4];
+        string VersionMsg = "2018103101";
         #endregion
         #region 功能
         #region 初始化
@@ -713,6 +717,7 @@ namespace HS9上料机UI.viewmodel
 
             ProductLostAlarmFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.ProductLostAlarmFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             PhotoTimeoutFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoTimeoutFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            MachineNum_1 = new TwinCATCoil1(new TwinCATCoil("MAIN.MachineNum_1", typeof(ushort), TwinCATCoil.Mode.Notice, 1), _TwinCATAds);
 
             _TwinCATAds.StartNotice();
         }
@@ -926,6 +931,31 @@ namespace HS9上料机UI.viewmodel
             }
             Inifile.INIWriteValue(iniParameterPath, "Tester", "TestCheckedAL", TestCheckedAL.ToString());
             Inifile.INIWriteValue(iniParameterPath, "Tester", "TestCheckedBL", TestCheckedBL.ToString());
+            await Task.Delay(100);
+            str = "MachineNum;";
+            switch (MachineNum)
+            {
+                case "1372":
+                    str += "1";
+                    MachineNum_1.Value = 1;
+                    break;
+                case "1373":
+                    str += "1";
+                    MachineNum_1.Value = 1;
+                    break;
+                case "1374":
+                    str += "2";
+                    MachineNum_1.Value = 2;
+                    break;
+                default:
+                    str += "2";
+                    MachineNum_1.Value = 2;
+                    break;
+            }
+            if (epsonRC90.TestSendStatus)
+                await epsonRC90.TestSentNet.SendAsync(str);
+            Inifile.INIWriteValue(iniParameterPath, "System", "MachineNum", MachineNum);
+            UITitle = MachineNum + "UI " + VersionMsg;
         }
         private string AddMessage(string str)
         {
@@ -2201,6 +2231,10 @@ namespace HS9上料机UI.viewmodel
                             ReadIndex = Inifile.INIGetStringValue(initestPath, "Other", "index", "-1");
                         }
                         XYIndex.Value = ushort.Parse(ReadIndex) - 1;
+                        if (ushort.Parse(ReadIndex) >= 24)
+                        {
+                            Inifile.INIWriteValue(initestPath, "Other", "traychange", "Y");
+                        }
                         System.Threading.Thread.Sleep(100);
                     }
                     catch (Exception ex)
@@ -2581,7 +2615,8 @@ namespace HS9上料机UI.viewmodel
         }
         private void StartUpdateProcess(int index)
         {
-            TestRecord tr = new TestRecord(DateTime.Now.ToString(), "***********", epsonRC90.YanmadeTester[index - 1].TestResult.ToString(), epsonRC90.YanmadeTester[index - 1].TestSpan.ToString() + " s", index.ToString());
+            string bar = Inifile.INIGetStringValue(initestPath, "A", "bar" + index.ToString(), "********************");
+            TestRecord tr = new TestRecord(DateTime.Now.ToString(), bar, epsonRC90.YanmadeTester[index - 1].TestResult.ToString(), epsonRC90.YanmadeTester[index - 1].TestSpan.ToString() + " s", index.ToString());
             lock (this)
             {
                 myTestRecordQueue.Enqueue(tr);
@@ -2612,7 +2647,7 @@ namespace HS9上料机UI.viewmodel
         }
         public void Run()
         {
-            bool restarfirstinit = true, _UnloadTrayFinish = false;
+            bool restarfirstinit = true, _UnloadTrayFinish = true;
             while (true)
             {
                 System.Threading.Thread.Sleep(10);
@@ -2625,7 +2660,8 @@ namespace HS9上料机UI.viewmodel
     
                         if (restarfirstinit)
                         {
-                            _UnloadTrayFinish = XinJieOut[9];
+                            System.Threading.Thread.Sleep(100);
+                            //_UnloadTrayFinish = XinJieOut[9];
                             restarfirstinit = false;
                         }
                         #endregion
@@ -2718,7 +2754,7 @@ namespace HS9上料机UI.viewmodel
                         if (_UnloadTrayFinish != XinJieOut[9])
                         {
                             _UnloadTrayFinish = XinJieOut[9];
-                            if (_UnloadTrayFinish)
+                            if (!_UnloadTrayFinish && (ushort)XYIndex.Value != 0)
                             {
                                 Inifile.INIWriteValue(initestPath, "Other", "traychange", "Y");
                                 MsgText = AddMessage("下料，换盘");
@@ -3179,6 +3215,8 @@ namespace HS9上料机UI.viewmodel
 
                 LastBanci = Inifile.INIGetStringValue(iniParameterPath, "System", "Banci", "0");
                 SerialPortCom = Inifile.INIGetStringValue(iniParameterPath, "System", "PLCCOM", "COM7");
+                MachineNum = Inifile.INIGetStringValue(iniParameterPath, "System", "MachineNum", "1374");
+                UITitle = MachineNum + "UI " + VersionMsg;
                 TestCheckedAL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedAL", "True"));
                 TestCheckedBL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedBL", "True"));
 
@@ -3209,6 +3247,8 @@ namespace HS9上料机UI.viewmodel
             try
             {
                 Inifile.INIWriteValue(iniParameterPath, "System", "PLCCOM", SerialPortCom);
+
+                Inifile.INIWriteValue(iniParameterPath, "System", "MachineNum", MachineNum);
                 Inifile.INIWriteValue(iniParameterPath, "System", "UPH", UPH.ToString());
                 MsgText = AddMessage("参数保存完成");
             }

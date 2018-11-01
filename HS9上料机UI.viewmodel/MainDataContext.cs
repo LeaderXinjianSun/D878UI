@@ -320,6 +320,7 @@ namespace HS9上料机UI.viewmodel
         public string ProperRate_ { set; get; }
         public string ProperRate_AutoMation_ { set; get; }
         public string ProperRate_Jig_ { set; get; }
+        public string 点3 { set; get; }
         #endregion
         #region 统计
         public string PassStatusDisplay1 { set; get; }
@@ -425,7 +426,7 @@ namespace HS9上料机UI.viewmodel
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018103101";
+        string VersionMsg = "2018110101";
         #endregion
         #region 功能
         #region 初始化
@@ -1975,7 +1976,25 @@ namespace HS9上料机UI.viewmodel
                 UPDirect.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "U", "UPDirect", "85.43"));
                 UNDirect.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "U", "UNDirect", "85.43"));
 
-
+                switch (MachineNum)
+                {
+                    case "1372":
+      
+                        MachineNum_1.Value = 1;
+                        break;
+                    case "1373":
+                    
+                        MachineNum_1.Value = 1;
+                        break;
+                    case "1374":
+                    
+                        MachineNum_1.Value = 2;
+                        break;
+                    default:
+                      
+                        MachineNum_1.Value = 2;
+                        break;
+                }
                 Calc_Start.Value = true;
                 SaveButton.Value = true;
                 MsgText = AddMessage("载入轴控参数完成");
@@ -2209,6 +2228,22 @@ namespace HS9上料机UI.viewmodel
         }
         public async void ULoadProcessStart(TwinCatProcessedDelegate callback,string s)
         {
+            ushort endnum;
+            switch (MachineNum)
+            {
+                case "1372":
+                    endnum = 14;
+                    break;
+                case "1373":
+                    endnum = 14;
+                    break;
+                case "1374":
+                    endnum = 24;
+                    break;
+                default:
+                    endnum = 24;
+                    break;
+            }
             Func<Task> startTask = () =>
             {
                 return Task.Run(() =>
@@ -2231,7 +2266,7 @@ namespace HS9上料机UI.viewmodel
                             ReadIndex = Inifile.INIGetStringValue(initestPath, "Other", "index", "-1");
                         }
                         XYIndex.Value = ushort.Parse(ReadIndex) - 1;
-                        if (ushort.Parse(ReadIndex) >= 24)
+                        if (ushort.Parse(ReadIndex) >= endnum)
                         {
                             Inifile.INIWriteValue(initestPath, "Other", "traychange", "Y");
                         }
@@ -2814,7 +2849,7 @@ namespace HS9上料机UI.viewmodel
                         PassStatusColor3 = Yieldstrs3[1];
                         string[] Yieldstrs4 = PassStatusProcess(epsonRC90.YanmadeTester[3].Yield_Nomal);
                         PassStatusDisplay4 = "测试机4" + Yieldstrs4[0];
-                        PassStatusColor4 = Yieldstrs1[1];
+                        PassStatusColor4 = Yieldstrs4[1];
 
                         TesterResult0 = epsonRC90.YanmadeTester[0].TestResult.ToString();
                         switch (TesterResult0)
@@ -3217,6 +3252,15 @@ namespace HS9上料机UI.viewmodel
                 SerialPortCom = Inifile.INIGetStringValue(iniParameterPath, "System", "PLCCOM", "COM7");
                 MachineNum = Inifile.INIGetStringValue(iniParameterPath, "System", "MachineNum", "1374");
                 UITitle = MachineNum + "UI " + VersionMsg;
+                switch (MachineNum)
+                {
+                    case "1374":
+                        点3 = "点21： ";
+                        break;
+                    default:
+                        点3 = "点13： ";
+                        break;
+                }
                 TestCheckedAL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedAL", "True"));
                 TestCheckedBL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedBL", "True"));
 
@@ -3296,6 +3340,7 @@ namespace HS9上料机UI.viewmodel
         {
             try
             {
+
                 for (int i = 0; i < 10; i++)
                 {
                     FindFill[i] = false;
@@ -3305,34 +3350,74 @@ namespace HS9上料机UI.viewmodel
 
 
                 string rst = "";
-                for (int i = 0; i < 10; i++)
+                switch (MachineNum)
                 {
-                    FindFill[i] = hdevEngine.getmeasurements("fill" + (i + 1).ToString()).ToString() == "1";
-                    if (FindFill[i])
-                    {
-                        rst += "1";
-                    }
-                    else
-                    {
-                        rst += "0";
-                    }
+                    //case "1372":
+                    //    break;
+                    //case "1373":
+                    //    break;
+                    case "1374":
+                        for (int i = 0; i < 10; i++)
+                        {
+                            FindFill[i] = hdevEngine.getmeasurements("fill" + (i + 1).ToString()).ToString() == "1";
+                            if (FindFill[i])
+                            {
+                                rst += "1";
+                            }
+                            else
+                            {
+                                rst += "0";
+                            }
+                        }
+                        if (isUpdateImage)
+                        {
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getImage("Image"));
+                            GlobalVar.hWndCtrl.repaint();
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions1"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions2"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions3"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions4"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions5"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions6"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions7"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions8"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions9"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions10"));
+                            GlobalVar.hWndCtrl.repaint();
+                        }
+                        break;
+                    default:
+                        for (int i = 0; i < 10; i++)
+                        {
+                            FindFill[i] = hdevEngine.getmeasurements("fill" + (i + 1).ToString()).ToString() == "1" && i < 6;
+                            if (i < 6)
+                            {
+                                if (FindFill[i])
+                                {
+                                    rst += "1";
+                                }
+                                else
+                                {
+                                    rst += "0";
+                                }
+                            }
+
+                        }
+                        if (isUpdateImage)
+                        {
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getImage("Image"));
+                            GlobalVar.hWndCtrl.repaint();
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions1"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions2"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions3"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions4"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions5"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions6"));
+                            GlobalVar.hWndCtrl.repaint();
+                        }
+                        break;
                 }
-                if (isUpdateImage)
-                {
-                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getImage("Image"));
-                    GlobalVar.hWndCtrl.repaint();
-                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions1"));
-                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions2"));
-                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions3"));
-                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions4"));
-                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions5"));
-                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions6"));
-                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions7"));
-                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions8"));
-                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions9"));
-                    GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions10"));
-                    GlobalVar.hWndCtrl.repaint();
-                }
+                
 
                 MsgText = AddMessage("拍照完成: " + rst);
             }

@@ -284,7 +284,7 @@
                                     <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="2"></Button>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="点21："></TextBlock>
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="{Binding 点3}"></TextBlock>
                                     <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding ReleasePositionX3.Value}"></TextBox>
                                     <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding ReleasePositionY3.Value}"></TextBox>
                                     <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="3"></Button>

@@ -81,6 +81,9 @@
     <Compile Include="TwinCATPage.xaml.cs">
       <DependentUpon>TwinCATPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="YieldRatioUpperLimitWindow.xaml.cs">
+      <DependentUpon>YieldRatioUpperLimitWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="AlarmPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -124,6 +127,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TwinCATPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="YieldRatioUpperLimitWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

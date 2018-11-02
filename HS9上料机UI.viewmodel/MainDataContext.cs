@@ -321,6 +321,21 @@ namespace HS9上料机UI.viewmodel
         public string ProperRate_AutoMation_ { set; get; }
         public string ProperRate_Jig_ { set; get; }
         public string 点3 { set; get; }
+        public int YieldAddNum1 { set; get; }
+        public int YieldAddNum2 { set; get; }
+        public int YieldAddNum3 { set; get; }
+        public int YieldAddNum4 { set; get; }
+        public bool YieldAddNum1Enable { set; get; }
+        public bool YieldAddNum2Enable { set; get; }
+        public bool YieldAddNum3Enable { set; get; }
+        public bool YieldAddNum4Enable { set; get; }
+        public int YieldNowNum1 { set; get; }
+        public int YieldNowNum2 { set; get; }
+        public int YieldNowNum3 { set; get; }
+        public int YieldNowNum4 { set; get; }
+        public bool ShowYieldAdminControlWindow { set; get; }
+        public bool QuitYieldAdminControl { set; get; }
+        public string LastQingjieStr { set; get; }
         #endregion
         #region 统计
         public string PassStatusDisplay1 { set; get; }
@@ -426,7 +441,9 @@ namespace HS9上料机UI.viewmodel
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018110101";
+        string VersionMsg = "2018110201";
+        DateTime LastQingjie = System.DateTime.Now;
+        bool AllowCleanActionCommand = true;
         #endregion
         #region 功能
         #region 初始化
@@ -838,13 +855,14 @@ namespace HS9上料机UI.viewmodel
             {
                 case "1":
                     AlarmTextGridShow = "Collapsed";
+                    string maopaostr = MaopaoPaixu();
                     if (epsonRC90.CtrlStatus && EpsonStatusReady && !EpsonStatusEStop)
                     {
                         await epsonRC90.CtrlNet.SendAsync("$start,2");
                     }
                     if (epsonRC90.TestSendStatus)
                     {
-                        await epsonRC90.TestSentNet.SendAsync("IndexArray_i;" + "0;1;2;3");
+                        await epsonRC90.TestSentNet.SendAsync("IndexArray_i;" + maopaostr);
                     }
                     break;
                 //暂停
@@ -883,6 +901,50 @@ namespace HS9上料机UI.viewmodel
                         await epsonRC90.TestSentNet.SendAsync("Discharge");
                     }
                     GlobalVar.metro.ChangeAccent("Blue");
+                    break;
+                case "9":
+                    ShowYieldAdminControlWindow = !ShowYieldAdminControlWindow;
+                    YieldAddNum4 = YieldAddNum3 = YieldAddNum2 = YieldAddNum1 = 0;
+                    YieldAddNum1Enable = epsonRC90.YanmadeTester[0].Yield_Nomal < 95 && epsonRC90.YanmadeTester[0].TestCount_Nomal >= 100 + epsonRC90.AdminAddNum[0];
+                    if (YieldAddNum1Enable)
+                    {       
+                        YieldAddNum1 = 200;
+                    }
+                    YieldAddNum2Enable = epsonRC90.YanmadeTester[1].Yield_Nomal < 95 && epsonRC90.YanmadeTester[1].TestCount_Nomal >= 100 + epsonRC90.AdminAddNum[1];
+                    if (YieldAddNum2Enable)
+                    {                       
+                        YieldAddNum2 = 200;
+                    }
+                    YieldAddNum3Enable = epsonRC90.YanmadeTester[2].Yield_Nomal < 95 && epsonRC90.YanmadeTester[2].TestCount_Nomal >= 100 + epsonRC90.AdminAddNum[2];
+                    if (YieldAddNum3Enable)
+                    {                        
+                        YieldAddNum3 = 200;
+                    }
+                    YieldAddNum4Enable = epsonRC90.YanmadeTester[3].Yield_Nomal < 95 && epsonRC90.YanmadeTester[3].TestCount_Nomal >= 100 + epsonRC90.AdminAddNum[3];
+                    if (YieldAddNum4Enable)
+                    {                        
+                        YieldAddNum4 = 200;
+                    }
+                    break;
+                case "11":
+                    if (YieldAddNum1Enable)
+                    {                        
+                        epsonRC90.AdminAddNum[0] = epsonRC90.YanmadeTester[0].TestCount_Nomal - 100 + YieldAddNum1;
+                    }
+                    if (YieldAddNum2Enable)
+                    {
+                        epsonRC90.AdminAddNum[1] = epsonRC90.YanmadeTester[1].TestCount_Nomal - 100 + YieldAddNum2;
+                    }
+                    if (YieldAddNum3Enable)
+                    {
+                        epsonRC90.AdminAddNum[2] = epsonRC90.YanmadeTester[2].TestCount_Nomal - 100 + YieldAddNum3;
+                    }
+                    if (YieldAddNum4Enable)
+                    {
+                        epsonRC90.AdminAddNum[3] = epsonRC90.YanmadeTester[3].TestCount_Nomal - 100 + YieldAddNum4;
+                    }
+                    QuitYieldAdminControl = !QuitYieldAdminControl;
+                    AdminButtonVisibility = "Collapsed";
                     break;
                 default:
                     break;
@@ -2115,15 +2177,43 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: 黑色盘满，换盘":
                     ShowAlarmTextGrid("黑色盘满，换盘");
+                    RecordAlarmString("黑色盘满，换盘");
                     break;
                 case "MsgRev: 红色盘满，换盘":
                     ShowAlarmTextGrid("红色盘满，换盘");
+                    RecordAlarmString("红色盘满，换盘");
                     break;
                 case "MsgRev: A爪手掉料":
                     ShowAlarmTextGrid("A爪手掉料");
                     break;
                 case "MsgRev: B爪手掉料":
                     ShowAlarmTextGrid("B爪手掉料");
+                    break;
+                case "MsgRev: 测试机1，良率异常":
+                    ShowAlarmTextGrid("测试机1，良率异常");
+                    RecordAlarmString("测试机1，连续NG");
+                    AdminButtonVisibility = "Visible";
+                    break;
+                case "MsgRev: 测试机2，良率异常":
+                    ShowAlarmTextGrid("测试机2，良率异常");
+                    RecordAlarmString("测试机2，连续NG");
+                    AdminButtonVisibility = "Visible";
+                    break;
+                case "MsgRev: 测试机3，良率异常":
+                    ShowAlarmTextGrid("测试机3，良率异常");
+                    RecordAlarmString("测试机3，连续NG");
+                    AdminButtonVisibility = "Visible";
+                    break;
+                case "MsgRev: 测试机4，良率异常":
+                    ShowAlarmTextGrid("测试机4，良率异常");
+                    RecordAlarmString("测试机4，连续NG");
+                    AdminButtonVisibility = "Visible";
+                    break;
+                case "MsgRev: 清洁操作，结束":
+                    LastQingjie = System.DateTime.Now;
+                    Inifile.INIWriteValue(iniParameterPath, "System", "LastQingjie", LastQingjie.ToString());
+                    LastQingjieStr = LastQingjie.ToString();
+                    AllowCleanActionCommand = true;
                     break;
                 default:
                     break;
@@ -2332,7 +2422,7 @@ namespace HS9上料机UI.viewmodel
                 await epsonRC90.TestSentNet.SendAsync(str);
             }
         }
-        private void DispatcherTimerTickUpdateUi(Object sender, EventArgs e)
+        private async void DispatcherTimerTickUpdateUi(Object sender, EventArgs e)
         {
             #region PLC报警显示
             
@@ -2644,6 +2734,15 @@ namespace HS9上料机UI.viewmodel
 
                 autoClean = false;
 
+            }
+            TimeSpan ts = System.DateTime.Now - LastQingjie;
+            if (AllowCleanActionCommand && ts.TotalHours > 2)
+            {
+                if (epsonRC90.TestSendStatus)
+                {
+                    await epsonRC90.TestSentNet.SendAsync("TestersCleanAction");
+                    AllowCleanActionCommand = false;
+                }
             }
             #endregion
 
@@ -3143,6 +3242,53 @@ namespace HS9上料机UI.viewmodel
         }
         #endregion
         #region 应用函数
+        private string MaopaoPaixu()
+        {
+            string str = "";
+            double[] Array_A = new double[4];
+            ushort[] Array_B = new ushort[4];
+
+            for (ushort k = 0; k < 4; k++)
+            {
+                Array_A[k] = epsonRC90.YanmadeTester[k].Yield_Nomal;
+                Array_B[k] = k;
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 3 - i; j++)
+                {
+                    if (Array_A[j] < Array_A[j + 1])
+                    {
+                        var temp1 = Array_A[j];
+                        var temp2 = Array_B[j];
+                        Array_A[j] = Array_A[j + 1];
+                        Array_B[j] = Array_B[j + 1];
+                        Array_A[j + 1] = temp1;
+                        Array_B[j + 1] = temp2;
+                    }
+                }
+            }
+            int i_index = 0;
+            for (int m = 0; m < 4; m++)
+            {
+                if (Array_B[m] == 0)
+                {
+                    i_index = m;
+                    break;
+                }
+            }
+            if (i_index == 3)
+            {
+                var temp5 = Array_B[i_index];
+                Array_B[i_index] = Array_B[2];
+                Array_B[2] = temp5;
+            }
+            for (int l = 0; l < 4; l++)
+            {
+                str += Array_B[l].ToString() + ";";
+            }
+            return str;
+        }
         private void ReadAlarmRecordfromCSV()
         {
             string filepath = "D:\\报警记录\\报警记录" + GetBanci() + ".csv";
@@ -3279,6 +3425,8 @@ namespace HS9上料机UI.viewmodel
                 TotalAlarmNum = int.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", "0"));
 
                 UPH = uint.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "UPH", "250"));
+                LastQingjie = Convert.ToDateTime(Inifile.INIGetStringValue(iniParameterPath, "System", "LastQingjie", "2018/10/31 8:00:00"));
+                LastQingjieStr = LastQingjie.ToString();
             }
             catch (Exception ex)
             {

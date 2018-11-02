@@ -27,6 +27,13 @@ namespace HS9上料机UI.view
         public MainWindow()
         {
             InitializeComponent();
+            this.SetBinding(ShowYieldAdminControlWindowProperty, "ShowYieldAdminControlWindow");
+            System.Diagnostics.Process[] myProcesses = System.Diagnostics.Process.GetProcessesByName("HS9上料机UI");//获取指定的进程名   
+            if (myProcesses.Length > 1) //如果可以获取到知道的进程名则说明已经启动
+            {
+                System.Windows.MessageBox.Show("不允许重复打开软件");
+                System.Windows.Application.Current.Shutdown();
+            }
         }
 
         private async void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -53,6 +60,30 @@ namespace HS9上料机UI.view
                 }
                 
             }
+        }
+        public static YieldAdminControlWindow YieldAdminControlWindow = null;
+
+        public static readonly DependencyProperty ShowYieldAdminControlWindowProperty =
+            DependencyProperty.Register("ShowYieldAdminControlWindow", typeof(bool), typeof(MainWindow), new PropertyMetadata(
+                new PropertyChangedCallback((d, e) =>
+                {
+                    if (YieldAdminControlWindow != null)
+                    {
+                        if (YieldAdminControlWindow.HasShow)
+                            return;
+                    }
+                    var mMainWindow = d as MainWindow;
+                    YieldAdminControlWindow = new YieldAdminControlWindow();// { Owner = this }.Show();
+                    YieldAdminControlWindow.Owner = Application.Current.MainWindow;
+                    YieldAdminControlWindow.DataContext = mMainWindow.DataContext;
+                    YieldAdminControlWindow.SetBinding(YieldAdminControlWindow.QuitYieldAdminControlProperty, "QuitYieldAdminControl");
+                    YieldAdminControlWindow.HasShow = true;
+                    YieldAdminControlWindow.Show();
+                })));
+        public bool ShowYieldAdminControlWindow
+        {
+            get { return (bool)GetValue(ShowYieldAdminControlWindowProperty); }
+            set { SetValue(ShowYieldAdminControlWindowProperty, value); }
         }
     }
 }

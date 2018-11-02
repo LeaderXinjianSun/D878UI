@@ -26,6 +26,7 @@ namespace HS9上料机UI.model
         public bool[] Rc90In = new bool[100];
         public bool[] Rc90Out = new bool[100];
         public Tester[] YanmadeTester = new Tester[4];
+        public int[] AdminAddNum = new int[4] { 0, 0, 0, 0 };
         #endregion
         private string iniParameterPath = System.Environment.CurrentDirectory + "\\Parameter.ini";
 
@@ -539,22 +540,18 @@ namespace HS9上料机UI.model
         private async void AnswerStatusOfYield()
         {
             string str = "StatusOfYield";
-
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    if (testerwith4item[i / 2].Yield_Nomal[i % 2] >= PassLowLimitStop || !IsPassLowLimitStop || testerwith4item[i / 2].TestCount_Nomal[i % 2] < PassLowLimitStopNum + AdminAddNum[i])
-            //    {
-            //        str += ";1";
-            //    }
-            //    else
-            //    {
-            //        str += ";0";
-            //    }
-            //}
             for (int i = 0; i < 4; i++)
             {
-                str += ";1";
+                if (YanmadeTester[i].Yield_Nomal >= 95 || YanmadeTester[i].TestCount_Nomal < 100 + AdminAddNum[i])
+                {
+                    str += ";1";
+                }
+                else
+                {
+                    str += ";0";
+                }
             }
+
             if (TestSendStatus)
             {
                 await TestSentNet.SendAsync(str);

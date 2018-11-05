@@ -513,6 +513,7 @@ namespace HS9上料机UI.model
         private void TestFinishOperate(int index)
         {
             TestFinished(index);
+            uploadSoftwareStatus[index - 1].result = YanmadeTester[index - 1].TestResult == TestResult.Pass ? "OK" : "NG";
             uploadSoftwareStatus[index - 1].StartCommand();
         }
         #endregion

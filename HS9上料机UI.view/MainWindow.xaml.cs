@@ -28,12 +28,22 @@ namespace HS9上料机UI.view
         {
             InitializeComponent();
             this.SetBinding(ShowYieldAdminControlWindowProperty, "ShowYieldAdminControlWindow");
-            System.Diagnostics.Process[] myProcesses = System.Diagnostics.Process.GetProcessesByName("HS9上料机UI");//获取指定的进程名   
-            if (myProcesses.Length > 1) //如果可以获取到知道的进程名则说明已经启动
+            if (System.Environment.CurrentDirectory != @"C:\Debug")
             {
-                System.Windows.MessageBox.Show("不允许重复打开软件");
+                System.Windows.MessageBox.Show("软件安装目录必须为C:\\Debug");
                 System.Windows.Application.Current.Shutdown();
             }
+            else
+            {
+                
+                System.Diagnostics.Process[] myProcesses = System.Diagnostics.Process.GetProcessesByName("HS9上料机UI");//获取指定的进程名   
+                if (myProcesses.Length > 1) //如果可以获取到知道的进程名则说明已经启动
+                {
+                    System.Windows.MessageBox.Show("不允许重复打开软件");
+                    System.Windows.Application.Current.Shutdown();
+                }
+            }
+
         }
 
         private async void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

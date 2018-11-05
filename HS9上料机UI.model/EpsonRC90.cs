@@ -27,6 +27,7 @@ namespace HS9上料机UI.model
         public bool[] Rc90Out = new bool[100];
         public Tester[] YanmadeTester = new Tester[4];
         public int[] AdminAddNum = new int[4] { 0, 0, 0, 0 };
+        public UploadSoftwareStatus[] uploadSoftwareStatus = new UploadSoftwareStatus[4];
         #endregion
         private string iniParameterPath = System.Environment.CurrentDirectory + "\\Parameter.ini";
 
@@ -50,6 +51,7 @@ namespace HS9上料机UI.model
             for (int i = 0; i < 4; i++)
             {
                 YanmadeTester[i] = new Tester(i + 1);
+                uploadSoftwareStatus[i] = new UploadSoftwareStatus(i + 1);
             }
             ip = Inifile.INIGetStringValue(iniParameterPath, "Epson", "EpsonIp", "192.168.1.2");
             Async.RunFuncAsync(checkCtrlNet, null);
@@ -511,26 +513,23 @@ namespace HS9上料机UI.model
         private void TestFinishOperate(int index)
         {
             TestFinished(index);
+            uploadSoftwareStatus[index - 1].StartCommand();
         }
         #endregion
         #region 功能函数
         private async void AnswerStatusOfUpload()
         {
             string str = "StatusOfUpload";
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    if (uploadSoftwareStatus[i].status || !isCheckUpload)
-            //    {
-            //        str += ";1";
-            //    }
-            //    else
-            //    {
-            //        str += ";0";
-            //    }
-            //}
             for (int i = 0; i < 4; i++)
             {
-                str += ";1";
+                if (uploadSoftwareStatus[i].status)
+                {
+                    str += ";1";
+                }
+                else
+                {
+                    str += ";0";
+                }
             }
             if (TestSendStatus)
             {

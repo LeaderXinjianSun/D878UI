@@ -411,6 +411,7 @@ namespace HS9上料机UI.viewmodel
         private string iniParameterPath = System.Environment.CurrentDirectory + "\\Parameter.ini";
         private string TwincatParameterPath = System.Environment.CurrentDirectory + "\\TwincatParameter.ini";
         private string iniTimeCalcPath = System.Environment.CurrentDirectory + "\\TimeCalc.ini";
+        private string iniAlarmPath = System.Environment.CurrentDirectory + "\\AlarmRecord.ini";
         private string initestPath = @"D:\test.ini";
         private string iniFClient = @"C:\FClient.ini";
         public static DispatcherTimer dispatcherTimer = new DispatcherTimer();
@@ -441,7 +442,7 @@ namespace HS9上料机UI.viewmodel
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018110201";
+        string VersionMsg = "2018110501";
         DateTime LastQingjie = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
         #endregion
@@ -2580,6 +2581,7 @@ namespace HS9上料机UI.viewmodel
                     Inifile.INIWriteValue(iniFClient, "Alarm", "Name", PLCMessage);
                     TotalAlarmNum++;
                     Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
+                    
                 }
 
             }
@@ -3120,6 +3122,9 @@ namespace HS9上料机UI.viewmodel
             Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate", ProperRate.ToString("F2"));
             Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate_AutoMation", ProperRate_AutoMation.ToString("F2"));
             Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate_Jig", ProperRate_Jig.ToString("F2"));
+            Inifile.INIWriteValue(iniAlarmPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
+            string line = Inifile.INIGetStringValue(initestPath, "Other", "line", "L1");
+            Inifile.INIWriteValue(iniParameterPath, "Sample", "MNO", line);
         }
         private void TakePhoteCallback()
         {

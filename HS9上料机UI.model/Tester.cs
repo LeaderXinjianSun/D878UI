@@ -45,17 +45,17 @@ namespace HS9上料机UI.model
             Index = index;
             idleswflag = false;
             idlesw = new Stopwatch();
-            TestSpan = double.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + Index.ToString(), "TestSpan", "0"));
-            TestIdle = double.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + Index.ToString(), "TestIdle", "0"));
-            TestCycle = double.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + Index.ToString(), "TestCycle", "0"));
-            PassCount = int.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + Index.ToString(), "PassCount", "0"));
-            PassCount_Nomal = int.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + Index.ToString(), "PassCount_Nomal", "0"));
-            FailCount = int.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + Index.ToString(), "FailCount", "0"));
-            FailCount_Nomal = int.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + Index.ToString(), "FailCount_Nomal", "0"));
-            TestCount = int.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + Index.ToString(), "TestCount", "0"));
-            TestCount_Nomal = int.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + Index.ToString(), "TestCount_Nomal", "0"));
-            Yield = double.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + Index.ToString(), "Yield", "0"));
-            Yield_Nomal = double.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + Index.ToString(), "Yield_Nomal", "0"));
+            TestSpan = double.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestSpan", "0"));
+            TestIdle = double.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestIdle", "0"));
+            TestCycle = double.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestCycle", "0"));
+            PassCount = int.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "PassCount", "0"));
+            PassCount_Nomal = int.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "PassCount_Nomal", "0"));
+            FailCount = int.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "FailCount", "0"));
+            FailCount_Nomal = int.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "FailCount_Nomal", "0"));
+            TestCount = int.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestCount", "0"));
+            TestCount_Nomal = int.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestCount_Nomal", "0"));
+            Yield = double.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "Yield", "0"));
+            Yield_Nomal = double.Parse(Inifile.INIGetStringValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "Yield_Nomal", "0"));
             Async.RunFuncAsync(RunLoop, null);
         }
         public delegate void StartProcessedDelegate(int i);
@@ -68,9 +68,9 @@ namespace HS9上料机UI.model
                 {
                     idleswflag = false;
                     idlesw.Stop();
-                    Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "TestIdle", TestIdle.ToString());
+                    Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestIdle", TestIdle.ToString());
                     TestCycle = TestSpan + TestIdle;
-                    Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "TestCycle", TestCycle.ToString());
+                    Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestCycle", TestCycle.ToString());
                     sw.Start();
                     TestStatus = TestStatus.Testing;
                     TestResult = TestResult.Unknow;
@@ -122,11 +122,12 @@ namespace HS9上料机UI.model
             {
                 Yield_Nomal= 0;
             }
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "TestSpan", TestSpan.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "PassCount_Nomal", PassCount_Nomal.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "FailCount_Nomal", FailCount_Nomal.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "TestCount_Nomal", TestCount_Nomal.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "Yield_Nomal", Yield_Nomal.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestSpan", TestSpan.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "PassCount_Nomal", PassCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "FailCount_Nomal", FailCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestCount_Nomal", TestCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "Yield_Nomal", Yield_Nomal.ToString());
+
         }
         public void Update(TestResult tr)
         {
@@ -147,10 +148,10 @@ namespace HS9上料机UI.model
             {
                 Yield = 0;
             }
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "PassCount", PassCount.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "FailCount", FailCount.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "TestCount", TestCount.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "Yield", Yield.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "PassCount", PassCount.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "FailCount", FailCount.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestCount", TestCount.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "Yield", Yield.ToString());
         }
         public void Clean()
         {
@@ -162,14 +163,74 @@ namespace HS9上料机UI.model
             PassCount_Nomal = 0;
             FailCount_Nomal = 0;
             Yield_Nomal = 0;
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "PassCount_Nomal", PassCount_Nomal.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "FailCount_Nomal", FailCount_Nomal.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "TestCount_Nomal", TestCount_Nomal.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "Yield_Nomal", Yield_Nomal.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "PassCount", PassCount.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "FailCount", FailCount.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "TestCount", TestCount.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + Index.ToString(), "Yield", Yield.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "PassCount_Nomal", PassCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "FailCount_Nomal", FailCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestCount_Nomal", TestCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "Yield_Nomal", Yield_Nomal.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "PassCount", PassCount.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "FailCount", FailCount.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestCount", TestCount.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "Yield", Yield.ToString());
+        }
+    }
+    public class UploadSoftwareStatus
+    {
+        public bool status { set; get; } = true;
+        public bool start { set; get; } = false;
+        public int index { set; get; } = 0;
+        public string result { set; get; }
+        bool init = false;
+        private string iniFilepath = @"d:\test.ini";
+        int timed; string oldbar;
+        public UploadSoftwareStatus(int _index)
+        {
+            index = _index;
+            Async.RunFuncAsync(run, null);
+        }
+        private void run()
+        {
+            status = true;
+            timed = 1000;
+            while (true)
+            {
+                if (start)
+                {
+                    if (init)
+                    {
+                        oldbar = Inifile.INIGetStringValue(iniFilepath, "A", "bar" + index.ToString(), "0");
+                        init = false;
+                        System.Threading.Thread.Sleep(200);
+                    }
+                    string newbar = Inifile.INIGetStringValue(iniFilepath, "A", "bar" + index.ToString(), "0");
+                    string newresult = Inifile.INIGetStringValue(iniFilepath, "A", "result" + index.ToString(), "OK");
+                    string resultstr = newresult == "OK" ? "OK" : "NG";
+                    if (newbar != oldbar && result == newresult)
+                    {
+                        status = true;
+                        timed = 2000;
+                        start = false;
+   
+                    }
+                    else
+                    {
+                        status = false;
+                        timed = 1000;
+                    }
+                }
+                else
+                {
+                    timed = 2000;
+                }
+
+                System.Threading.Thread.Sleep(timed);
+            }
+
+        }
+        public void StartCommand()
+        {
+            //System.Threading.Thread.Sleep(30000);
+            start = true;
+            init = true;
         }
     }
 }

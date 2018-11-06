@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using BingLibrary.hjb.tools;
 using BingLibrary.hjb.file;
+using 臻鼎科技OraDB;
+using System.Data;
 
 namespace HS9上料机UI.model
 {
@@ -40,6 +42,7 @@ namespace HS9上料机UI.model
         Stopwatch idlesw;
         bool idleswflag;
         private string iniTesterResutPath = System.Environment.CurrentDirectory + "\\TesterResut.ini";
+
         public Tester(int index)
         {
             Index = index;
@@ -175,16 +178,22 @@ namespace HS9上料机UI.model
     }
     public class UploadSoftwareStatus
     {
+        public delegate void PrintEventHandler(string ModelMessageStr);
+        public event PrintEventHandler ModelPrint;
+        public delegate void RecordPrintEventHandler(int index, string bar,string rst,string cyc);
+        public event RecordPrintEventHandler RecordPrint;
         public bool status { set; get; } = true;
         public bool start { set; get; } = false;
         public int index { set; get; } = 0;
-        public string result { set; get; }
-        bool init = false;
+        public string result;
+        public string testerCycle;
+        Stopwatch sw;
         private string iniFilepath = @"d:\test.ini";
-        int timed; string oldbar;
+        int timed;
         public UploadSoftwareStatus(int _index)
         {
             index = _index;
+            sw = new Stopwatch();
             Async.RunFuncAsync(run, null);
         }
         private void run()
@@ -193,44 +202,97 @@ namespace HS9上料机UI.model
             timed = 1000;
             while (true)
             {
+
                 if (start)
                 {
-                    if (init)
-                    {
-                        oldbar = Inifile.INIGetStringValue(iniFilepath, "A", "bar" + index.ToString(), "0");
-                        init = false;
-                        System.Threading.Thread.Sleep(200);
-                    }
                     string newbar = Inifile.INIGetStringValue(iniFilepath, "A", "bar" + index.ToString(), "0");
-                    string newresult = Inifile.INIGetStringValue(iniFilepath, "A", "result" + index.ToString(), "OK");
-                    string resultstr = newresult == "OK" ? "OK" : "NG";
-                    if (newbar != oldbar && result == newresult)
+                    try
                     {
-                        status = true;
-                        timed = 2000;
-                        start = false;
-   
+                        OraDB oraDB = new OraDB("zdtdb", "ictdata", "ictdata*168");
+                        if (oraDB.isConnect())
+                        {
+                            DataSet s = oraDB.selectSQLwithOrder("fluke_data".ToUpper(), new string[] { "BARCODE", "TRESULT" }, new string[] { newbar, result });
+                            DataTable dt = s.Tables[0];
+                            if (dt.Rows.Count > 0)
+                            {
+                                string datestr = (string)dt.Rows[0]["ITSDATE"];
+                                string timestr = (string)dt.Rows[0]["ITSTIME"];
+                                if (datestr.Length == 8 && (timestr.Length == 5 || timestr.Length == 6))
+                                {
+                                    if (timestr.Length == 5)
+                                    {
+                                        timestr = "0" + timestr;
+                                    }
+                                    string datetimestr = string.Empty;
+                                    datetimestr = string.Format("{0}/{1}/{2} {3}:{4}:{5}", datestr.Substring(0, 4), datestr.Substring(4, 2), datestr.Substring(6, 2), timestr.Substring(0, 2), timestr.Substring(2, 2), timestr.Substring(4, 2));
+                                    DateTime updatetime = Convert.ToDateTime(datetimestr);
+                                    TimeSpan sp = System.DateTime.Now - updatetime;
+                                    if (sp.TotalSeconds < 30)
+                                    {
+                                        status = true;
+                                        timed = 2000;
+                                        start = false;
+                                        ModelPrint("测试机" + index.ToString() + ": " + newbar + " 数据上传成功 " + updatetime.ToString());
+                                        RecordPrint(index, newbar, result, testerCycle);
+                                    }
+                                    else
+                                    {
+                                        status = false;
+                                        timed = 1000;
+                                        ModelPrint("测试机" + index.ToString() + ": " + newbar + " 数据上传逾时 " + updatetime.ToString());
+                                    }
+                                }
+                                else
+                                {
+                                    status = false;
+                                    timed = 1000;
+                                    ModelPrint("测试机" + index.ToString() + ": " + newbar + " 时间格式错误 " + datestr + " " + timestr);
+                                }
+
+                            }
+                            else
+                            {
+                                status = false;
+                                timed = 1000;
+                                ModelPrint("测试机" + index.ToString() + ": " + newbar + " 未查询到数据");
+                            }
+                        }
+                        else
+                        {
+                            status = false;
+                            timed = 1000;
+                            ModelPrint("测试机" + index.ToString() + ": " + newbar + " 数据库未连接");
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
+                        ModelPrint("测试机" + index.ToString() + ": " + newbar + " 查询数据库出错" + ex.Message);
                         status = false;
                         timed = 1000;
+                    }
+
+                    if (sw.Elapsed.TotalSeconds > 10)
+                    {
+                        ModelPrint("测试机" + index.ToString() + ": " + newbar + " 检测超时，退出");
+                        status = false;
+                        timed = 2000;
+                        start = false;
+                        RecordPrint(index, "****************************", result, testerCycle);
                     }
                 }
                 else
                 {
                     timed = 2000;
                 }
-
                 System.Threading.Thread.Sleep(timed);
             }
-
         }
         public void StartCommand()
         {
-            //System.Threading.Thread.Sleep(30000);
+            System.Threading.Thread.Sleep(2000);
             start = true;
-            init = true;
+            sw.Restart();
         }
+        
     }
 }

@@ -30,8 +30,8 @@ namespace HS9上料机UI.view
             this.SetBinding(ShowYieldAdminControlWindowProperty, "ShowYieldAdminControlWindow");
             if (System.Environment.CurrentDirectory != @"C:\Debug")
             {
-                System.Windows.MessageBox.Show("软件安装目录必须为C:\\Debug");
-                System.Windows.Application.Current.Shutdown();
+                //System.Windows.MessageBox.Show("软件安装目录必须为C:\\Debug");
+                //System.Windows.Application.Current.Shutdown();
             }
             else
             {

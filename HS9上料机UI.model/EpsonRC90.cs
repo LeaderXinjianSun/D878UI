@@ -30,6 +30,7 @@ namespace HS9上料机UI.model
         public UploadSoftwareStatus[] uploadSoftwareStatus = new UploadSoftwareStatus[4];
         #endregion
         private string iniParameterPath = System.Environment.CurrentDirectory + "\\Parameter.ini";
+        //private string iniFilepath = @"d:\test.ini";
 
         #endregion
         #region 事件
@@ -38,7 +39,7 @@ namespace HS9上料机UI.model
         public event PrintEventHandler DiaoLiaoEvent;
         public event PrintEventHandler EpsonStatusUpdate;
         public event PrintEventHandler EPSONCommTwincat;
-        public delegate void TestFinishedHandler(int index);
+        public delegate void TestFinishedHandler(int index,string bar,string result,string cycle);
         public event TestFinishedHandler TestFinished;
         #endregion
         #region 功能
@@ -52,6 +53,9 @@ namespace HS9上料机UI.model
             {
                 YanmadeTester[i] = new Tester(i + 1);
                 uploadSoftwareStatus[i] = new UploadSoftwareStatus(i + 1);
+                uploadSoftwareStatus[i].ModelPrint += uploadprint;
+                uploadSoftwareStatus[i].RecordPrint += RecordPrintOperate;
+
             }
             ip = Inifile.INIGetStringValue(iniParameterPath, "Epson", "EpsonIp", "192.168.1.2");
             Async.RunFuncAsync(checkCtrlNet, null);
@@ -69,6 +73,10 @@ namespace HS9上料机UI.model
             Async.RunFuncAsync(TestRevFlexAnalysis, null);
             
 
+        }
+        private void uploadprint(string str)
+        {
+            ModelPrint(str);
         }
         #region 网口监控
         public async void checkCtrlNet()
@@ -512,9 +520,13 @@ namespace HS9上料机UI.model
         }
         private void TestFinishOperate(int index)
         {
-            TestFinished(index);
-            uploadSoftwareStatus[index - 1].result = YanmadeTester[index - 1].TestResult == TestResult.Pass ? "OK" : "NG";
+            uploadSoftwareStatus[index - 1].testerCycle = YanmadeTester[index - 1].TestSpan.ToString();
+            uploadSoftwareStatus[index - 1].result = YanmadeTester[index - 1].TestResult == TestResult.Pass ? "PASS" : "FAIL";
             uploadSoftwareStatus[index - 1].StartCommand();
+        }
+        private void RecordPrintOperate(int _index, string _bar, string _rst, string _cyc)
+        {
+            TestFinished(_index, _bar, _rst, _cyc);
         }
         #endregion
         #region 功能函数

@@ -442,7 +442,7 @@ namespace HS9上料机UI.viewmodel
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018110501";
+        string VersionMsg = "2018110606";
         DateTime LastQingjie = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
         #endregion
@@ -2176,6 +2176,22 @@ namespace HS9上料机UI.viewmodel
                     ShowAlarmTextGrid("测试机4，连续NG");
                     RecordAlarmString("测试机4，连续NG");
                     break;
+                case "MsgRev: 测试机1，上传软体异常":
+                    ShowAlarmTextGrid("测试机1，上传软体异常");
+                    RecordAlarmString("测试机1，上传软体异常");
+                    break;
+                case "MsgRev: 测试机2，上传软体异常":
+                    ShowAlarmTextGrid("测试机2，上传软体异常");
+                    RecordAlarmString("测试机2，上传软体异常");
+                    break;
+                case "MsgRev: 测试机3，上传软体异常":
+                    ShowAlarmTextGrid("测试机3，上传软体异常");
+                    RecordAlarmString("测试机3，上传软体异常");
+                    break;
+                case "MsgRev: 测试机4，上传软体异常":
+                    ShowAlarmTextGrid("测试机4，上传软体异常");
+                    RecordAlarmString("测试机4，上传软体异常");
+                    break;
                 case "MsgRev: 黑色盘满，换盘":
                     ShowAlarmTextGrid("黑色盘满，换盘");
                     RecordAlarmString("黑色盘满，换盘");
@@ -2749,10 +2765,10 @@ namespace HS9上料机UI.viewmodel
             #endregion
 
         }
-        private void StartUpdateProcess(int index)
+        private void StartUpdateProcess(int index,string bar,string rst,string cyc)
         {
-            string bar = Inifile.INIGetStringValue(initestPath, "A", "bar" + index.ToString(), "********************");
-            TestRecord tr = new TestRecord(DateTime.Now.ToString(), bar, epsonRC90.YanmadeTester[index - 1].TestResult.ToString(), epsonRC90.YanmadeTester[index - 1].TestSpan.ToString() + " s", index.ToString());
+            //string bar = Inifile.INIGetStringValue(initestPath, "A", "bar" + index.ToString(), "********************");
+            TestRecord tr = new TestRecord(DateTime.Now.ToString(), bar, rst, cyc + " s", index.ToString());
             lock (this)
             {
                 myTestRecordQueue.Enqueue(tr);

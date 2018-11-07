@@ -442,7 +442,7 @@ namespace HS9上料机UI.viewmodel
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018110701";
+        string VersionMsg = "2018110705";
         DateTime LastQingjie = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
         #endregion
@@ -878,10 +878,10 @@ namespace HS9上料机UI.viewmodel
                     {
                         for (int i = 0; i < 4; i++)
                         {
-                            if (!epsonRC90.uploadSoftwareStatus[0].status)
+                            if (!epsonRC90.uploadSoftwareStatus[i].status)
                             {
-                                epsonRC90.uploadSoftwareStatus[0].start = false;
-                                epsonRC90.uploadSoftwareStatus[0].status = true;
+                                epsonRC90.uploadSoftwareStatus[i].start = false;
+                                epsonRC90.uploadSoftwareStatus[i].status = true;
                             }
                         }
 
@@ -1016,16 +1016,16 @@ namespace HS9上料机UI.viewmodel
                     MachineNum_1.Value = 1;
                     break;
                 case "1373":
-                    str += "1";
-                    MachineNum_1.Value = 1;
+                    str += "2";
+                    MachineNum_1.Value = 2;
                     break;
                 case "1374":
-                    str += "2";
-                    MachineNum_1.Value = 2;
+                    str += "3";
+                    MachineNum_1.Value = 3;
                     break;
                 default:
-                    str += "2";
-                    MachineNum_1.Value = 2;
+                    str += "3";
+                    MachineNum_1.Value = 3;
                     break;
             }
             if (epsonRC90.TestSendStatus)
@@ -2059,15 +2059,15 @@ namespace HS9上料机UI.viewmodel
                         break;
                     case "1373":
                     
-                        MachineNum_1.Value = 1;
+                        MachineNum_1.Value = 2;
                         break;
                     case "1374":
                     
-                        MachineNum_1.Value = 2;
+                        MachineNum_1.Value = 3;
                         break;
                     default:
                       
-                        MachineNum_1.Value = 2;
+                        MachineNum_1.Value = 3;
                         break;
                 }
                 Calc_Start.Value = true;
@@ -2963,7 +2963,10 @@ namespace HS9上料机UI.viewmodel
                             Inifile.INIWriteValue(iniParameterPath, "System", "Banci", LastBanci);
                             autoClean = true;
                         }
-
+                        if (XinJieOut[26])
+                        {
+                            BFO5.Value = !EpsonStatusPaused;
+                        }
                         #endregion
                         #region 界面数据显示
                         //良率界面显示

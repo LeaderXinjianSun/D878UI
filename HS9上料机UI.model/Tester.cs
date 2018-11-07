@@ -237,14 +237,14 @@ namespace HS9上料机UI.model
                                     }
                                     else
                                     {
-                                        status = false;
+                                        
                                         timed = 1000;
                                         ModelPrint("测试机" + index.ToString() + ": " + newbar + " 数据上传逾时 " + updatetime.ToString());
                                     }
                                 }
                                 else
                                 {
-                                    status = false;
+                                    
                                     timed = 1000;
                                     ModelPrint("测试机" + index.ToString() + ": " + newbar + " 时间格式错误 " + datestr + " " + timestr);
                                 }
@@ -252,14 +252,14 @@ namespace HS9上料机UI.model
                             }
                             else
                             {
-                                status = false;
+                                
                                 timed = 1000;
                                 ModelPrint("测试机" + index.ToString() + ": " + newbar + " 未查询到数据");
                             }
                         }
                         else
                         {
-                            status = false;
+                            
                             timed = 1000;
                             ModelPrint("测试机" + index.ToString() + ": " + newbar + " 数据库未连接");
                         }
@@ -267,11 +267,11 @@ namespace HS9上料机UI.model
                     catch (Exception ex)
                     {
                         ModelPrint("测试机" + index.ToString() + ": " + newbar + " 查询数据库出错" + ex.Message);
-                        status = false;
+                        
                         timed = 1000;
                     }
 
-                    if (sw.Elapsed.TotalSeconds > 10)
+                    if (sw.Elapsed.TotalSeconds > 20)
                     {
                         ModelPrint("测试机" + index.ToString() + ": " + newbar + " 检测超时，退出");
                         status = false;
@@ -289,7 +289,7 @@ namespace HS9上料机UI.model
         }
         public void StartCommand()
         {
-            System.Threading.Thread.Sleep(2000);
+            //System.Threading.Thread.Sleep(2000);
             start = true;
             sw.Restart();
         }

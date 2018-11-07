@@ -442,7 +442,7 @@ namespace HS9上料机UI.viewmodel
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018110606";
+        string VersionMsg = "2018110701";
         DateTime LastQingjie = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
         #endregion
@@ -874,6 +874,18 @@ namespace HS9上料机UI.viewmodel
                     }
                     break;
                 case "3":
+                    if (AlarmTextGridShow == "Visible" && AlarmTextString.Contains("上传软体异常"))
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            if (!epsonRC90.uploadSoftwareStatus[0].status)
+                            {
+                                epsonRC90.uploadSoftwareStatus[0].start = false;
+                                epsonRC90.uploadSoftwareStatus[0].status = true;
+                            }
+                        }
+
+                    }
                     AlarmTextGridShow = "Collapsed";
                     if (epsonRC90.CtrlStatus)
                     {

@@ -271,7 +271,7 @@ namespace HS9上料机UI.model
                         timed = 1000;
                     }
 
-                    if (sw.Elapsed.TotalSeconds > 20)
+                    if (sw.Elapsed.TotalSeconds > 10)
                     {
                         ModelPrint("测试机" + index.ToString() + ": " + newbar + " 检测超时，退出");
                         status = false;
@@ -289,10 +289,23 @@ namespace HS9上料机UI.model
         }
         public void StartCommand()
         {
-            //System.Threading.Thread.Sleep(2000);
             start = true;
             sw.Restart();
         }
-        
+        public void StopCommand()
+        {
+            start = false;
+            status = true;
+            sw.Stop();
+            ModelPrint("测试机" + index.ToString() + ": 测试时间过短，排除");
+            RecordPrint(index, "****************************", result, testerCycle);
+        }
+        public void ResetCommand()
+        {
+            start = false;
+            status = true;
+            sw.Stop();
+        }
+
     }
 }

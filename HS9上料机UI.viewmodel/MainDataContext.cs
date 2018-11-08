@@ -442,7 +442,7 @@ namespace HS9上料机UI.viewmodel
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018110705";
+        string VersionMsg = "2018110801";
         DateTime LastQingjie = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
         #endregion
@@ -880,8 +880,8 @@ namespace HS9上料机UI.viewmodel
                         {
                             if (!epsonRC90.uploadSoftwareStatus[i].status)
                             {
-                                epsonRC90.uploadSoftwareStatus[i].start = false;
-                                epsonRC90.uploadSoftwareStatus[i].status = true;
+                                epsonRC90.uploadSoftwareStatus[i].ResetCommand();
+                                
                             }
                         }
 
@@ -2825,7 +2825,7 @@ namespace HS9上料机UI.viewmodel
                         if (restarfirstinit)
                         {
                             System.Threading.Thread.Sleep(100);
-                            //_UnloadTrayFinish = XinJieOut[9];
+                            _UnloadTrayFinish = XinJieOut[9];
                             restarfirstinit = false;
                         }
                         #endregion

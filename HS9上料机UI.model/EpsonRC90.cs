@@ -522,7 +522,15 @@ namespace HS9上料机UI.model
         {
             uploadSoftwareStatus[index - 1].testerCycle = YanmadeTester[index - 1].TestSpan.ToString();
             uploadSoftwareStatus[index - 1].result = YanmadeTester[index - 1].TestResult == TestResult.Pass ? "PASS" : "FAIL";
-            uploadSoftwareStatus[index - 1].StartCommand();
+            if (YanmadeTester[index - 1].TestSpan > 11)
+            {
+                uploadSoftwareStatus[index - 1].StartCommand();
+            }
+            else
+            {
+                uploadSoftwareStatus[index - 1].StopCommand();
+            }
+            
         }
         private void RecordPrintOperate(int _index, string _bar, string _rst, string _cyc)
         {

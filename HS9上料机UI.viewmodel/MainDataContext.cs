@@ -301,6 +301,7 @@ namespace HS9上料机UI.viewmodel
         public string PLCMessageVisibility { set; get; } = "Collapsed";
         public string PLCMessage { set; get; }
         public uint UPH { set; get; }
+        public string MNO { set; get; }
         public string TestCount_1 { set; get; }
         public string Yield_1 { set; get; }
         public string TestCount_2 { set; get; }
@@ -442,7 +443,7 @@ namespace HS9上料机UI.viewmodel
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018110801";
+        string VersionMsg = "2018110901";
         DateTime LastQingjie = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
         #endregion
@@ -3109,8 +3110,8 @@ namespace HS9上料机UI.viewmodel
             Yield_3 = epsonRC90.YanmadeTester[2].Yield_Nomal.ToString();
             TestCount_4 = epsonRC90.YanmadeTester[3].TestCount_Nomal.ToString();
             Yield_4 = epsonRC90.YanmadeTester[3].Yield_Nomal.ToString();
-            TestCount_Total = (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString();
-            
+            //TestCount_Total = (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString();
+            TestCount_Total = liaooutput.ToString();
 
             Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_1", epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString());
             Inifile.INIWriteValue(iniFClient, "DataList", "Yield_1", epsonRC90.YanmadeTester[0].Yield_Nomal.ToString());
@@ -3121,11 +3122,11 @@ namespace HS9上料机UI.viewmodel
             Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_4", epsonRC90.YanmadeTester[3].TestCount_Nomal.ToString());
             Inifile.INIWriteValue(iniFClient, "DataList", "Yield_4", epsonRC90.YanmadeTester[3].Yield_Nomal.ToString());
 
-            Downtime = down_min.ToString("F2");
-            Jigdowntime = jigdown_min.ToString("F2");
-            Waitforinput = waitinput_min.ToString("F2");
-            Waitfortray = waittray_min.ToString("F2");
-            Waitfortake = waittake_min.ToString("F2");
+            Downtime = down_min.ToString("F1");
+            Jigdowntime = jigdown_min.ToString("F1");
+            Waitforinput = waitinput_min.ToString("F1");
+            Waitfortray = waittray_min.ToString("F1");
+            Waitfortake = waittake_min.ToString("F1");
 
             Inifile.INIWriteValue(iniFClient, "DataList", "Downtime ", down_min.ToString("F2"));
             Inifile.INIWriteValue(iniFClient, "DataList", "Jigdowntime ", jigdown_min.ToString("F2"));
@@ -3133,10 +3134,20 @@ namespace HS9上料机UI.viewmodel
             Inifile.INIWriteValue(iniFClient, "DataList", "Waitfortray", waittray_min.ToString("F2"));
             Inifile.INIWriteValue(iniFClient, "DataList", "Waitfortake", waittake_min.ToString("F2"));
             Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_Total", (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString());
-            if (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal > 0)
+            //if (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal > 0)
+            //{
+            //    Yield_Total = ((double)(epsonRC90.YanmadeTester[0].PassCount_Nomal + epsonRC90.YanmadeTester[1].PassCount_Nomal + epsonRC90.YanmadeTester[2].PassCount_Nomal + epsonRC90.YanmadeTester[3].PassCount_Nomal) / (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal) * 100).ToString("F2");
+            //    Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", ((double)(epsonRC90.YanmadeTester[0].PassCount_Nomal + epsonRC90.YanmadeTester[1].PassCount_Nomal + epsonRC90.YanmadeTester[2].PassCount_Nomal + epsonRC90.YanmadeTester[3].PassCount_Nomal) / (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal) * 100).ToString("F2"));
+            //}
+            //else
+            //{
+            //    Yield_Total = "0";
+            //    Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", "0");
+            //}
+            if (liaooutput > 0)
             {
-                Yield_Total = ((double)(epsonRC90.YanmadeTester[0].PassCount_Nomal + epsonRC90.YanmadeTester[1].PassCount_Nomal + epsonRC90.YanmadeTester[2].PassCount_Nomal + epsonRC90.YanmadeTester[3].PassCount_Nomal) / (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal) * 100).ToString("F2");
-                Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", ((double)(epsonRC90.YanmadeTester[0].PassCount_Nomal + epsonRC90.YanmadeTester[1].PassCount_Nomal + epsonRC90.YanmadeTester[2].PassCount_Nomal + epsonRC90.YanmadeTester[3].PassCount_Nomal) / (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal) * 100).ToString("F2"));
+                Yield_Total = ((double)(epsonRC90.YanmadeTester[0].PassCount + epsonRC90.YanmadeTester[1].PassCount + epsonRC90.YanmadeTester[2].PassCount + epsonRC90.YanmadeTester[3].PassCount) / liaooutput * 100).ToString("F2");
+                Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", Yield_Total);
             }
             else
             {
@@ -3154,8 +3165,8 @@ namespace HS9上料机UI.viewmodel
             Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate_AutoMation", ProperRate_AutoMation.ToString("F2"));
             Inifile.INIWriteValue(iniFClient, "DataList", "ProperRate_Jig", ProperRate_Jig.ToString("F2"));
             Inifile.INIWriteValue(iniAlarmPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
-            string line = Inifile.INIGetStringValue(initestPath, "Other", "line", "L1");
-            Inifile.INIWriteValue(iniParameterPath, "Sample", "MNO", line);
+            //string line = Inifile.INIGetStringValue(initestPath, "Other", "line", "L1");
+            Inifile.INIWriteValue(iniParameterPath, "Sample", "MNO", MNO);
         }
         private void TakePhoteCallback()
         {
@@ -3461,6 +3472,7 @@ namespace HS9上料机UI.viewmodel
                 TotalAlarmNum = int.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", "0"));
 
                 UPH = uint.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "UPH", "250"));
+                MNO = Inifile.INIGetStringValue(iniParameterPath, "System", "MNO", "X1374-01");
                 LastQingjie = Convert.ToDateTime(Inifile.INIGetStringValue(iniParameterPath, "System", "LastQingjie", "2018/10/31 8:00:00"));
                 LastQingjieStr = LastQingjie.ToString();
             }
@@ -3478,6 +3490,7 @@ namespace HS9上料机UI.viewmodel
 
                 Inifile.INIWriteValue(iniParameterPath, "System", "MachineNum", MachineNum);
                 Inifile.INIWriteValue(iniParameterPath, "System", "UPH", UPH.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "System", "MNO", MNO);
                 MsgText = AddMessage("参数保存完成");
             }
             catch (Exception ex)

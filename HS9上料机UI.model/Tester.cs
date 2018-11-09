@@ -200,6 +200,7 @@ namespace HS9上料机UI.model
         {
             status = true;
             timed = 1000;
+            int ngnum = 0;
             while (true)
             {
 
@@ -229,6 +230,7 @@ namespace HS9上料机UI.model
                                     TimeSpan sp = System.DateTime.Now - updatetime;
                                     if (sp.TotalSeconds < 30)
                                     {
+                                        ngnum = 0;
                                         status = true;
                                         timed = 2000;
                                         start = false;
@@ -273,10 +275,42 @@ namespace HS9上料机UI.model
 
                     if (sw.Elapsed.TotalSeconds > 10)
                     {
-                        ModelPrint("测试机" + index.ToString() + ": " + newbar + " 检测超时，退出");
-                        status = false;
-                        timed = 2000;
+                        //if (result == "FAIL")
+                        //{
+                        //    if (++ngnum > 1)
+                        //    {
+                        //        ngnum = 0;
+                        //        status = false;
+                        //        ModelPrint("测试机" + index.ToString() + ": " + newbar + " 检测超时，不良品2次，退出");
+                        //    }
+                        //    else
+                        //    {
+                        //        status = true;
+                        //        ModelPrint("测试机" + index.ToString() + ": " + newbar + " 检测超时，不良品1次，退出");
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    ngnum = 0;
+                        //    status = false;
+                        //    ModelPrint("测试机" + index.ToString() + ": " + newbar + " 检测超时，良品，退出");
+                        //}
+                        if (++ngnum > 1)
+                        {
+                            ngnum = 0;
+                            status = false;
+                            ModelPrint("测试机" + index.ToString() + ": " + newbar + " 检测超时，2次，退出");
+                        }
+                        else
+                        {
+                            status = true;
+                            ModelPrint("测试机" + index.ToString() + ": " + newbar + " 检测超时，1次，退出");
+                        }
+
                         start = false;
+                        
+                        timed = 2000;
+                        
                         RecordPrint(index, "****************************", result, testerCycle);
                     }
                 }

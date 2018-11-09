@@ -59,6 +59,10 @@
                         <ComboBoxItem Content="1374"></ComboBoxItem>
                     </ComboBox>
                 </StackPanel>
+                <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="机台编号："></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="100" Text="{Binding MNO}"></TextBox>
+                </StackPanel>
                 <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
                     <TextBlock Style="{StaticResource TextBlockBase}" Width="100" Text="最近清洁时刻："></TextBlock>
                     <TextBlock Style="{StaticResource TextBlockBase}" Width="150" Text="{Binding LastQingjieStr}"></TextBlock>

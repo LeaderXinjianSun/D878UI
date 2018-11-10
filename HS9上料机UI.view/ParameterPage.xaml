@@ -67,6 +67,64 @@
                     <TextBlock Style="{StaticResource TextBlockBase}" Width="100" Text="最近清洁时刻："></TextBlock>
                     <TextBlock Style="{StaticResource TextBlockBase}" Width="150" Text="{Binding LastQingjieStr}"></TextBlock>
                 </StackPanel>
+
+                <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="样本测试时间间隔： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Text="{Binding SampleTimeElapse}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="时(h)"></TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="测试项数： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Text="{Binding SampleNgitemsNum}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="个"></TextBlock>
+                </StackPanel>
+                <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="100" Text="最近样本时刻："></TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="150" Text="{Binding LasSamStr}"></TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="不良项" Grid.Row="1">
+            <StackPanel Orientation="Vertical">
+                <StackPanel  Margin="5,5,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="60" Margin="5,5" Text="项目1： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxIp}" Text="{Binding SampleNgitem[0]}"></TextBox>
+                </StackPanel>
+                <StackPanel  Margin="5,5,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="60" Margin="5,5" Text="项目2： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxIp}" Text="{Binding SampleNgitem[1]}"></TextBox>
+                </StackPanel>
+                <StackPanel  Margin="5,5,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="60" Margin="5,5" Text="项目3： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxIp}" Text="{Binding SampleNgitem[2]}"></TextBox>
+                </StackPanel>
+                <StackPanel  Margin="5,5,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="60" Margin="5,5" Text="项目4： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxIp}" Text="{Binding SampleNgitem[3]}"></TextBox>
+                </StackPanel>
+                <StackPanel  Margin="5,5,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="60" Margin="5,5" Text="项目5： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxIp}" Text="{Binding SampleNgitem[4]}"></TextBox>
+                </StackPanel>
+                <StackPanel  Margin="5,5,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="60" Margin="5,5" Text="项目6： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxIp}" Text="{Binding SampleNgitem[5]}"></TextBox>
+                </StackPanel>
+                <StackPanel  Margin="5,5,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="60" Margin="5,5" Text="项目7： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxIp}" Text="{Binding SampleNgitem[6]}"></TextBox>
+                </StackPanel>
+                <StackPanel  Margin="5,5,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="60" Margin="5,5" Text="项目8： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxIp}" Text="{Binding SampleNgitem[7]}"></TextBox>
+                </StackPanel>
+                <!--<StackPanel  Margin="5,5,5,0" Orientation="Horizontal">
+                    <TextBlock Width="60" Margin="5,5" Text="项目9： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxIp}" Text="{Binding SampleNgitem9}" IsEnabled="{Binding SamCheckinIsEnabled}"></TextBox>
+                </StackPanel>
+                <StackPanel  Margin="5,5,5,0" Orientation="Horizontal">
+                    <TextBlock Width="60" Margin="5,5" Text="项目10： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxIp}" Text="{Binding SampleNgitem10}" IsEnabled="{Binding SamCheckinIsEnabled}"></TextBox>
+                </StackPanel>-->
+
             </StackPanel>
         </GroupBox>
     </Grid>

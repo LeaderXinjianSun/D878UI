@@ -337,6 +337,12 @@ namespace HS9上料机UI.viewmodel
         public bool ShowYieldAdminControlWindow { set; get; }
         public bool QuitYieldAdminControl { set; get; }
         public string LastQingjieStr { set; get; }
+        #region 样本
+        public string LasSamStr { set; get; }
+        public double SampleTimeElapse { set; get; }
+        public ObservableCollection<string> SampleNgitem { set; get; } = new ObservableCollection<string>();
+        public int SampleNgitemsNum { set; get; }
+        #endregion
         #endregion
         #region 统计
         public string PassStatusDisplay1 { set; get; }
@@ -443,8 +449,9 @@ namespace HS9上料机UI.viewmodel
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018110901";
+        string VersionMsg = "2018111001";
         DateTime LastQingjie = System.DateTime.Now;
+        DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
         #endregion
         #region 功能
@@ -763,6 +770,13 @@ namespace HS9上料机UI.viewmodel
         #endregion
         #endregion
         #region 界面
+        #region 测试
+        public void TestFunc()
+        {
+            //SampleNgitem[0] = System.DateTime.Now.ToString();
+        }
+        #endregion
+
         public async void ChoosePage(object p)
         {
             switch (p.ToString())
@@ -2458,6 +2472,7 @@ namespace HS9上料机UI.viewmodel
             
             PLCMessageVisibility = "Collapsed";
             PLCMessage = "";
+            string plsmsgstr = "";
             if (XinJieOut != null)
             {
                 for (int i = 0; i < 50; i++)
@@ -2600,17 +2615,17 @@ namespace HS9上料机UI.viewmodel
             }
 
 
-            PLCAlarmStatus = PLCMessageVisibility == "Visible" && (PLCMessage == "上料满盘缺料" || PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料满盘满" || PLCMessage == "下料XY吸取失败报警" || PLCMessage == "下料空盘缺");
+            PLCAlarmStatus = PLCMessageVisibility == "Visible" && (PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料满盘满" || PLCMessage == "下料XY吸取失败报警" || PLCMessage == "下料空盘缺");
             if (_PLCAlarmStatus != PLCAlarmStatus)
             {
                 _PLCAlarmStatus = PLCAlarmStatus;
-                if (_PLCAlarmStatus && (PLCMessage == "上料满盘缺料" || PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料满盘满" || PLCMessage == "下料XY吸取失败报警" || PLCMessage == "下料空盘缺"))
+                if (plsmsgstr != PLCMessage && _PLCAlarmStatus && (PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料满盘满" || PLCMessage == "下料XY吸取失败报警" || PLCMessage == "下料空盘缺"))
                 {
-                    //WriteAlarmCSV_PLC(PLCMessage);
+                    plsmsgstr = PLCMessage;
                     Inifile.INIWriteValue(iniFClient, "Alarm", "Name", PLCMessage);
-                    TotalAlarmNum++;
-                    Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
-                    
+                    //TotalAlarmNum++;
+                    //Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
+                    RecordAlarmString(PLCMessage);
                 }
 
             }
@@ -3475,6 +3490,23 @@ namespace HS9上料机UI.viewmodel
                 MNO = Inifile.INIGetStringValue(iniParameterPath, "System", "MNO", "X1374-01");
                 LastQingjie = Convert.ToDateTime(Inifile.INIGetStringValue(iniParameterPath, "System", "LastQingjie", "2018/10/31 8:00:00"));
                 LastQingjieStr = LastQingjie.ToString();
+                LasSam = Convert.ToDateTime(Inifile.INIGetStringValue(iniParameterPath, "Sam", "LasSam", "2018/10/31 8:00:00"));
+                LasSamStr = LasSam.ToString();
+                for (int i = 0; i < 8; i++)
+                {
+                    SampleNgitem.Add(Inifile.INIGetStringValue(iniParameterPath, "Sam", "SampleNgitem" + (i + 1).ToString(), "NA"));
+                }
+                try
+                {
+                    SampleTimeElapse = double.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "SampleTimeElapse", "2"));
+                    SampleNgitemsNum = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "SampleNgitemsNum", "8"));
+                }
+                catch (Exception ex)
+                {
+                    SampleTimeElapse = 2;
+                    SampleNgitemsNum = 8;
+                    MsgText = AddMessage(ex.Message);
+                }
             }
             catch (Exception ex)
             {
@@ -3491,6 +3523,12 @@ namespace HS9上料机UI.viewmodel
                 Inifile.INIWriteValue(iniParameterPath, "System", "MachineNum", MachineNum);
                 Inifile.INIWriteValue(iniParameterPath, "System", "UPH", UPH.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "System", "MNO", MNO);
+                for (int i = 0; i < 8; i++)
+                {
+                    Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleNgitem" + (i + 1).ToString(), SampleNgitem[i]);
+                }
+                Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleTimeElapse", SampleTimeElapse.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleNgitemsNum", SampleNgitemsNum.ToString());
                 MsgText = AddMessage("参数保存完成");
             }
             catch (Exception ex)

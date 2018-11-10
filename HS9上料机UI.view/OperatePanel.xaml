@@ -188,10 +188,10 @@
                 <TextBlock Text="{Binding Yield_4,FallbackValue= 999}" Grid.Row="3" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
                 <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="5"></TextBlock>
 
-                <TextBlock Text="测试总数" Grid.Row="4" Style="{StaticResource TextBlockGrid}"></TextBlock>
+                <TextBlock Text="投入数" Grid.Row="4" Style="{StaticResource TextBlockGrid}"></TextBlock>
                 <TextBlock Text="{Binding TestCount_Total,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
                 <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Row="4" Grid.Column="2"></TextBlock>
-                <TextBlock Text="测试总良率" Style="{StaticResource TextBlockGrid}" Grid.Row="4" Grid.Column="3"></TextBlock>
+                <TextBlock Text="产出总良率" Style="{StaticResource TextBlockGrid}" Grid.Row="4" Grid.Column="3"></TextBlock>
                 <TextBlock Text="{Binding Yield_Total,FallbackValue= 999}" Grid.Row="4" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
                 <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="4" Grid.Column="5"></TextBlock>
 

@@ -28,6 +28,7 @@ namespace HS9上料机UI.view
         {
             InitializeComponent();
             this.SetBinding(ShowYieldAdminControlWindowProperty, "ShowYieldAdminControlWindow");
+            this.SetBinding(ShowSampleTestWindowProperty, "ShowSampleTestWindow");
             if (System.Environment.CurrentDirectory != @"C:\Debug")
             {
                 //System.Windows.MessageBox.Show("软件安装目录必须为C:\\Debug");
@@ -70,6 +71,30 @@ namespace HS9上料机UI.view
                 }
                 
             }
+        }
+        public static SamDisplayWindow SampleTestWindow = null;
+
+        public static readonly DependencyProperty ShowSampleTestWindowProperty =
+            DependencyProperty.Register("ShowSampleTestWindow", typeof(bool), typeof(MainWindow), new PropertyMetadata(
+                new PropertyChangedCallback((d, e) =>
+                {
+                    if (SampleTestWindow != null)
+                    {
+                        if (SampleTestWindow.HasShow)
+                            return;
+                    }
+                    var mMainWindow = d as MainWindow;
+                    SampleTestWindow = new SamDisplayWindow();// { Owner = this }.Show();
+                    SampleTestWindow.Owner = Application.Current.MainWindow;
+                    SampleTestWindow.DataContext = mMainWindow.DataContext;
+                    SampleTestWindow.SetBinding(SamDisplayWindow.QuitSampleTestProperty, "QuitSampleTest");
+                    SampleTestWindow.HasShow = true;
+                    SampleTestWindow.Show();
+                })));
+        public bool ShowSampleTestWindow
+        {
+            get { return (bool)GetValue(ShowSampleTestWindowProperty); }
+            set { SetValue(ShowSampleTestWindowProperty, value); }
         }
         public static YieldAdminControlWindow YieldAdminControlWindow = null;
 

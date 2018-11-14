@@ -749,7 +749,8 @@ namespace ViewROI
             //window.SetColor("black");
             //window.DispLine(-100.0, -100.0, -101.0, -101.0);
 
-            window.SetDraw("fill");
+            //window.SetDraw("fill");
+            window.SetDraw("margin");
             //window.SetColored(12);
             window.SetColor("green");
         }

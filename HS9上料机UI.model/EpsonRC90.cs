@@ -41,6 +41,8 @@ namespace HS9上料机UI.model
         public event PrintEventHandler EPSONCommTwincat;
         public delegate void TestFinishedHandler(int index,string bar,string result,string cycle);
         public event TestFinishedHandler TestFinished;
+        public delegate void SamMessageEventHandler(int rund,int level,int flex);
+        public event SamMessageEventHandler SamMessage;
         #endregion
         #region 功能
 
@@ -441,6 +443,9 @@ namespace HS9上料机UI.model
                                 case "TestResultCount":
                                     TestResult tr = strs[1] == "OK" ? TestResult.Pass : TestResult.Ng;
                                     YanmadeTester[int.Parse(strs[2]) - 1].Update(tr);
+                                    break;
+                                case "SamLoop":
+                                    SamMessage(int.Parse(strs[1]), int.Parse(strs[2]), int.Parse(strs[3]));
                                     break;
                                 default:
                                     ModelPrint("无效指令： " + s);

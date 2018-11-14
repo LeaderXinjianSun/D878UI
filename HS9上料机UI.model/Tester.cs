@@ -22,6 +22,7 @@ namespace HS9上料机UI.model
     }
     public class Tester
     {
+        public static bool IsInSampleMode { set; get; } = false;
         public int PassCount { set; get; } 
         public int FailCount { set; get; }
         public int TestCount { set; get; }
@@ -86,7 +87,11 @@ namespace HS9上料机UI.model
             };
             await startTask();
             callback(Index);
-            UpdateNormal();
+            if (!IsInSampleMode)
+            {
+                UpdateNormal();
+            }
+            
             idleswflag = true;
             idlesw.Restart();
         }
@@ -265,6 +270,7 @@ namespace HS9上料机UI.model
                             timed = 1000;
                             ModelPrint("测试机" + index.ToString() + ": " + newbar + " 数据库未连接");
                         }
+                        oraDB.disconnect();
                     }
                     catch (Exception ex)
                     {

@@ -75,6 +75,9 @@
     <Compile Include="AlarmPage.xaml.cs">
       <DependentUpon>AlarmPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SamDisplayWindow.xaml.cs">
+      <DependentUpon>SamDisplayWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TestRecordPage.xaml.cs">
       <DependentUpon>TestRecordPage.xaml</DependentUpon>
     </Compile>
@@ -119,6 +122,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ParameterPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SamDisplayWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

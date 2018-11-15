@@ -40,6 +40,9 @@
             <Grid Grid.Row="1" Visibility="{Binding PLCMessageVisibility,FallbackValue=Collapsed}" Background="Gray">
                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Text="{Binding PLCMessage}" FontSize="36"></TextBlock>
             </Grid>
+            <Grid Grid.Row="3" Visibility="{Binding SampleTextGridVisibility,FallbackValue=Collapsed}" Background="GreenYellow">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Text="{Binding SamMessage}" FontSize="66"></TextBlock>
+            </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>

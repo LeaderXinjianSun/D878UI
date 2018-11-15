@@ -43,6 +43,8 @@ namespace HS9上料机UI.model
         public event TestFinishedHandler TestFinished;
         public delegate void SamMessageEventHandler(int rund,int level,int flex);
         public event SamMessageEventHandler SamMessage;
+        public delegate void SamReMessageEventHandler(int ngitem, int flex);
+        public event SamReMessageEventHandler SamReMessage;
         #endregion
         #region 功能
 
@@ -446,6 +448,9 @@ namespace HS9上料机UI.model
                                     break;
                                 case "SamLoop":
                                     SamMessage(int.Parse(strs[1]), int.Parse(strs[2]), int.Parse(strs[3]));
+                                    break;
+                                case "SamReTest":
+                                    SamReMessage(int.Parse(strs[1]), int.Parse(strs[2]));
                                     break;
                                 default:
                                     ModelPrint("无效指令： " + s);

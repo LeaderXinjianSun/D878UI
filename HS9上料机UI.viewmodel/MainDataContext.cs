@@ -282,6 +282,7 @@ namespace HS9上料机UI.viewmodel
         public string TwinCATPageVisibility { set; get; } = "Collapsed";
         public string AlarmPageVisibility { set; get; } = "Collapsed";
         public string TestRecordPageVisibility { set; get; } = "Collapsed";
+        public bool IsSamTest { set; get; } = false;
         public string LoginString { set; get; } = "登录";
         public bool Isloagin { set; get; } = false;
         public string MsgText { set; get; }
@@ -299,6 +300,7 @@ namespace HS9上料机UI.viewmodel
         public string M20030 { set; get; } = "Collapsed";
         public string AdminButtonVisibility { set; get; } = "Collapsed";
         public string PLCMessageVisibility { set; get; } = "Collapsed";
+        public string SampleTextGridVisibility { set; get; } = "Collapsed";
         public string PLCMessage { set; get; }
         public uint UPH { set; get; }
         public string MNO { set; get; }
@@ -339,6 +341,7 @@ namespace HS9上料机UI.viewmodel
         public bool ShowSampleTestWindow { set; get; }
         public bool QuitSampleTest { set; get; }
         public string LastQingjieStr { set; get; }
+        public string SamMessage { set; get; }
         #region 样本
         public string LasSamStr { set; get; }
         public double SampleTimeElapse { set; get; }
@@ -452,7 +455,7 @@ namespace HS9上料机UI.viewmodel
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018111401";
+        string VersionMsg = "2018111503";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -778,6 +781,7 @@ namespace HS9上料机UI.viewmodel
             epsonRC90.DiaoLiaoEvent += DiaoLiaoEventProcess;
             epsonRC90.TestFinished += StartUpdateProcess;
             epsonRC90.SamMessage += SamMessageProcess;
+            epsonRC90.SamReMessage += SamReMessageProcess;
             dispatcherTimer.Tick += new EventHandler(DispatcherTimerTickUpdateUi);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
@@ -895,6 +899,11 @@ namespace HS9上料机UI.viewmodel
                     if (epsonRC90.TestSendStatus)
                     {
                         await epsonRC90.TestSentNet.SendAsync("IndexArray_i;" + maopaostr);
+                        await Task.Delay(100);
+                        if (!IsSamTest)
+                        {
+                            await epsonRC90.TestSentNet.SendAsync("GONOGOCancel");
+                        }
                     }
                     break;
                 //暂停
@@ -995,7 +1004,7 @@ namespace HS9上料机UI.viewmodel
                     ShowSampleTestWindow = !ShowSampleTestWindow;
                     break;
                 case "13":
-                    if (epsonRC90.TestSendStatus)
+                    if (epsonRC90.TestSendStatus && IsSamTest)
                     {
                         await epsonRC90.TestSentNet.SendAsync("GONOGOAction;" + SampleNgitemsNum.ToString());
                     }
@@ -2191,6 +2200,26 @@ namespace HS9上料机UI.viewmodel
                 case "MsgRev: 测试工位4，产品没放好":
                     RecordAlarmString("测试工位4，产品没放好");
                     break;
+                case "MsgRev: 测试工位1，产品没放好，样本":
+                    ShowAlarmTextGrid("测试工位1，产品没放好，样本\n请将样本扶好");
+                    RecordAlarmString("测试工位1，产品没放好，样本");
+                    break;
+                case "MsgRev: 测试工位2，产品没放好，样本":
+                    ShowAlarmTextGrid("测试工位2，产品没放好，样本\n请将样本扶好");
+                    RecordAlarmString("测试工位2，产品没放好，样本");
+                    break;
+                case "MsgRev: 测试工位3，产品没放好，样本":
+                    ShowAlarmTextGrid("测试工位3，产品没放好，样本\n请将样本扶好");
+                    RecordAlarmString("测试工位3，产品没放好，样本");
+                    break;
+                case "MsgRev: 测试工位4，产品没放好，样本":
+                    ShowAlarmTextGrid("测试工位4，产品没放好，样本\n请将样本扶好");
+                    RecordAlarmString("测试工位4，产品没放好，样本");
+                    break;
+                case "MsgRev: 样本盘，吸取失败":
+                    ShowAlarmTextGrid("样本盘，吸取失败\n请将样本放回原位");
+                    ShowAlarmTextGrid("样本盘，吸取失败");
+                    break;
                 case "MsgRev: 上料盘1，吸取失败":
                     ShowAlarmTextGrid("上料盘1，吸取失败\n请将产品放回原位");
                     RecordAlarmString("上料盘1，吸取失败");
@@ -2273,9 +2302,11 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: A爪手掉料":
                     ShowAlarmTextGrid("A爪手掉料");
+                    RecordAlarmString("A爪手掉料");
                     break;
                 case "MsgRev: B爪手掉料":
                     ShowAlarmTextGrid("B爪手掉料");
+                    RecordAlarmString("B爪手掉料");
                     break;
                 case "MsgRev: 测试机1，良率异常":
                     ShowAlarmTextGrid("测试机1，良率异常");
@@ -2344,16 +2375,12 @@ namespace HS9上料机UI.viewmodel
                     SamStart = DateTime.Now;
 
                     break;
+                case "MsgRev: 样本测试，查询":
+                    CheckSam();
+                    break;
                 case "MsgRev: 样本测试，结束":
                     Tester.IsInSampleMode = false;
-                    for (int i = 0; i < SampleNgitemsNum; i++)
-                    {
-                        for (int j = 0; j < 4; j++)
-                        {
-                            string flex = Inifile.INIGetStringValue(initestPath, "A", "id" + (j + 1).ToString(), "0");
-                            SamArray[i, j] = CheckfromDt(flex, SampleNgitem[i],DateTime.Now.ToString("yyyyMMdd"));
-                        }
-                    }           
+          
                     LasSam = DateTime.Now;
                     LasSamStr = LasSam.ToString();
                     Inifile.INIWriteValue(iniParameterPath, "Sam", "LasSam", LasSam.ToString());
@@ -2893,6 +2920,15 @@ namespace HS9上料机UI.viewmodel
             {
                 SampleItemsStatus[i / 4 + i % 4 * 8] = SamArray[i / 4, i % 4];
             }
+            SampleTextGridVisibility = (DateTime.Now - LasSam).TotalHours > SampleTimeElapse && IsSamTest || Tester.IsInSampleMode ? "Visible" : "Collapsed";
+            if ((DateTime.Now - LasSam).TotalHours > SampleTimeElapse)
+            {
+                SamMessage = "请测样本";
+            }
+            if (Tester.IsInSampleMode)
+            {
+                SamMessage = "样本测试中...";
+            }
             #endregion
 
         }
@@ -2912,6 +2948,10 @@ namespace HS9上料机UI.viewmodel
             //SamOrderList.Add(new int[4] { 2, 3, 0, 1 });
             //SamOrderList.Add(new int[4] { 1, 2, 3, 0 });
             SamArray[rund * 4 + SamOrderList[level][flex], flex] = "ok";
+        }
+        private void SamReMessageProcess(int ngitem, int flex)
+        {
+            SamArray[ngitem, flex] = "ok";
         }
         #endregion
         #region 后台
@@ -2947,7 +2987,7 @@ namespace HS9上料机UI.viewmodel
                     {
                         #region 初始化赋值
 
-    
+
                         if (restarfirstinit)
                         {
                             System.Threading.Thread.Sleep(100);
@@ -3412,6 +3452,30 @@ namespace HS9上料机UI.viewmodel
             st.FromDateTime(dt);
             DateTimeUtility.SetLocalTime(ref st);
         }
+        private async void CheckSam()
+        {
+            for (int i = 0; i < SampleNgitemsNum; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    string flex = Inifile.INIGetStringValue(initestPath, "A", "id" + (j + 1).ToString(), "0");
+                    SamArray[i, j] = CheckfromDt(flex, SampleNgitem[i], DateTime.Now.ToString("yyyyMMdd"));
+                    if (SamArray[i, j] != "ok" && SamArray[i, j] != "")
+                    {
+                        if (epsonRC90.TestSendStatus)
+                        {
+                            await epsonRC90.TestSentNet.SendAsync("SamReFlag;" + (j + 1).ToString() + ";" + (i + 1).ToString());
+                        }
+                        await Task.Delay(100);
+                    }
+                }
+            }
+            if (epsonRC90.TestSendStatus)
+            {
+                await epsonRC90.TestSentNet.SendAsync("SamCheckFinish");
+            }
+
+        }
         private string CheckfromDt(string flexnum,string ngitem,string date)
         {
             try
@@ -3437,7 +3501,7 @@ namespace HS9上料机UI.viewmodel
                             TimeSpan sp = updatetime - SamStart;
                             if (sp.TotalSeconds > 0)
                             {
-                                DataSet s1 = oraDB.selectSQLwithOrder("barsaminfo".ToUpper(), new string[] { "BARCODE" }, new string[] { (string)dt.Rows[0]["BARCODE"] });
+                                DataSet s1 = oraDB.selectSQL("barsaminfo".ToUpper(), new string[] { "BARCODE" }, new string[] { (string)dt.Rows[0]["BARCODE"] });
                                 DataTable dt1 = s1.Tables[0];
                                 if (dt1.Rows.Count > 0)
                                 {
@@ -3445,8 +3509,9 @@ namespace HS9上料机UI.viewmodel
                                     {
                                         //插入样本记录
                                         string parnum = Inifile.INIGetStringValue(initestPath, "Other", "pn", "FHAPHS9");
+                                        string tres = ngitem.Length > 20 ? ngitem.Substring(0, 20) : ngitem;
                                         string[] arrFieldAndNewValue = { "PARTNUM", "SITEM", "BARCODE", "NGITEM", "TRES", "MNO", "CDATE", "CTIME", "SR01" };
-                                        string[] arrFieldAndOldValue = { parnum.ToUpper(), "FLUKE", (string)dt.Rows[0]["BARCODE"], (string)dt1.Rows[0]["NGITEM"], ngitem, MNO, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.ToString("HHmmss"), flexnum };
+                                        string[] arrFieldAndOldValue = { parnum.ToUpper(), "FLUKE", (string)dt.Rows[0]["BARCODE"], (string)dt1.Rows[0]["NGITEM"], tres, MNO, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.ToString("HHmmss"), flexnum };
                                         oraDB.insertSQL1("BARSAMREC".ToUpper(), arrFieldAndNewValue, arrFieldAndOldValue);
                                         MsgText = AddMessage("插入样本记录 " + (string)dt.Rows[0]["BARCODE"]);
                                     }
@@ -3697,6 +3762,7 @@ namespace HS9上料机UI.viewmodel
                 MNO = Inifile.INIGetStringValue(iniParameterPath, "System", "MNO", "X1374-01");
                 LastQingjie = Convert.ToDateTime(Inifile.INIGetStringValue(iniParameterPath, "System", "LastQingjie", "2018/10/31 8:00:00"));
                 LastQingjieStr = LastQingjie.ToString();
+                IsSamTest = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "IsSamTest", "False"));
                 LasSam = Convert.ToDateTime(Inifile.INIGetStringValue(iniParameterPath, "Sam", "LasSam", "2018/10/31 8:00:00"));
                 LasSamStr = LasSam.ToString();
                 for (int i = 0; i < 8; i++)
@@ -3727,6 +3793,7 @@ namespace HS9上料机UI.viewmodel
             {
                 Inifile.INIWriteValue(iniParameterPath, "System", "PLCCOM", SerialPortCom);
 
+                Inifile.INIWriteValue(iniParameterPath, "System", "IsSamTest", IsSamTest.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "System", "MachineNum", MachineNum);
                 Inifile.INIWriteValue(iniParameterPath, "System", "UPH", UPH.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "System", "MNO", MNO);

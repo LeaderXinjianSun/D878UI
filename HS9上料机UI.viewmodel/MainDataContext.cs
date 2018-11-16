@@ -455,7 +455,7 @@ namespace HS9上料机UI.viewmodel
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018111503";
+        string VersionMsg = "2018111601";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -3079,6 +3079,8 @@ namespace HS9上料机UI.viewmodel
 
                         XinJieIn[48] = (bool)ProductLostAlarmFlag.Value;
                         XinJieIn[49] = (bool)PhotoTimeoutFlag.Value;
+
+                        XinJieIn[50] = !TestCheckedAL; XinJieIn[51] = !TestCheckedBL;
 
                         UnloadTrayFinish.Value = XinJieOut[9];
                         if (_UnloadTrayFinish != XinJieOut[9])

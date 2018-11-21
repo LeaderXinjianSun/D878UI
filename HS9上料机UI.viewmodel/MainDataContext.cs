@@ -462,7 +462,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018112101";
+        string VersionMsg = "2018112102";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -2238,6 +2238,24 @@ namespace HS9上料机UI.viewmodel
                     ShowAlarmTextGrid("测试工位4，产品没放好，样本\n请将样本扶好");
                     RecordAlarmString("测试工位4，产品没放好，样本");
                     break;
+
+                case "MsgRev: 测试工位1，产品没放好，GRR":
+                    ShowAlarmTextGrid("测试工位1，产品没放好，GRR\n请将GRR扶好");
+                    RecordAlarmString("测试工位1，产品没放好，GRR");
+                    break;
+                case "MsgRev: 测试工位2，产品没放好，GRR":
+                    ShowAlarmTextGrid("测试工位2，产品没放好，GRR\n请将GRR扶好");
+                    RecordAlarmString("测试工位2，产品没放好，GRR");
+                    break;
+                case "MsgRev: 测试工位3，产品没放好，GRR":
+                    ShowAlarmTextGrid("测试工位3，产品没放好，GRR\n请将GRR扶好");
+                    RecordAlarmString("测试工位3，产品没放好，GRR");
+                    break;
+                case "MsgRev: 测试工位4，产品没放好，GRR":
+                    ShowAlarmTextGrid("测试工位4，产品没放好，GRR\n请将GRR扶好");
+                    RecordAlarmString("测试工位4，产品没放好，GRR");
+                    break;
+
                 case "MsgRev: 样本盘，吸取失败":
                     ShowAlarmTextGrid("样本盘，吸取失败\n请将样本放回原位");
                     ShowAlarmTextGrid("样本盘，吸取失败");
@@ -3420,7 +3438,7 @@ namespace HS9上料机UI.viewmodel
                 }
                 else
                 {
-                    Yield_Total = "";
+                    Yield_Total = "100";
                 }
                 Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", Yield_Total);
             }

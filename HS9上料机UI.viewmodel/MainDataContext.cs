@@ -22,6 +22,10 @@ namespace HS9上料机UI.viewmodel
     {
         #region 属性
         #region Twincat
+        public TwinCATCoil1 InputSafedoorFlag { set; get; }
+        public TwinCATCoil1 OutputSafedoorFlag { set; get; }
+        public TwinCATCoil1 ShangLiao { set; get; }
+        public TwinCATCoil1 ShangLiaoFlag { set; get; }
         public TwinCATCoil1 ProductLostAlarmFlag { set; get; }
         public TwinCATCoil1 PhotoTimeoutFlag { set; get; }
         public TwinCATCoil1 CloseCMD { set; get; }
@@ -342,6 +346,8 @@ namespace HS9上料机UI.viewmodel
         public bool QuitSampleTest { set; get; }
         public string LastQingjieStr { set; get; }
         public string SamMessage { set; get; }
+        public int PcsGrrNeedNum { set; get; }
+        public int PcsGrrNeedCount { set; get; }
         #region 样本
         public string LasSamStr { set; get; }
         public double SampleTimeElapse { set; get; }
@@ -454,8 +460,9 @@ namespace HS9上料机UI.viewmodel
         string DangbanFirstProduct = "";
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
+        bool shangLiaoFlag = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018111601";
+        string VersionMsg = "2018112101";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -479,6 +486,12 @@ namespace HS9上料机UI.viewmodel
         #region Twincat实例化
         private void TwincatVarInit()
         {
+            InputSafedoorFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.InputSafedoorFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            OutputSafedoorFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.OutputSafedoorFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            ShangLiao = new TwinCATCoil1(new TwinCATCoil("MAIN.ShangLiao", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            ShangLiaoFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.ShangLiaoFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
             XErrorCode = new TwinCATCoil1(new TwinCATCoil("MAIN.XErrorCode", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
             YErrorCode = new TwinCATCoil1(new TwinCATCoil("MAIN.YErrorCode", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
             FErrorCode = new TwinCATCoil1(new TwinCATCoil("MAIN.FErrorCode", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -944,6 +957,7 @@ namespace HS9上料机UI.viewmodel
                         await epsonRC90.CtrlNet.SendAsync("$SetMotorOff,1");
                         await Task.Delay(400);
                         await epsonRC90.CtrlNet.SendAsync("$reset");
+                        Tester.IsInGRRMode = false;
                     }
                     GlobalVar.metro.ChangeAccent("Blue");
                     break;
@@ -1009,6 +1023,14 @@ namespace HS9上料机UI.viewmodel
                         await epsonRC90.TestSentNet.SendAsync("GONOGOAction;" + SampleNgitemsNum.ToString());
                     }
                     break;
+                case "14":
+                    string ls = await GlobalVar.metro.ShowLoginOnlyPassword("进入GRR模式确认");
+                    if (ls == "GRR" + GetPassWord() && epsonRC90.TestSendStatus && (EpsonStatusRunning || EpsonStatusPaused))
+                    {
+                        await epsonRC90.TestSentNet.SendAsync("GRRTimesAsk;" + PcsGrrNeedNum.ToString() + ";" + PcsGrrNeedCount.ToString());
+                    }
+                    break;
+              
                 default:
                     break;
             }
@@ -2262,43 +2284,43 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: 测试机1，连续NG":
                     ShowAlarmTextGrid("测试机1，连续NG");
-                    RecordAlarmString("测试机1，连续NG");
+                    //RecordAlarmString("测试机1，连续NG");
                     break;
                 case "MsgRev: 测试机2，连续NG":
                     ShowAlarmTextGrid("测试机2，连续NG");
-                    RecordAlarmString("测试机2，连续NG");
+                    //RecordAlarmString("测试机2，连续NG");
                     break;
                 case "MsgRev: 测试机3，连续NG":
                     ShowAlarmTextGrid("测试机3，连续NG");
-                    RecordAlarmString("测试机3，连续NG");
+                    //RecordAlarmString("测试机3，连续NG");
                     break;
                 case "MsgRev: 测试机4，连续NG":
                     ShowAlarmTextGrid("测试机4，连续NG");
-                    RecordAlarmString("测试机4，连续NG");
+                    //RecordAlarmString("测试机4，连续NG");
                     break;
                 case "MsgRev: 测试机1，上传软体异常":
                     ShowAlarmTextGrid("测试机1，上传软体异常");
-                    RecordAlarmString("测试机1，上传软体异常");
+                    //RecordAlarmString("测试机1，上传软体异常");
                     break;
                 case "MsgRev: 测试机2，上传软体异常":
                     ShowAlarmTextGrid("测试机2，上传软体异常");
-                    RecordAlarmString("测试机2，上传软体异常");
+                    //RecordAlarmString("测试机2，上传软体异常");
                     break;
                 case "MsgRev: 测试机3，上传软体异常":
                     ShowAlarmTextGrid("测试机3，上传软体异常");
-                    RecordAlarmString("测试机3，上传软体异常");
+                    //RecordAlarmString("测试机3，上传软体异常");
                     break;
                 case "MsgRev: 测试机4，上传软体异常":
                     ShowAlarmTextGrid("测试机4，上传软体异常");
-                    RecordAlarmString("测试机4，上传软体异常");
+                    //RecordAlarmString("测试机4，上传软体异常");
                     break;
                 case "MsgRev: 黑色盘满，换盘":
                     ShowAlarmTextGrid("黑色盘满，换盘");
-                    RecordAlarmString("黑色盘满，换盘");
+                    //RecordAlarmString("黑色盘满，换盘");
                     break;
                 case "MsgRev: 红色盘满，换盘":
                     ShowAlarmTextGrid("红色盘满，换盘");
-                    RecordAlarmString("红色盘满，换盘");
+                    //RecordAlarmString("红色盘满，换盘");
                     break;
                 case "MsgRev: A爪手掉料":
                     ShowAlarmTextGrid("A爪手掉料");
@@ -2310,22 +2332,22 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: 测试机1，良率异常":
                     ShowAlarmTextGrid("测试机1，良率异常");
-                    RecordAlarmString("测试机1，连续NG");
+                    //RecordAlarmString("测试机1，良率异常");
                     AdminButtonVisibility = "Visible";
                     break;
                 case "MsgRev: 测试机2，良率异常":
                     ShowAlarmTextGrid("测试机2，良率异常");
-                    RecordAlarmString("测试机2，连续NG");
+                    //RecordAlarmString("测试机2，良率异常");
                     AdminButtonVisibility = "Visible";
                     break;
                 case "MsgRev: 测试机3，良率异常":
                     ShowAlarmTextGrid("测试机3，良率异常");
-                    RecordAlarmString("测试机3，连续NG");
+                    //RecordAlarmString("测试机3，良率异常");
                     AdminButtonVisibility = "Visible";
                     break;
                 case "MsgRev: 测试机4，良率异常":
                     ShowAlarmTextGrid("测试机4，良率异常");
-                    RecordAlarmString("测试机4，连续NG");
+                    //RecordAlarmString("测试机4，良率异常");
                     AdminButtonVisibility = "Visible";
                     break;
                 case "MsgRev: 清洁操作，结束":
@@ -2366,6 +2388,49 @@ namespace HS9上料机UI.viewmodel
                     ShowAlarmTextGrid("放料，测试机4，样本没放好\n请将样本放好！");
                     RecordAlarmString("放料，测试机4，样本没放好");
                     break;
+
+                case "MsgRev: 测试机1，吸取失败，GRR":
+                    ShowAlarmTextGrid("放料，测试机1，GRR吸取失败\n请将GRR放回原位！");
+                    RecordAlarmString("放料，测试机1，GRR吸取失败");
+                    break;
+                case "MsgRev: 测试机2，吸取失败，GRR":
+                    ShowAlarmTextGrid("放料，测试机2，GRR吸取失败\n请将GRR放回原位！");
+                    RecordAlarmString("放料，测试机2，GRR吸取失败");
+                    break;
+                case "MsgRev: 测试机3，吸取失败，GRR":
+                    ShowAlarmTextGrid("放料，测试机3，GRR吸取失败\n请将GRR放回原位！");
+                    RecordAlarmString("放料，测试机3，GRR吸取失败");
+                    break;
+                case "MsgRev: 测试机4，吸取失败，GRR":
+                    ShowAlarmTextGrid("放料，测试机4，GRR吸取失败\n请将GRR放回原位！");
+                    RecordAlarmString("放料，测试机4，GRR吸取失败");
+                    break;
+                case "MsgRev: 测试机1，产品没放好，GRR":
+                    ShowAlarmTextGrid("放料，测试机1，GRR没放好\n请将GRR放好！");
+                    RecordAlarmString("放料，测试机1，GRR没放好");
+                    break;
+                case "MsgRev: 测试机2，产品没放好，GRR":
+                    ShowAlarmTextGrid("放料，测试机2，GRR没放好\n请将GRR放好！");
+                    RecordAlarmString("放料，测试机2，GRR没放好");
+                    break;
+                case "MsgRev: 测试机3，产品没放好，GRR":
+                    ShowAlarmTextGrid("放料，测试机3，GRR没放好\n请将GRR放好！");
+                    RecordAlarmString("放料，测试机3，GRR没放好");
+                    break;
+                case "MsgRev: 测试机4，产品没放好，GRR":
+                    ShowAlarmTextGrid("放料，测试机4，GRR没放好\n请将GRR放好！");
+                    RecordAlarmString("放料，测试机4，GRR没放好");
+                    break;
+
+                case "MsgRev: GRR测试，开始":
+                    Tester.IsInGRRMode = true;
+                    break;
+                case "MsgRev: GRR测试，结束":
+                    Tester.IsInGRRMode = false;
+                    break;
+
+
+
                 case "MsgRev: 样本测试，开始":
                     Tester.IsInSampleMode = true;
                     for (int i = 0; i < 32; i++)
@@ -2741,11 +2806,11 @@ namespace HS9上料机UI.viewmodel
             }
 
 
-            PLCAlarmStatus = PLCMessageVisibility == "Visible" && (PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料满盘满" || PLCMessage == "下料XY吸取失败报警" || PLCMessage == "下料空盘缺");
+            PLCAlarmStatus = PLCMessageVisibility == "Visible" && (PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料XY吸取失败报警");
             if (_PLCAlarmStatus != PLCAlarmStatus)
             {
                 _PLCAlarmStatus = PLCAlarmStatus;
-                if (plsmsgstr != PLCMessage && _PLCAlarmStatus && (PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料满盘满" || PLCMessage == "下料XY吸取失败报警" || PLCMessage == "下料空盘缺"))
+                if (plsmsgstr != PLCMessage && _PLCAlarmStatus && (PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料XY吸取失败报警"))
                 {
                     plsmsgstr = PLCMessage;
                     Inifile.INIWriteValue(iniFClient, "Alarm", "Name", PLCMessage);
@@ -2880,6 +2945,7 @@ namespace HS9上料机UI.viewmodel
                 waittray_min = 0;
                 waittake_min = 0;
                 liaooutput = 0;
+                liaoinput = 0;
                 TotalAlarmNum = 0;
 
                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "run_min", run_min.ToString("F2"));
@@ -2889,6 +2955,7 @@ namespace HS9上料机UI.viewmodel
                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waitinput_min", waitinput_min.ToString("F2"));
                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittray_min", waittray_min.ToString("F2"));
                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittake_min", waittake_min.ToString("F2"));
+                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaooutput", liaooutput.ToString());
                 Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
 
@@ -2920,7 +2987,7 @@ namespace HS9上料机UI.viewmodel
             {
                 SampleItemsStatus[i / 4 + i % 4 * 8] = SamArray[i / 4, i % 4];
             }
-            SampleTextGridVisibility = (DateTime.Now - LasSam).TotalHours > SampleTimeElapse && IsSamTest || Tester.IsInSampleMode ? "Visible" : "Collapsed";
+            SampleTextGridVisibility = (DateTime.Now - LasSam).TotalHours > SampleTimeElapse && IsSamTest || Tester.IsInSampleMode || Tester.IsInGRRMode ? "Visible" : "Collapsed";
             if ((DateTime.Now - LasSam).TotalHours > SampleTimeElapse)
             {
                 SamMessage = "请测样本";
@@ -2929,10 +2996,18 @@ namespace HS9上料机UI.viewmodel
             {
                 SamMessage = "样本测试中...";
             }
+            else
+            {
+                if (Tester.IsInGRRMode)
+                {
+                    SamMessage = "GRR测试中...";
+                }
+                
+            }
             #endregion
 
         }
-        private void StartUpdateProcess(int index,string bar,string rst,string cyc)
+        private void StartUpdateProcess(int index,string bar,string rst,string cyc,bool isRecord)
         {            
             TestRecord tr = new TestRecord(DateTime.Now.ToString(), bar, rst, cyc + " s", index.ToString());
             lock (this)
@@ -2940,6 +3015,17 @@ namespace HS9上料机UI.viewmodel
                 myTestRecordQueue.Enqueue(tr);
             }
             SaveCSVfileRecord(tr);
+            if (isRecord && !Tester.IsInSampleMode && !Tester.IsInGRRMode)
+            {
+                epsonRC90.YanmadeTester[index - 1].UpdateNormalWithTestTimes(rst);
+            }
+            else
+            {
+                if (!isRecord && !Tester.IsInSampleMode && !Tester.IsInGRRMode)
+                {
+                    MsgText = AddMessage(bar + " 测试次数大于3次，不纳入良率统计");
+                }
+            }
         }
         private void SamMessageProcess(int rund,int level,int flex)
         {
@@ -3080,6 +3166,10 @@ namespace HS9上料机UI.viewmodel
                         XinJieIn[48] = (bool)ProductLostAlarmFlag.Value;
                         XinJieIn[49] = (bool)PhotoTimeoutFlag.Value;
 
+                        InputSafedoorFlag.Value = XinJieOut[31];
+                        OutputSafedoorFlag.Value = XinJieOut[32];
+                        epsonRC90.Rc90In[15] = XinJieOut[31];
+
                         XinJieIn[50] = !TestCheckedAL; XinJieIn[51] = !TestCheckedBL;
 
                         UnloadTrayFinish.Value = XinJieOut[9];
@@ -3134,6 +3224,15 @@ namespace HS9上料机UI.viewmodel
                         if (XinJieOut[26])
                         {
                             BFO5.Value = !EpsonStatusPaused;
+                        }
+                        if (shangLiaoFlag != (bool)ShangLiaoFlag.Value)
+                        {
+                            shangLiaoFlag = (bool)ShangLiaoFlag.Value;
+                            if (shangLiaoFlag)
+                            {
+                                liaoinput += uint.Parse(ShangLiao.Value.ToString());
+                                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
+                            }
                         }
                         #endregion
                         #region 界面数据显示
@@ -3278,7 +3377,7 @@ namespace HS9上料机UI.viewmodel
             TestCount_4 = epsonRC90.YanmadeTester[3].TestCount_Nomal.ToString();
             Yield_4 = epsonRC90.YanmadeTester[3].Yield_Nomal.ToString();
             //TestCount_Total = (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString();
-            TestCount_Total = liaooutput.ToString();
+            TestCount_Total = liaoinput.ToString();
 
             Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_1", epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString());
             Inifile.INIWriteValue(iniFClient, "DataList", "Yield_1", epsonRC90.YanmadeTester[0].Yield_Nomal.ToString());
@@ -3301,6 +3400,8 @@ namespace HS9上料机UI.viewmodel
             Inifile.INIWriteValue(iniFClient, "DataList", "Waitfortray", waittray_min.ToString("F2"));
             Inifile.INIWriteValue(iniFClient, "DataList", "Waitfortake", waittake_min.ToString("F2"));
             Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_Total", (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "input", liaoinput.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "output", liaooutput.ToString());
             //if (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal > 0)
             //{
             //    Yield_Total = ((double)(epsonRC90.YanmadeTester[0].PassCount_Nomal + epsonRC90.YanmadeTester[1].PassCount_Nomal + epsonRC90.YanmadeTester[2].PassCount_Nomal + epsonRC90.YanmadeTester[3].PassCount_Nomal) / (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal) * 100).ToString("F2");
@@ -3311,9 +3412,16 @@ namespace HS9上料机UI.viewmodel
             //    Yield_Total = "0";
             //    Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", "0");
             //}
-            if (liaooutput > 0)
+            if (liaoinput > 0)
             {
-                Yield_Total = ((double)(epsonRC90.YanmadeTester[0].PassCount + epsonRC90.YanmadeTester[1].PassCount + epsonRC90.YanmadeTester[2].PassCount + epsonRC90.YanmadeTester[3].PassCount) / liaooutput * 100).ToString("F2");
+                if ((double)(epsonRC90.YanmadeTester[0].PassCount + epsonRC90.YanmadeTester[1].PassCount + epsonRC90.YanmadeTester[2].PassCount + epsonRC90.YanmadeTester[3].PassCount) > liaoinput)
+                {
+                    Yield_Total = ((double)(epsonRC90.YanmadeTester[0].PassCount + epsonRC90.YanmadeTester[1].PassCount + epsonRC90.YanmadeTester[2].PassCount + epsonRC90.YanmadeTester[3].PassCount) / liaoinput * 100).ToString("F2");
+                }
+                else
+                {
+                    Yield_Total = "";
+                }
                 Inifile.INIWriteValue(iniFClient, "DataList", "Yield_Total", Yield_Total);
             }
             else
@@ -3725,6 +3833,8 @@ namespace HS9上料机UI.viewmodel
         {
             try
             {
+
+
                 for (int i = 0; i < 4; i++)
                 {
                     FlexId[i] = Inifile.INIGetStringValue(initestPath, "A", "id" + (i + 1).ToString(), "950951");
@@ -3782,6 +3892,8 @@ namespace HS9上料机UI.viewmodel
                     SampleNgitemsNum = 8;
                     MsgText = AddMessage(ex.Message);
                 }
+                PcsGrrNeedNum = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "PcsGrrNeedNum", "4"));
+                PcsGrrNeedCount = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "PcsGrrNeedCount", "10"));
             }
             catch (Exception ex)
             {
@@ -3793,7 +3905,9 @@ namespace HS9上料机UI.viewmodel
         {
             try
             {
-                Inifile.INIWriteValue(iniParameterPath, "System", "PLCCOM", SerialPortCom);
+                Inifile.INIWriteValue(iniParameterPath, "System", "PcsGrrNeedNum", PcsGrrNeedNum.ToString());
+
+                Inifile.INIWriteValue(iniParameterPath, "System", "PcsGrrNeedCount", PcsGrrNeedCount.ToString());
 
                 Inifile.INIWriteValue(iniParameterPath, "System", "IsSamTest", IsSamTest.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "System", "MachineNum", MachineNum);

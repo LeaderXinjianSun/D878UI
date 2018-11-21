@@ -23,6 +23,7 @@ namespace HS9上料机UI.model
     public class Tester
     {
         public static bool IsInSampleMode { set; get; } = false;
+        public static bool IsInGRRMode { set; get; } = false;
         public int PassCount { set; get; } 
         public int FailCount { set; get; }
         public int TestCount { set; get; }
@@ -87,7 +88,7 @@ namespace HS9上料机UI.model
             };
             await startTask();
             callback(Index);
-            if (!IsInSampleMode)
+            if (!IsInSampleMode && !IsInGRRMode)
             {
                 UpdateNormal();
             }
@@ -114,7 +115,32 @@ namespace HS9上料机UI.model
         public void UpdateNormal()
         {
             TestCount_Nomal++;
-            if (TestResult == TestResult.Pass)
+            //if (TestResult == TestResult.Pass)
+            //{
+            //    PassCount_Nomal++;
+            //}
+            //else
+            //{
+            //    FailCount_Nomal++;
+            //}
+            //if (PassCount_Nomal + FailCount_Nomal != 0)
+            //{
+            //    Yield_Nomal = Math.Round((double)PassCount_Nomal / (PassCount_Nomal + FailCount_Nomal) * 100, 2);
+            //}
+            //else
+            //{
+            //    Yield_Nomal= 0;
+            //}
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestSpan", TestSpan.ToString());
+            //Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "PassCount_Nomal", PassCount_Nomal.ToString());
+            //Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "FailCount_Nomal", FailCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestCount_Nomal", TestCount_Nomal.ToString());
+            //Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "Yield_Nomal", Yield_Nomal.ToString());
+
+        }
+        public void UpdateNormalWithTestTimes(String tr)
+        {
+            if (tr == "PASS")
             {
                 PassCount_Nomal++;
             }
@@ -128,14 +154,11 @@ namespace HS9上料机UI.model
             }
             else
             {
-                Yield_Nomal= 0;
+                Yield_Nomal = 0;
             }
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestSpan", TestSpan.ToString());
             Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "PassCount_Nomal", PassCount_Nomal.ToString());
             Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "FailCount_Nomal", FailCount_Nomal.ToString());
-            Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "TestCount_Nomal", TestCount_Nomal.ToString());
             Inifile.INIWriteValue(iniTesterResutPath, "Tester" + (Index - 1).ToString(), "Yield_Nomal", Yield_Nomal.ToString());
-
         }
         public void Update(TestResult tr)
         {
@@ -185,7 +208,7 @@ namespace HS9上料机UI.model
     {
         public delegate void PrintEventHandler(string ModelMessageStr);
         public event PrintEventHandler ModelPrint;
-        public delegate void RecordPrintEventHandler(int index, string bar,string rst,string cyc);
+        public delegate void RecordPrintEventHandler(int index, string bar,string rst,string cyc,bool isRecord);
         public event RecordPrintEventHandler RecordPrint;
         public bool status { set; get; } = true;
         public bool start { set; get; } = false;
@@ -240,7 +263,15 @@ namespace HS9上料机UI.model
                                         timed = 2000;
                                         start = false;
                                         ModelPrint("测试机" + index.ToString() + ": " + newbar + " 数据上传成功 " + updatetime.ToString());
-                                        RecordPrint(index, newbar, result, testerCycle);
+                                        if (dt.Rows.Count > 3)
+                                        {
+                                            RecordPrint(index, newbar, result, testerCycle, false);
+                                        }
+                                        else
+                                        {
+                                            RecordPrint(index, newbar, result, testerCycle, true);
+                                        }
+                                        
                                     }
                                     else
                                     {
@@ -317,7 +348,7 @@ namespace HS9上料机UI.model
                         
                         timed = 2000;
                         
-                        RecordPrint(index, "****************************", result, testerCycle);
+                        RecordPrint(index, "****************************", result, testerCycle, true);
                     }
                 }
                 else
@@ -338,7 +369,7 @@ namespace HS9上料机UI.model
             status = true;
             sw.Stop();
             ModelPrint("测试机" + index.ToString() + ": 测试时间过短，排除");
-            RecordPrint(index, "****************************", result, testerCycle);
+            RecordPrint(index, "****************************", result, testerCycle, true);
         }
         public void ResetCommand()
         {

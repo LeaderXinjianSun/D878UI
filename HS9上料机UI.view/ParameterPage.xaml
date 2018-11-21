@@ -81,6 +81,28 @@
                     <TextBlock Style="{StaticResource TextBlockBase}" Width="100" Text="最近样本时刻："></TextBlock>
                     <TextBlock Style="{StaticResource TextBlockBase}" Width="150" Text="{Binding LasSamStr}"></TextBlock>
                 </StackPanel>
+                <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="100" Text="GRR产品片数："></TextBlock>
+                    <ComboBox Style="{StaticResource ComboBoxGRR}" Text="{Binding PcsGrrNeedNum}" IsEditable="True" IsReadOnly="True">
+                        <ComboBoxItem Content="1"></ComboBoxItem>
+                        <ComboBoxItem Content="2"></ComboBoxItem>
+                        <ComboBoxItem Content="3"></ComboBoxItem>
+                        <ComboBoxItem Content="4"></ComboBoxItem>
+                    </ComboBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="100" Text="GRR重复次数："></TextBlock>
+                    <ComboBox Style="{StaticResource ComboBoxGRR}" Text="{Binding PcsGrrNeedCount}" IsEditable="True" IsReadOnly="True">
+                        <ComboBoxItem Content="1"></ComboBoxItem>
+                        <ComboBoxItem Content="2"></ComboBoxItem>
+                        <ComboBoxItem Content="3"></ComboBoxItem>
+                        <ComboBoxItem Content="4"></ComboBoxItem>
+                        <ComboBoxItem Content="5"></ComboBoxItem>
+                        <ComboBoxItem Content="6"></ComboBoxItem>
+                        <ComboBoxItem Content="7"></ComboBoxItem>
+                        <ComboBoxItem Content="8"></ComboBoxItem>
+                        <ComboBoxItem Content="9"></ComboBoxItem>
+                        <ComboBoxItem Content="10"></ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
             </StackPanel>
         </GroupBox>
         <GroupBox Header="不良项" Grid.Row="1">

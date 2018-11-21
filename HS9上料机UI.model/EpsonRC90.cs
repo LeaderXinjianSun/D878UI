@@ -39,7 +39,7 @@ namespace HS9上料机UI.model
         public event PrintEventHandler DiaoLiaoEvent;
         public event PrintEventHandler EpsonStatusUpdate;
         public event PrintEventHandler EPSONCommTwincat;
-        public delegate void TestFinishedHandler(int index,string bar,string result,string cycle);
+        public delegate void TestFinishedHandler(int index,string bar,string result,string cycle,bool isRecode);
         public event TestFinishedHandler TestFinished;
         public delegate void SamMessageEventHandler(int rund,int level,int flex);
         public event SamMessageEventHandler SamMessage;
@@ -542,9 +542,9 @@ namespace HS9上料机UI.model
             }
             
         }
-        private void RecordPrintOperate(int _index, string _bar, string _rst, string _cyc)
+        private void RecordPrintOperate(int _index, string _bar, string _rst, string _cyc,bool isRecord)
         {
-            TestFinished(_index, _bar, _rst, _cyc);
+            TestFinished(_index, _bar, _rst, _cyc, isRecord);
         }
         #endregion
         #region 功能函数

@@ -16,6 +16,9 @@ using MahApps.Metro.Controls;
 using MahApps.Metro;
 using HS9上料机UI.viewmodel;
 using BingLibrary.hjb.Metro;
+using OfficeOpenXml;
+using System.IO;
+
 
 namespace HS9上料机UI.view
 {
@@ -29,7 +32,7 @@ namespace HS9上料机UI.view
             InitializeComponent();
             this.SetBinding(ShowYieldAdminControlWindowProperty, "ShowYieldAdminControlWindow");
             this.SetBinding(ShowSampleTestWindowProperty, "ShowSampleTestWindow");
-            if (System.Environment.CurrentDirectory != @"C:\Debug")
+            if (System.Environment.CurrentDirectory == @"C:\Debug")
             {
                 //System.Windows.MessageBox.Show("软件安装目录必须为C:\\Debug");
                 //System.Windows.Application.Current.Shutdown();
@@ -42,6 +45,23 @@ namespace HS9上料机UI.view
                 {
                     System.Windows.MessageBox.Show("不允许重复打开软件");
                     System.Windows.Application.Current.Shutdown();
+                }
+                else
+                {
+                    FileInfo existingFile = new FileInfo("C:\\耗材.xlsx");
+                    try
+                    {
+                        GlobalVar.Package = new ExcelPackage(existingFile);
+                        GlobalVar.Worksheet = GlobalVar.Package.Workbook.Worksheets[1];
+                        
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        System.Windows.MessageBox.Show(ex.Message , "耗材表格文件异常");
+                        System.Windows.Application.Current.Shutdown();
+                    }
                 }
             }
 

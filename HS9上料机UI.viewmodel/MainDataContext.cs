@@ -15,6 +15,7 @@ using System.Windows.Threading;
 using ViewROI;
 using System.Data;
 using 臻鼎科技OraDB;
+using OfficeOpenXml;
 
 namespace HS9上料机UI.viewmodel
 {
@@ -280,12 +281,15 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 MachineNum_1 { set; get; }
         #endregion
         #region 界面
+        public int MaterialSelectedIndex { set; get; }
+        public ObservableCollection<string> MaterialChangeItemsSource { set; get; } = new ObservableCollection<string>();
         public string HomePageVisibility { set; get; } = "Visible";
         public string CameraPageVisibility { set; get; } = "Collapsed";
         public string ParameterPageVisibility { set; get; } = "Collapsed";
         public string TwinCATPageVisibility { set; get; } = "Collapsed";
         public string AlarmPageVisibility { set; get; } = "Collapsed";
         public string TestRecordPageVisibility { set; get; } = "Collapsed";
+        public string MaterialPageVisibility { set; get; } = "Collapsed";
         public bool IsSamTest { set; get; } = false;
         public string LoginString { set; get; } = "登录";
         public bool Isloagin { set; get; } = false;
@@ -348,6 +352,9 @@ namespace HS9上料机UI.viewmodel
         public string SamMessage { set; get; }
         public int PcsGrrNeedNum { set; get; }
         public int PcsGrrNeedCount { set; get; }
+        public string MatetialMessage { set; get; }
+        public string MatetialTextGridBackground { set; get; }
+        public string MatetialTextGridVisibility { set; get; }
         #region 样本
         public string LasSamStr { set; get; }
         public double SampleTimeElapse { set; get; }
@@ -462,13 +469,15 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018112102";
+        string VersionMsg = "2018112202";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
         List<int[]> SamOrderList = new List<int[]>();
         string[,] SamArray = new string[8, 4];
         DateTime SamStart = DateTime.Now;
+        bool haocaiinit = true;int haocaisavetimes = 0;
+        int MaterialStatus = 0;
         #endregion
         #region 功能
         #region 初始化
@@ -792,6 +801,7 @@ namespace HS9上料机UI.viewmodel
             epsonRC90.EpsonStatusUpdate += EpsonStatusUpdateProcess;
             epsonRC90.EPSONCommTwincat += EPSONCommTwincatEventProcess;
             epsonRC90.DiaoLiaoEvent += DiaoLiaoEventProcess;
+            epsonRC90.MaterialEvent += MaterialEventProcess;
             epsonRC90.TestFinished += StartUpdateProcess;
             epsonRC90.SamMessage += SamMessageProcess;
             epsonRC90.SamReMessage += SamReMessageProcess;
@@ -807,9 +817,41 @@ namespace HS9上料机UI.viewmodel
         public void TestFunc()
         {
             //SampleNgitem[0] = System.DateTime.Now.ToString();
+            FileInfo existingFile = new FileInfo("C:\\life  control of consumables.xlsx");
+            try
+            {
+                ExcelPackage package = new ExcelPackage(existingFile);
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+
+            }
+            catch (Exception ex)
+            {
+                
+                throw;
+            }
+            
         }
         #endregion
+        public async void ChangeMaterialOperate()
+        {
+            string rr = await GlobalVar.metro.ShowLoginOnlyPassword("确认将 "+ MaterialChangeItemsSource[MaterialSelectedIndex] + " 更换？");
+            string ss = GetPassWord();
+            if (rr == ss)
+            {
+                try
+                {
+                    GlobalVar.Worksheet.Cells[MaterialSelectedIndex + 3, 9].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[MaterialSelectedIndex + 3, 9].Value) + 1;
+                    GlobalVar.Worksheet.Cells[MaterialSelectedIndex + 3, 7].Value = GlobalVar.Worksheet.Cells[MaterialSelectedIndex + 3, 8].Value;
+                    GlobalVar.Worksheet.Cells[MaterialSelectedIndex + 3, 8].Value = System.DateTime.Now.ToString();
+                    GlobalVar.Worksheet.Cells[MaterialSelectedIndex + 3, 6].Value = 0;
 
+                }
+                catch (Exception ex)
+                {
+                    MsgText = AddMessage(ex.Message);
+                }
+            }
+        }
         public async void ChoosePage(object p)
         {
             switch (p.ToString())
@@ -821,6 +863,7 @@ namespace HS9上料机UI.viewmodel
                     TwinCATPageVisibility = "Collapsed";
                     AlarmPageVisibility = "Collapsed";
                     TestRecordPageVisibility = "Collapsed";
+                    MaterialPageVisibility = "Collapsed";
                     LoginString = "登录";
                     Isloagin = false;
                     break;
@@ -831,6 +874,7 @@ namespace HS9上料机UI.viewmodel
                     TwinCATPageVisibility = "Collapsed";
                     AlarmPageVisibility = "Collapsed";
                     TestRecordPageVisibility = "Collapsed";
+                    MaterialPageVisibility = "Collapsed";
                     LoginString = "登录";
                     Isloagin = false;
                     break;
@@ -841,6 +885,7 @@ namespace HS9上料机UI.viewmodel
                     TwinCATPageVisibility = "Visible";
                     AlarmPageVisibility = "Collapsed";
                     TestRecordPageVisibility = "Collapsed";
+                    MaterialPageVisibility = "Collapsed";
                     break;
                 case "5":
                     if (LoginString != "登出")
@@ -866,6 +911,7 @@ namespace HS9上料机UI.viewmodel
                     TwinCATPageVisibility = "Collapsed";
                     AlarmPageVisibility = "Collapsed";
                     TestRecordPageVisibility = "Collapsed";
+                    MaterialPageVisibility = "Collapsed";
                     break;
                 case "7":
                     HomePageVisibility = "Collapsed";
@@ -874,6 +920,7 @@ namespace HS9上料机UI.viewmodel
                     TwinCATPageVisibility = "Collapsed";
                     AlarmPageVisibility = "Visible";
                     TestRecordPageVisibility = "Collapsed";
+                    MaterialPageVisibility = "Collapsed";
                     break;
                 case "8":
                     HomePageVisibility = "Collapsed";
@@ -882,6 +929,16 @@ namespace HS9上料机UI.viewmodel
                     TwinCATPageVisibility = "Collapsed";
                     AlarmPageVisibility = "Collapsed";
                     TestRecordPageVisibility = "Visible";
+                    MaterialPageVisibility = "Collapsed";
+                    break;
+                case "9":
+                    HomePageVisibility = "Collapsed";
+                    CameraPageVisibility = "Collapsed";
+                    ParameterPageVisibility = "Collapsed";
+                    TwinCATPageVisibility = "Collapsed";
+                    AlarmPageVisibility = "Collapsed";
+                    TestRecordPageVisibility = "Collapsed";
+                    MaterialPageVisibility = "Visible";
                     break;
                 default:
                     break;
@@ -2175,6 +2232,26 @@ namespace HS9上料机UI.viewmodel
             }
             switch (str)
             {
+                case "MsgRev: PickAction0":
+                    try
+                    {
+                        GlobalVar.Worksheet.Cells[11, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[11, 6].Value) + 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        MsgText = AddMessage(ex.Message);
+                    }
+                    break;
+                case "MsgRev: PickAction1":
+                    try
+                    {
+                        GlobalVar.Worksheet.Cells[12, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[12, 6].Value) + 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        MsgText = AddMessage(ex.Message);
+                    }
+                    break;
                 case "MsgRev: 请确认，不得取走上料盘产品":
                     ShowAlarmTextGrid("请确认，\n不得取走上料盘产品！");
                     break;
@@ -2503,6 +2580,13 @@ namespace HS9上料机UI.viewmodel
                     break;
                 default:
                     break;
+            }
+        }
+        private async void MaterialEventProcess(string ss)
+        {
+            if (epsonRC90.TestSendStatus)
+            {
+                await epsonRC90.TestSentNet.SendAsync("StatusOfMaterial;" + MaterialStatus.ToString());
             }
         }
         private void DiaoLiaoEventProcess(string xitou)
@@ -3022,6 +3106,101 @@ namespace HS9上料机UI.viewmodel
                 }
                 
             }
+            if (haocaiinit && GlobalVar.Worksheet != null)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    GlobalVar.Worksheet.Cells[i * 2 + 3, 3].Value = FlexId[i];
+                    GlobalVar.Worksheet.Cells[i * 2 + 1 + 3, 3].Value = FlexId[i];
+                    GlobalVar.Worksheet.Cells[i * 2 + 3, 2].Value = MNO;
+                    GlobalVar.Worksheet.Cells[i * 2 + 1 + 3, 2].Value = MNO;
+                    MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i * 2 + 3, 1].Value + "," + FlexId[i]);
+                    MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i * 2 + 3 + 1, 1].Value + "," + FlexId[i]);
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    GlobalVar.Worksheet.Cells[i + 11, 3].Value = "NA";
+                    GlobalVar.Worksheet.Cells[i + 11, 2].Value = MNO;
+                    MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i + 11, 1].Value + "," + "NA");
+                }
+                for (int i = 1; i <= GlobalVar.Worksheet.Dimension.End.Column; i++)
+                {
+                    GlobalVar.Mdt.Columns.Add((string)GlobalVar.Worksheet.Cells[2, i].Value);
+                }
+                MaterialSelectedIndex = 0;
+                haocaiinit = false;
+                try
+                {
+                    GlobalVar.Package.Save();
+                }
+                catch (Exception ex)
+                {
+
+                    MsgText = AddMessage(ex.Message);
+                }
+            }
+            if (GlobalVar.Worksheet != null)
+            {
+                GlobalVar.Mdt.Clear();
+                for (int i = 3; i <= GlobalVar.Worksheet.Dimension.End.Row; i++)
+                {
+                    DataRow dr = GlobalVar.Mdt.NewRow();
+                    for (int j = 1; j <= GlobalVar.Worksheet.Dimension.End.Column; j++)
+                    {
+                        dr[j - 1] = GlobalVar.Worksheet.Cells[i, j].Value;
+                    }
+                    GlobalVar.Mdt.Rows.Add(dr);
+                }
+                MaterialStatus = 0;
+                for (int i = 3; i <= GlobalVar.Worksheet.Dimension.End.Row; i++)
+                {
+                    if (Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 6].Value) > Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 4].Value))
+                    {
+                        MatetialMessage = (string)GlobalVar.Worksheet.Cells[i, 1].Value + "," + (string)GlobalVar.Worksheet.Cells[i, 3].Value + " 使用寿命到达上限";
+                        MaterialStatus = 2;
+                        break;
+                    }
+                    else
+                    {
+                        if (Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 6].Value) > Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 5].Value))
+                        {
+                            MatetialMessage = (string)GlobalVar.Worksheet.Cells[i, 1].Value + "," + (string)GlobalVar.Worksheet.Cells[i, 3].Value + " 使用寿命预警";
+                            MaterialStatus = 1;
+                        }
+                    }
+                }
+                if (haocaisavetimes++ > 10)
+                {
+                    haocaisavetimes = 0;
+                    try
+                    {
+                        GlobalVar.Package.Save();
+                    }
+                    catch (Exception ex)
+                    {
+                        MsgText = AddMessage(ex.Message);
+
+                    }
+                }
+            }
+
+            switch (MaterialStatus)
+            {
+                case 0:
+
+                    MatetialTextGridVisibility = "Collapsed";
+                    break;
+                case 1:
+                    MatetialTextGridBackground = "Yellow";
+                    MatetialTextGridVisibility = "Visible";
+                    break;
+                case 2:
+                    MatetialTextGridBackground = "Red";
+                    MatetialTextGridVisibility = "Visible";
+                    break;
+                default:
+                    break;
+            }
             #endregion
 
         }
@@ -3044,6 +3223,16 @@ namespace HS9上料机UI.viewmodel
                     MsgText = AddMessage(bar + " 测试次数大于3次，不纳入良率统计");
                 }
             }
+            try
+            {
+                GlobalVar.Worksheet.Cells[(index - 1) * 2 + 3, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[(index - 1) * 2 + 3, 6].Value) + 1;
+                GlobalVar.Worksheet.Cells[(index - 1) * 2 + 1 + 3, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[(index - 1) * 2 + 1 + 3, 6].Value) + 1;
+            }
+            catch (Exception ex)
+            {
+                MsgText = AddMessage(ex.Message);
+            }
+
         }
         private void SamMessageProcess(int rund,int level,int flex)
         {
@@ -3250,6 +3439,18 @@ namespace HS9上料机UI.viewmodel
                             {
                                 liaoinput += uint.Parse(ShangLiao.Value.ToString());
                                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
+
+                                try
+                                {
+                                    GlobalVar.Worksheet.Cells[13, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[13, 6].Value) + 1;
+                                }
+                                catch (Exception ex)
+                                {
+
+                                    MsgText = AddMessage(ex.Message);
+                                }
+
+                                GlobalVar.Worksheet.Cells[13, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[13, 6].Value) + 1;
                             }
                         }
                         #endregion
@@ -3889,7 +4090,7 @@ namespace HS9上料机UI.viewmodel
                 TotalAlarmNum = int.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", "0"));
 
                 UPH = uint.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "UPH", "250"));
-                MNO = Inifile.INIGetStringValue(iniParameterPath, "System", "MNO", "X1374-01");
+                MNO = Inifile.INIGetStringValue(iniParameterPath, "System", "MNO", "X1374-1");
                 LastQingjie = Convert.ToDateTime(Inifile.INIGetStringValue(iniParameterPath, "System", "LastQingjie", "2018/10/31 8:00:00"));
                 LastQingjieStr = LastQingjie.ToString();
                 IsSamTest = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "IsSamTest", "False"));

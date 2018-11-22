@@ -39,6 +39,7 @@ namespace HS9上料机UI.model
         public event PrintEventHandler DiaoLiaoEvent;
         public event PrintEventHandler EpsonStatusUpdate;
         public event PrintEventHandler EPSONCommTwincat;
+        public event PrintEventHandler MaterialEvent;
         public delegate void TestFinishedHandler(int index,string bar,string result,string cycle,bool isRecode);
         public event TestFinishedHandler TestFinished;
         public delegate void SamMessageEventHandler(int rund,int level,int flex);
@@ -439,6 +440,9 @@ namespace HS9上料机UI.model
                                 case "StatusOfYield":
                                     AnswerStatusOfYield();
                                     break;
+                                case "StatusOfMaterial":
+                                    MaterialEvent("");
+                                    break;
                                 case "StatusOfDiaoLiao":
                                     AnsverStatusOfDiaoLiao();
                                     break;
@@ -530,6 +534,8 @@ namespace HS9上料机UI.model
         }
         private void TestFinishOperate(int index)
         {
+
+
             uploadSoftwareStatus[index - 1].testerCycle = YanmadeTester[index - 1].TestSpan.ToString();
             uploadSoftwareStatus[index - 1].result = YanmadeTester[index - 1].TestResult == TestResult.Pass ? "PASS" : "FAIL";
             if (YanmadeTester[index - 1].TestSpan > 11)

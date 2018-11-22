@@ -31,6 +31,7 @@
             <MenuItem Header="报警" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="7"></MenuItem>
             <MenuItem Header="{Binding LoginString}" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="5"></MenuItem>
             <MenuItem Header="参数" IsEnabled="{Binding Isloagin}" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="6"/>
+            <MenuItem Header="耗材" Command="{bing:ActionAutoWithParam ChoosePage}" CommandParameter="9"/>
         </Menu>
         <Grid Grid.Row="1" Visibility="{Binding HomePageVisibility}">
             <local:HomePage></local:HomePage>
@@ -50,6 +51,9 @@
         <Grid Grid.Row="1"  Visibility="{Binding TestRecordPageVisibility}">
             <local:TestRecordPage></local:TestRecordPage>
         </Grid>
+        <Grid Grid.Row="1"  Visibility="{Binding MaterialPageVisibility}">
+            <local:MaterialPage></local:MaterialPage>
+        </Grid>        
         <StatusBar Grid.Row="2">
             <StatusBarItem>
                 <TextBlock>PLC</TextBlock>

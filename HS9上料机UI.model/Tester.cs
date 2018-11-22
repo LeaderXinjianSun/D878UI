@@ -263,6 +263,8 @@ namespace HS9上料机UI.model
                                         timed = 2000;
                                         start = false;
                                         ModelPrint("测试机" + index.ToString() + ": " + newbar + " 数据上传成功 " + updatetime.ToString());
+                                        s = oraDB.selectSQLwithOrder("fluke_data".ToUpper(), new string[] { "BARCODE" }, new string[] { newbar });
+                                        dt = s.Tables[0];
                                         if (dt.Rows.Count > 3)
                                         {
                                             RecordPrint(index, newbar, result, testerCycle, false);

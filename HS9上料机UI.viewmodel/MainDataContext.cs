@@ -469,7 +469,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018112202";
+        string VersionMsg = "2018112203";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;

@@ -469,7 +469,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018112203";
+        string VersionMsg = "2018112204";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -2257,80 +2257,80 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: 测试机1，吸取失败":
                     ShowAlarmTextGrid("测试机1，吸取失败\n请将产品取走，防止叠料！");
-                    RecordAlarmString("测试机1，吸取失败");
+                    SaveAlarm("测试机1，吸取失败");
                     break;
                 case "MsgRev: 测试机2，吸取失败":
                     ShowAlarmTextGrid("测试机2，吸取失败\n请将产品取走，防止叠料！");
-                    RecordAlarmString("测试机2，吸取失败");
+                    SaveAlarm("测试机2，吸取失败");
                     break;
                 case "MsgRev: 测试机3，吸取失败":
                     ShowAlarmTextGrid("测试机3，吸取失败\n请将产品取走，防止叠料！");
-                    RecordAlarmString("测试机3，吸取失败");
+                    SaveAlarm("测试机3，吸取失败");
                     break;
                 case "MsgRev: 测试机4，吸取失败":
                     ShowAlarmTextGrid("测试机4，吸取失败\n请将产品取走，防止叠料！");
-                    RecordAlarmString("测试机4，吸取失败");
+                    SaveAlarm("测试机4，吸取失败");
                     break;
                 case "MsgRev: 测试机1，吸取失败1":
                     ShowAlarmTextGrid("放料，测试机1，吸取失败\n请将产品取走，防止叠料！");
-                    RecordAlarmString("放料，测试机1，吸取失败");
+                    SaveAlarm("放料，测试机1，吸取失败");
                     break;
                 case "MsgRev: 测试机2，吸取失败1":
                     ShowAlarmTextGrid("放料，测试机2，吸取失败\n请将产品取走，防止叠料！");
-                    RecordAlarmString("放料，测试机2，吸取失败");
+                    SaveAlarm("放料，测试机2，吸取失败");
                     break;
                 case "MsgRev: 测试机3，吸取失败1":
                     ShowAlarmTextGrid("放料，测试机3，吸取失败\n请将产品取走，防止叠料！");
-                    RecordAlarmString("放料，测试机3，吸取失败");
+                    SaveAlarm("放料，测试机3，吸取失败");
                     break;
                 case "MsgRev: 测试机4，吸取失败1":
                     ShowAlarmTextGrid("放料，测试机4，吸取失败\n请将产品取走，防止叠料！");
-                    RecordAlarmString("放料，测试机4，吸取失败");
+                    SaveAlarm("放料，测试机4，吸取失败");
                     break;
                 case "MsgRev: 测试工位1，产品没放好":                    
-                    RecordAlarmString("测试工位1，产品没放好");
+                    SaveAlarm("测试工位1，产品没放好");
                     break;
                 case "MsgRev: 测试工位2，产品没放好":
-                    RecordAlarmString("测试工位2，产品没放好");
+                    SaveAlarm("测试工位2，产品没放好");
                     break;
                 case "MsgRev: 测试工位3，产品没放好":
-                    RecordAlarmString("测试工位3，产品没放好");
+                    SaveAlarm("测试工位3，产品没放好");
                     break;
                 case "MsgRev: 测试工位4，产品没放好":
-                    RecordAlarmString("测试工位4，产品没放好");
+                    SaveAlarm("测试工位4，产品没放好");
                     break;
                 case "MsgRev: 测试工位1，产品没放好，样本":
                     ShowAlarmTextGrid("测试工位1，产品没放好，样本\n请将样本扶好");
-                    RecordAlarmString("测试工位1，产品没放好，样本");
+                    SaveAlarm("测试工位1，产品没放好，样本");
                     break;
                 case "MsgRev: 测试工位2，产品没放好，样本":
                     ShowAlarmTextGrid("测试工位2，产品没放好，样本\n请将样本扶好");
-                    RecordAlarmString("测试工位2，产品没放好，样本");
+                    SaveAlarm("测试工位2，产品没放好，样本");
                     break;
                 case "MsgRev: 测试工位3，产品没放好，样本":
                     ShowAlarmTextGrid("测试工位3，产品没放好，样本\n请将样本扶好");
-                    RecordAlarmString("测试工位3，产品没放好，样本");
+                    SaveAlarm("测试工位3，产品没放好，样本");
                     break;
                 case "MsgRev: 测试工位4，产品没放好，样本":
                     ShowAlarmTextGrid("测试工位4，产品没放好，样本\n请将样本扶好");
-                    RecordAlarmString("测试工位4，产品没放好，样本");
+                    SaveAlarm("测试工位4，产品没放好，样本");
                     break;
 
                 case "MsgRev: 测试工位1，产品没放好，GRR":
                     ShowAlarmTextGrid("测试工位1，产品没放好，GRR\n请将GRR扶好");
-                    RecordAlarmString("测试工位1，产品没放好，GRR");
+                    SaveAlarm("测试工位1，产品没放好，GRR");
                     break;
                 case "MsgRev: 测试工位2，产品没放好，GRR":
                     ShowAlarmTextGrid("测试工位2，产品没放好，GRR\n请将GRR扶好");
-                    RecordAlarmString("测试工位2，产品没放好，GRR");
+                    SaveAlarm("测试工位2，产品没放好，GRR");
                     break;
                 case "MsgRev: 测试工位3，产品没放好，GRR":
                     ShowAlarmTextGrid("测试工位3，产品没放好，GRR\n请将GRR扶好");
-                    RecordAlarmString("测试工位3，产品没放好，GRR");
+                    SaveAlarm("测试工位3，产品没放好，GRR");
                     break;
                 case "MsgRev: 测试工位4，产品没放好，GRR":
                     ShowAlarmTextGrid("测试工位4，产品没放好，GRR\n请将GRR扶好");
-                    RecordAlarmString("测试工位4，产品没放好，GRR");
+                    SaveAlarm("测试工位4，产品没放好，GRR");
                     break;
 
                 case "MsgRev: 样本盘，吸取失败":
@@ -2339,43 +2339,43 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: 上料盘1，吸取失败":
                     ShowAlarmTextGrid("上料盘1，吸取失败\n请将产品放回原位");
-                    RecordAlarmString("上料盘1，吸取失败");
+                    SaveAlarm("上料盘1，吸取失败");
                     break;
                 case "MsgRev: 上料盘2，吸取失败":
                     ShowAlarmTextGrid("上料盘2，吸取失败\n请将产品放回原位");
-                    RecordAlarmString("上料盘2，吸取失败");
+                    SaveAlarm("上料盘2，吸取失败");
                     break;
                 case "MsgRev: 上料盘3，吸取失败":
                     ShowAlarmTextGrid("上料盘3，吸取失败\n请将产品放回原位");
-                    RecordAlarmString("上料盘3，吸取失败");
+                    SaveAlarm("上料盘3，吸取失败");
                     break;
                 case "MsgRev: 上料盘4，吸取失败":
                     ShowAlarmTextGrid("上料盘4，吸取失败\n请将产品放回原位");
-                    RecordAlarmString("上料盘4，吸取失败");
+                    SaveAlarm("上料盘4，吸取失败");
                     break;
                 case "MsgRev: 上料盘5，吸取失败":
                     ShowAlarmTextGrid("上料盘5，吸取失败\n请将产品放回原位");
-                    RecordAlarmString("上料盘5，吸取失败");
+                    SaveAlarm("上料盘5，吸取失败");
                     break;
                 case "MsgRev: 上料盘6，吸取失败":
                     ShowAlarmTextGrid("上料盘6，吸取失败\n请将产品放回原位");
-                    RecordAlarmString("上料盘6，吸取失败");
+                    SaveAlarm("上料盘6，吸取失败");
                     break;
                 case "MsgRev: 上料盘7，吸取失败":
                     ShowAlarmTextGrid("上料盘7，吸取失败\n请将产品放回原位");
-                    RecordAlarmString("上料盘7，吸取失败");
+                    SaveAlarm("上料盘7，吸取失败");
                     break;
                 case "MsgRev: 上料盘8，吸取失败":
                     ShowAlarmTextGrid("上料盘8，吸取失败\n请将产品放回原位");
-                    RecordAlarmString("上料盘8，吸取失败");
+                    SaveAlarm("上料盘8，吸取失败");
                     break;
                 case "MsgRev: 上料盘9，吸取失败":
                     ShowAlarmTextGrid("上料盘9，吸取失败\n请将产品放回原位");
-                    RecordAlarmString("上料盘9，吸取失败");
+                    SaveAlarm("上料盘9，吸取失败");
                     break;
                 case "MsgRev: 上料盘10，吸取失败":
                     ShowAlarmTextGrid("上料盘10，吸取失败\n请将产品放回原位");
-                    RecordAlarmString("上料盘10，吸取失败");
+                    SaveAlarm("上料盘10，吸取失败");
                     break;
                 case "MsgRev: 测试机1，连续NG":
                     ShowAlarmTextGrid("测试机1，连续NG");
@@ -2422,11 +2422,11 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: A爪手掉料":
                     ShowAlarmTextGrid("A爪手掉料");
-                    RecordAlarmString("A爪手掉料");
+                    SaveAlarm("A爪手掉料");
                     break;
                 case "MsgRev: B爪手掉料":
                     ShowAlarmTextGrid("B爪手掉料");
-                    RecordAlarmString("B爪手掉料");
+                    SaveAlarm("B爪手掉料");
                     break;
                 case "MsgRev: 测试机1，良率异常":
                     ShowAlarmTextGrid("测试机1，良率异常");
@@ -2456,68 +2456,68 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: 测试机1，吸取失败，样本":
                     ShowAlarmTextGrid("放料，测试机1，样本吸取失败\n请将样本放回原位！");
-                    RecordAlarmString("放料，测试机1，样本吸取失败");
+                    SaveAlarm("放料，测试机1，样本吸取失败");
                     break;
                 case "MsgRev: 测试机2，吸取失败，样本":
                     ShowAlarmTextGrid("放料，测试机2，样本吸取失败\n请将样本放回原位！");
-                    RecordAlarmString("放料，测试机2，样本吸取失败");
+                    SaveAlarm("放料，测试机2，样本吸取失败");
                     break;
                 case "MsgRev: 测试机3，吸取失败，样本":
                     ShowAlarmTextGrid("放料，测试机3，样本吸取失败\n请将样本放回原位！");
-                    RecordAlarmString("放料，测试机3，样本吸取失败");
+                    SaveAlarm("放料，测试机3，样本吸取失败");
                     break;
                 case "MsgRev: 测试机4，吸取失败，样本":
                     ShowAlarmTextGrid("放料，测试机4，样本吸取失败\n请将样本放回原位！");
-                    RecordAlarmString("放料，测试机4，样本吸取失败");
+                    SaveAlarm("放料，测试机4，样本吸取失败");
                     break;
                 case "MsgRev: 测试机1，产品没放好，样本":
                     ShowAlarmTextGrid("放料，测试机1，样本没放好\n请将样本放好！");
-                    RecordAlarmString("放料，测试机1，样本没放好");
+                    SaveAlarm("放料，测试机1，样本没放好");
                     break;
                 case "MsgRev: 测试机2，产品没放好，样本":
                     ShowAlarmTextGrid("放料，测试机2，样本没放好\n请将样本放好！");
-                    RecordAlarmString("放料，测试机2，样本没放好");
+                    SaveAlarm("放料，测试机2，样本没放好");
                     break;
                 case "MsgRev: 测试机3，产品没放好，样本":
                     ShowAlarmTextGrid("放料，测试机3，样本没放好\n请将样本放好！");
-                    RecordAlarmString("放料，测试机3，样本没放好");
+                    SaveAlarm("放料，测试机3，样本没放好");
                     break;
                 case "MsgRev: 测试机4，产品没放好，样本":
                     ShowAlarmTextGrid("放料，测试机4，样本没放好\n请将样本放好！");
-                    RecordAlarmString("放料，测试机4，样本没放好");
+                    SaveAlarm("放料，测试机4，样本没放好");
                     break;
 
                 case "MsgRev: 测试机1，吸取失败，GRR":
                     ShowAlarmTextGrid("放料，测试机1，GRR吸取失败\n请将GRR放回原位！");
-                    RecordAlarmString("放料，测试机1，GRR吸取失败");
+                    SaveAlarm("放料，测试机1，GRR吸取失败");
                     break;
                 case "MsgRev: 测试机2，吸取失败，GRR":
                     ShowAlarmTextGrid("放料，测试机2，GRR吸取失败\n请将GRR放回原位！");
-                    RecordAlarmString("放料，测试机2，GRR吸取失败");
+                    SaveAlarm("放料，测试机2，GRR吸取失败");
                     break;
                 case "MsgRev: 测试机3，吸取失败，GRR":
                     ShowAlarmTextGrid("放料，测试机3，GRR吸取失败\n请将GRR放回原位！");
-                    RecordAlarmString("放料，测试机3，GRR吸取失败");
+                    SaveAlarm("放料，测试机3，GRR吸取失败");
                     break;
                 case "MsgRev: 测试机4，吸取失败，GRR":
                     ShowAlarmTextGrid("放料，测试机4，GRR吸取失败\n请将GRR放回原位！");
-                    RecordAlarmString("放料，测试机4，GRR吸取失败");
+                    SaveAlarm("放料，测试机4，GRR吸取失败");
                     break;
                 case "MsgRev: 测试机1，产品没放好，GRR":
                     ShowAlarmTextGrid("放料，测试机1，GRR没放好\n请将GRR放好！");
-                    RecordAlarmString("放料，测试机1，GRR没放好");
+                    SaveAlarm("放料，测试机1，GRR没放好");
                     break;
                 case "MsgRev: 测试机2，产品没放好，GRR":
                     ShowAlarmTextGrid("放料，测试机2，GRR没放好\n请将GRR放好！");
-                    RecordAlarmString("放料，测试机2，GRR没放好");
+                    SaveAlarm("放料，测试机2，GRR没放好");
                     break;
                 case "MsgRev: 测试机3，产品没放好，GRR":
                     ShowAlarmTextGrid("放料，测试机3，GRR没放好\n请将GRR放好！");
-                    RecordAlarmString("放料，测试机3，GRR没放好");
+                    SaveAlarm("放料，测试机3，GRR没放好");
                     break;
                 case "MsgRev: 测试机4，产品没放好，GRR":
                     ShowAlarmTextGrid("放料，测试机4，GRR没放好\n请将GRR放好！");
-                    RecordAlarmString("放料，测试机4，GRR没放好");
+                    SaveAlarm("放料，测试机4，GRR没放好");
                     break;
 
                 case "MsgRev: GRR测试，开始":
@@ -2921,7 +2921,7 @@ namespace HS9上料机UI.viewmodel
                     Inifile.INIWriteValue(iniFClient, "Alarm", "Name", PLCMessage);
                     //TotalAlarmNum++;
                     //Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
-                    RecordAlarmString(PLCMessage);
+                    //RecordAlarmString(PLCMessage);
                 }
 
             }

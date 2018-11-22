@@ -3154,20 +3154,30 @@ namespace HS9上料机UI.viewmodel
                 MaterialStatus = 0;
                 for (int i = 3; i <= GlobalVar.Worksheet.Dimension.End.Row; i++)
                 {
-                    if (Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 6].Value) > Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 4].Value))
+                    try
                     {
-                        MatetialMessage = (string)GlobalVar.Worksheet.Cells[i, 1].Value + "," + (string)GlobalVar.Worksheet.Cells[i, 3].Value + " 使用寿命到达上限";
-                        MaterialStatus = 2;
-                        break;
-                    }
-                    else
-                    {
-                        if (Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 6].Value) > Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 5].Value))
+                        if (Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 6].Value) > Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 4].Value))
                         {
-                            MatetialMessage = (string)GlobalVar.Worksheet.Cells[i, 1].Value + "," + (string)GlobalVar.Worksheet.Cells[i, 3].Value + " 使用寿命预警";
-                            MaterialStatus = 1;
+                            MatetialMessage = (string)GlobalVar.Worksheet.Cells[i, 1].Value + "," + (string)GlobalVar.Worksheet.Cells[i, 3].Value + " 使用寿命到达上限";
+                            MaterialStatus = 2;
+                            break;
+                        }
+                        else
+                        {
+                            if (Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 6].Value) > Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 5].Value))
+                            {
+                                MatetialMessage = (string)GlobalVar.Worksheet.Cells[i, 1].Value + "," + (string)GlobalVar.Worksheet.Cells[i, 3].Value + " 使用寿命预警";
+                                MaterialStatus = 1;
+                            }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        MatetialMessage = ex.Message;
+                        MaterialStatus = 2;
+                        MsgText = AddMessage(ex.Message);
+                    }
+
                 }
                 if (haocaisavetimes++ > 10)
                 {
@@ -3191,7 +3201,7 @@ namespace HS9上料机UI.viewmodel
                     MatetialTextGridVisibility = "Collapsed";
                     break;
                 case 1:
-                    MatetialTextGridBackground = "Yellow";
+                    MatetialTextGridBackground = "Violet";
                     MatetialTextGridVisibility = "Visible";
                     break;
                 case 2:

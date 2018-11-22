@@ -2409,6 +2409,9 @@ namespace HS9上料机UI.viewmodel
                     ShowAlarmTextGrid("测试机4，上传软体异常");
                     //RecordAlarmString("测试机4，上传软体异常");
                     break;
+                case "MsgRev: 耗材异常":
+                    ShowAlarmTextGrid("耗材异常");
+                    break;
                 case "MsgRev: 黑色盘满，换盘":
                     ShowAlarmTextGrid("黑色盘满，换盘");
                     //RecordAlarmString("黑色盘满，换盘");

@@ -469,7 +469,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018112204";
+        string VersionMsg = "2018112301";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -3463,7 +3463,7 @@ namespace HS9上料机UI.viewmodel
                                     MsgText = AddMessage(ex.Message);
                                 }
 
-                                GlobalVar.Worksheet.Cells[13, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[13, 6].Value) + 1;
+
                             }
                         }
                         #endregion

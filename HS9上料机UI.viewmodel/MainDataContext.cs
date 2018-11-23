@@ -467,9 +467,9 @@ namespace HS9上料机UI.viewmodel
         string DangbanFirstProduct = "";
         uint liaoinput = 0, liaooutput = 0;
         bool _PLCAlarmStatus = false;
-        bool shangLiaoFlag = false;
+        bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018112301";
+        string VersionMsg = "2018112302";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -3120,7 +3120,7 @@ namespace HS9上料机UI.viewmodel
                     MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i * 2 + 3, 1].Value + "," + FlexId[i]);
                     MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i * 2 + 3 + 1, 1].Value + "," + FlexId[i]);
                 }
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 6; i++)
                 {
                     GlobalVar.Worksheet.Cells[i + 11, 3].Value = "NA";
                     GlobalVar.Worksheet.Cells[i + 11, 2].Value = MNO;
@@ -3464,6 +3464,54 @@ namespace HS9上料机UI.viewmodel
                                 }
 
 
+                            }
+                        }
+                        if (loadsuckFlag != XinJieOut[18])
+                        {
+                            loadsuckFlag = XinJieOut[18];
+                            if (loadsuckFlag)
+                            {
+                                try
+                                {
+                                    GlobalVar.Worksheet.Cells[14, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[14, 6].Value) + 1;
+                                }
+                                catch (Exception ex)
+                                {
+
+                                    MsgText = AddMessage(ex.Message);
+                                }
+                            }
+                        }
+                        if (unloadsuckFlag != XinJieOut[19])
+                        {
+                            unloadsuckFlag = XinJieOut[19];
+                            if (unloadsuckFlag)
+                            {
+                                try
+                                {
+                                    GlobalVar.Worksheet.Cells[16, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[16, 6].Value) + 1;
+                                }
+                                catch (Exception ex)
+                                {
+
+                                    MsgText = AddMessage(ex.Message);
+                                }
+                            }
+                        }
+                        if (_bfo2 != (bool)BFO2.Value)
+                        {
+                            _bfo2 = (bool)BFO2.Value;
+                            if (_bfo2)
+                            {
+                                try
+                                {
+                                    GlobalVar.Worksheet.Cells[15, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[15, 6].Value) + 1;
+                                }
+                                catch (Exception ex)
+                                {
+
+                                    MsgText = AddMessage(ex.Message);
+                                }
                             }
                         }
                         #endregion

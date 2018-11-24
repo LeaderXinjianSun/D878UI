@@ -169,29 +169,29 @@
                             <TextBlock Text="穴1数量" Style="{StaticResource TextBlockGrid}"></TextBlock>
                             <TextBlock Text="{Binding TestCount_1,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
                             <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Column="2"></TextBlock>
-                            <TextBlock Text="穴1良率" Style="{StaticResource TextBlockGrid}" Grid.Column="3"></TextBlock>
-                            <TextBlock Text="{Binding Yield_1,FallbackValue= 999}" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
-                            <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Column="5"></TextBlock>
+                            <TextBlock Text="穴1良品数" Style="{StaticResource TextBlockGrid}" Grid.Column="3"></TextBlock>
+                            <TextBlock Text="{Binding PassCount_1,FallbackValue= 999}" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                            <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Column="5"></TextBlock>
                             <TextBlock Text="穴2数量" Grid.Row="1" Style="{StaticResource TextBlockGrid}"></TextBlock>
                             <TextBlock Text="{Binding TestCount_2,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
                             <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Row="1" Grid.Column="2"></TextBlock>
-                            <TextBlock Text="穴2良率" Style="{StaticResource TextBlockGrid}" Grid.Row="1" Grid.Column="3"></TextBlock>
-                            <TextBlock Text="{Binding Yield_2,FallbackValue= 999}" Grid.Row="1" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
-                            <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="1" Grid.Column="5"></TextBlock>
+                            <TextBlock Text="穴2良品数" Style="{StaticResource TextBlockGrid}" Grid.Row="1" Grid.Column="3"></TextBlock>
+                            <TextBlock Text="{Binding PassCount_2,FallbackValue= 999}" Grid.Row="1" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                            <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Row="1" Grid.Column="5"></TextBlock>
 
                             <TextBlock Text="穴3数量" Grid.Row="2" Style="{StaticResource TextBlockGrid}"></TextBlock>
                             <TextBlock Text="{Binding TestCount_3,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
                             <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="2"></TextBlock>
-                            <TextBlock Text="穴3良率" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="3"></TextBlock>
-                            <TextBlock Text="{Binding Yield_3,FallbackValue= 999}" Grid.Row="2" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
-                            <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="5"></TextBlock>
+                            <TextBlock Text="穴3良品数" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="3"></TextBlock>
+                            <TextBlock Text="{Binding PassCount_3,FallbackValue= 999}" Grid.Row="2" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                            <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="5"></TextBlock>
 
                             <TextBlock Text="穴4数量" Grid.Row="3" Style="{StaticResource TextBlockGrid}"></TextBlock>
                             <TextBlock Text="{Binding TestCount_4,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
                             <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="2"></TextBlock>
-                            <TextBlock Text="穴4良率" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="3"></TextBlock>
-                            <TextBlock Text="{Binding Yield_4,FallbackValue= 999}" Grid.Row="3" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
-                            <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="5"></TextBlock>
+                            <TextBlock Text="穴4良品数" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="3"></TextBlock>
+                            <TextBlock Text="{Binding PassCount_4,FallbackValue= 999}" Grid.Row="3" Grid.Column="4" Style="{StaticResource TextBlockGrid}" HorizontalAlignment="Left"></TextBlock>
+                            <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="5"></TextBlock>
 
                             <TextBlock Text="投入数" Grid.Row="4" Style="{StaticResource TextBlockGrid}"></TextBlock>
                             <TextBlock Text="{Binding TestCount_Total,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>

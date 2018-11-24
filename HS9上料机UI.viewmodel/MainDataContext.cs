@@ -314,12 +314,16 @@ namespace HS9上料机UI.viewmodel
         public string MNO { set; get; }
         public string TestCount_1 { set; get; }
         public string Yield_1 { set; get; }
+        public string PassCount_1 { set; get; }
         public string TestCount_2 { set; get; }
         public string Yield_2 { set; get; }
+        public string PassCount_2 { set; get; }
         public string TestCount_3 { set; get; }
         public string Yield_3 { set; get; }
+        public string PassCount_3 { set; get; }
         public string TestCount_4 { set; get; }
         public string Yield_4 { set; get; }
+        public string PassCount_4 { set; get; }
         public string Downtime { set; get; }
         public string Jigdowntime { set; get; }
         public string Waitforinput { set; get; }
@@ -469,7 +473,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018112302";
+        string VersionMsg = "2018112401";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -2987,6 +2991,10 @@ namespace HS9上料机UI.viewmodel
                 {
                     Inifile.INIWriteValue(iniFClient, "Alarm", "Name", "NULL");
                 }
+                PassCount_1 = epsonRC90.YanmadeTester[0].PassCount_Nomal.ToString();
+                PassCount_2 = epsonRC90.YanmadeTester[1].PassCount_Nomal.ToString();
+                PassCount_3 = epsonRC90.YanmadeTester[2].PassCount_Nomal.ToString();
+                PassCount_4 = epsonRC90.YanmadeTester[3].PassCount_Nomal.ToString();
                 Write及时雨();
             }
             #endregion
@@ -3648,7 +3656,7 @@ namespace HS9上料机UI.viewmodel
         }
         void Write及时雨()
         {
-            TestCount_1 = epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString();
+            TestCount_1 = epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString();            
             Yield_1 = epsonRC90.YanmadeTester[0].Yield_Nomal.ToString();
             TestCount_2 = epsonRC90.YanmadeTester[1].TestCount_Nomal.ToString();
             Yield_2 = epsonRC90.YanmadeTester[1].Yield_Nomal.ToString();

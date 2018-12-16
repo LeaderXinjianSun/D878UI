@@ -39,9 +39,10 @@
             <Button  Grid.Row="1" Style="{StaticResource OperationButton}" Content="排料" Command="{bing:ActionAutoWithParam EpsonOpetate}" CommandParameter="5"></Button>
             <Button  Grid.Column="1" Grid.Row="1" Style="{StaticResource OperationButton}" Content="样本" Command="{bing:ActionAutoWithParam EpsonOpetate}" CommandParameter="12"></Button>
             <Button  Grid.Column="2" Grid.Row="1" Style="{StaticResource OperationButton}" Content="GRR" Command="{bing:ActionAutoWithParam EpsonOpetate}" CommandParameter="14"></Button>
-            <Button Style="{StaticResource LouLiaoFail}" Height="auto" Grid.Row="2" Grid.Column="0" Content="漏" Command="{bing:ActionAutoWithParam TwinCATAlarmOperate}" CommandParameter="2"></Button>
+            <!--<Button Style="{StaticResource LouLiaoFail}" Height="auto" Grid.Row="2" Grid.Column="0" Content="漏" Command="{bing:ActionAutoWithParam TwinCATAlarmOperate}" CommandParameter="2"></Button>-->
             <Button Style="{StaticResource SuckFail}" Height="auto" Grid.Row="2" Grid.Column="1" Content="吸" Command="{bing:ActionAutoWithParam TwinCATAlarmOperate}" CommandParameter="0"></Button>
             <Button Style="{StaticResource PanFail}" Height="auto" Grid.Row="2" Grid.Column="2" Content="盘" Command="{bing:ActionAutoWithParam TwinCATAlarmOperate}" CommandParameter="1"></Button>
+            <Button Style="{StaticResource LightCMD}" Height="auto" Grid.Row="2" Grid.Column="3" Content="灯" Command="{bing:ActionAutoWithParam TwinCATAlarmOperate}" CommandParameter="3"></Button>
             <!--<Button Style="{StaticResource OperationButton}" Grid.Column="3" Grid.Row="2" Command="{bing:ActionAuto TestFunc}" Content="功能"></Button>-->
             <Button  Grid.Column="3" Grid.Row="1" Style="{StaticResource OperationButton}" FontSize="16" Content="Admin" Background="Red" Command="{bing:ActionAutoWithParam EpsonOpetate}" CommandParameter="9" Visibility="{Binding AdminButtonVisibility}"></Button>
             <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="4">
@@ -239,6 +240,10 @@
                             <TextBlock Text="{Binding Waitfortake,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
                             <TextBlock Text="min" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="2"></TextBlock>
 
+                            <TextBlock Text="漏吸料" Grid.Row="2" Grid.Column="3" Style="{StaticResource TextBlockGrid}"></TextBlock>
+                            <TextBlock Text="{Binding LouxiliaoCount,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Left"></TextBlock>
+                            <TextBlock Text="片" Style="{StaticResource TextBlockGrid}" Grid.Row="2" Grid.Column="5"></TextBlock>
+                            
                             <TextBlock Text="达成率" Grid.Row="3" Style="{StaticResource TextBlockGrid}"></TextBlock>
                             <TextBlock Text="{Binding AchievingRate_,FallbackValue= 999}" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left"></TextBlock>
                             <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="3" Grid.Column="2"></TextBlock>

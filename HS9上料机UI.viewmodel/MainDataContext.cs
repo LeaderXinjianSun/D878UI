@@ -23,9 +23,13 @@ namespace HS9上料机UI.viewmodel
     {
         #region 属性
         #region Twincat
+        public TwinCATCoil1 Light_Alarm { set; get; }
+        public TwinCATCoil1 Light_Cmd { set; get; }
+        public TwinCATCoil1 NeedUpdateTray { set; get; }
         public TwinCATCoil1 InputSafedoorFlag { set; get; }
         public TwinCATCoil1 OutputSafedoorFlag { set; get; }
         public TwinCATCoil1 ShangLiao { set; get; }
+        public TwinCATCoil1 LouLiaoCount { set; get; }
         public TwinCATCoil1 ShangLiaoFlag { set; get; }
         public TwinCATCoil1 ProductLostAlarmFlag { set; get; }
         public TwinCATCoil1 PhotoTimeoutFlag { set; get; }
@@ -76,6 +80,7 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 UErrorCode { set; get; }
 
         public TwinCATCoil1 SaveButton { set; get; }
+        public TwinCATCoil1 PanTopFlag { set; get; }
         public TwinCATCoil1 SuckValue1 { set; get; }
         public TwinCATCoil1 SuckValue2 { set; get; }
         public TwinCATCoil1 SuckValue3 { set; get; }
@@ -330,6 +335,7 @@ namespace HS9上料机UI.viewmodel
         public string Waitfortray { set; get; }
         public string Waitfortake { set; get; }
         public string TestCount_Total { set; get; }
+        public string LouxiliaoCount { set; get; }
         public string Yield_Total { set; get; }
         public string AchievingRate_ { set; get; }
         public string ProperRate_ { set; get; }
@@ -469,11 +475,11 @@ namespace HS9上料机UI.viewmodel
         bool PLCAlarmStatus = false;
         double AchievingRate, ProperRate, ProperRate_AutoMation, ProperRate_Jig;
         string DangbanFirstProduct = "";
-        uint liaoinput = 0, liaooutput = 0;
+        uint liaoinput = 0, liaooutput = 0,louliao = 0;
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018112701";
+        string VersionMsg = "2018121301";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -482,6 +488,8 @@ namespace HS9上料机UI.viewmodel
         DateTime SamStart = DateTime.Now;
         bool haocaiinit = true;int haocaisavetimes = 0;
         int MaterialStatus = 0;
+        string index_ini, index_ini_old = "";
+        bool unloadreadindexflag = false;
         #endregion
         #region 功能
         #region 初始化
@@ -499,10 +507,16 @@ namespace HS9上料机UI.viewmodel
         #region Twincat实例化
         private void TwincatVarInit()
         {
+            Light_Alarm = new TwinCATCoil1(new TwinCATCoil("MAIN.Light_Alarm", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            Light_Cmd = new TwinCATCoil1(new TwinCATCoil("MAIN.Light_Cmd", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            NeedUpdateTray = new TwinCATCoil1(new TwinCATCoil("MAIN.NeedUpdateTray", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             InputSafedoorFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.InputSafedoorFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             OutputSafedoorFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.OutputSafedoorFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             ShangLiao = new TwinCATCoil1(new TwinCATCoil("MAIN.ShangLiao", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            LouLiaoCount = new TwinCATCoil1(new TwinCATCoil("MAIN.LouLiaoCount", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
             ShangLiaoFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.ShangLiaoFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             XErrorCode = new TwinCATCoil1(new TwinCATCoil("MAIN.XErrorCode", typeof(uint), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -695,6 +709,8 @@ namespace HS9上料机UI.viewmodel
             Suck8 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck8", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             Suck9 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck9", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             Suck10 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck10", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
+            PanTopFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.PanTopFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             SuckValue1 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             SuckValue2 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -1305,6 +1321,9 @@ namespace HS9上料机UI.viewmodel
                         {
                             ProductLostAlarmFlag.Value = false;
                         }
+                        break;
+                    case "3":
+                        Light_Cmd.Value = true;
                         break;
                     default:
                         break;
@@ -2020,34 +2039,34 @@ namespace HS9上料机UI.viewmodel
                     BFO3.Value = !(bool)BFO3.Value;
                     break;
                 case "4":
-                    BFO4.Value = !(bool)BFO4.Value;
+                    //BFO4.Value = !(bool)BFO4.Value;
                     break;
                 case "5":
                     BFO5.Value = !(bool)BFO5.Value;
                     break;
                 case "6":
-                    BFO6.Value = !(bool)BFO6.Value;
+                    //BFO6.Value = !(bool)BFO6.Value;
                     break;
                 case "7":
-                    BFO7.Value = !(bool)BFO7.Value;
+                    //BFO7.Value = !(bool)BFO7.Value;
                     break;
                 case "8":
-                    BFO8.Value = !(bool)BFO8.Value;
+                    //BFO8.Value = !(bool)BFO8.Value;
                     break;
                 case "9":
-                    BFO9.Value = !(bool)BFO9.Value;
+                    //BFO9.Value = !(bool)BFO9.Value;
                     break;
                 case "10":
-                    BFO10.Value = !(bool)BFO10.Value;
+                    //BFO10.Value = !(bool)BFO10.Value;
                     break;
                 case "11":
-                    BFO11.Value = !(bool)BFO11.Value;
+                    //BFO11.Value = !(bool)BFO11.Value;
                     break;
                 case "12":
-                    BFO12.Value = !(bool)BFO12.Value;
+                    //BFO12.Value = !(bool)BFO12.Value;
                     break;
                 case "13":
-                    BFO13.Value = !(bool)BFO13.Value;
+                    //BFO13.Value = !(bool)BFO13.Value;
                     break;
                 case "14":
                     BFO14.Value = !(bool)BFO14.Value;
@@ -2056,7 +2075,7 @@ namespace HS9上料机UI.viewmodel
                     BFO15.Value = !(bool)BFO15.Value;
                     break;
                 case "16":
-                    BFO16.Value = !(bool)BFO16.Value;
+                    //BFO16.Value = !(bool)BFO16.Value;
                     break;
                 default:
                     break;
@@ -2258,6 +2277,9 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: 请确认，不得取走上料盘产品":
                     ShowAlarmTextGrid("请确认，\n不得取走上料盘产品！");
+                    break;
+                case "MsgRev: 样本或GRR料留在治具内":
+                    ShowAlarmTextGrid("样本或GRR料留在治具内，\n请将产品取出，防止混料");
                     break;
                 case "MsgRev: 测试机1，吸取失败":
                     ShowAlarmTextGrid("测试机1，吸取失败\n请将产品取走，防止叠料！");
@@ -2684,6 +2706,7 @@ namespace HS9上料机UI.viewmodel
                 {
                     try
                     {
+                        unloadreadindexflag = true;
                         ushort nextindex = ushort.Parse(s);
                         //Inifile.INIWriteValue(initestPath, "Other", "index", "-1");
                         string ReadIndex1 = Inifile.INIGetStringValue(initestPath, "Other", "index", "-1");
@@ -2694,11 +2717,13 @@ namespace HS9上料机UI.viewmodel
                         {
                             if (EStop)
                             {
+                                unloadreadindexflag = false;
                                 return;
                             }
                             System.Threading.Thread.Sleep(200);
                             ReadIndex = Inifile.INIGetStringValue(initestPath, "Other", "index", "-1");
                         }
+                        unloadreadindexflag = false;
                         XYIndex.Value = ushort.Parse(ReadIndex) - 1;
                         if (ushort.Parse(ReadIndex) >= endnum)
                         {
@@ -2991,10 +3016,6 @@ namespace HS9上料机UI.viewmodel
                 {
                     Inifile.INIWriteValue(iniFClient, "Alarm", "Name", "NULL");
                 }
-                PassCount_1 = epsonRC90.YanmadeTester[0].PassCount_Nomal.ToString();
-                PassCount_2 = epsonRC90.YanmadeTester[1].PassCount_Nomal.ToString();
-                PassCount_3 = epsonRC90.YanmadeTester[2].PassCount_Nomal.ToString();
-                PassCount_4 = epsonRC90.YanmadeTester[3].PassCount_Nomal.ToString();
                 Write及时雨();
             }
             #endregion
@@ -3059,6 +3080,7 @@ namespace HS9上料机UI.viewmodel
                 waittake_min = 0;
                 liaooutput = 0;
                 liaoinput = 0;
+                louliao = 0;
                 TotalAlarmNum = 0;
 
                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "run_min", run_min.ToString("F2"));
@@ -3069,6 +3091,7 @@ namespace HS9上料机UI.viewmodel
                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittray_min", waittray_min.ToString("F2"));
                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittake_min", waittake_min.ToString("F2"));
                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
+                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "louliao", louliao.ToString());
                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaooutput", liaooutput.ToString());
                 Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
 
@@ -3222,6 +3245,44 @@ namespace HS9上料机UI.viewmodel
                 default:
                     break;
             }
+            if (!unloadreadindexflag)
+            {
+                ushort endnum;
+                switch (MachineNum)
+                {
+                    case "1372":
+                        endnum = 14;
+                        break;
+                    case "1373":
+                        endnum = 14;
+                        break;
+                    case "1374":
+                        endnum = 24;
+                        break;
+                    default:
+                        endnum = 24;
+                        break;
+                }
+                index_ini = Inifile.INIGetStringValue(initestPath, "Other", "index", "0");
+                if (index_ini != index_ini_old)
+                {
+                    try
+                    {
+                        if (ushort.Parse(index_ini_old) < endnum - 1 && index_ini == "0")
+                        {
+                            NeedUpdateTray.Value = true;
+                        }
+                    }
+                    catch 
+                    {
+
+                        
+                    }
+
+                    index_ini_old = index_ini;
+                }
+            }
+
             #endregion
 
         }
@@ -3321,6 +3382,8 @@ namespace HS9上料机UI.viewmodel
                         XinJieIn[8] = (bool)Suck9.Value;
                         XinJieIn[9] = (bool)Suck10.Value;
 
+                        PanTopFlag.Value = XinJieOut[20];
+
                         SuckValue1.Value = XinJieOut[0];
                         SuckValue2.Value = XinJieOut[1];
                         SuckValue3.Value = XinJieOut[2];
@@ -3349,6 +3412,11 @@ namespace HS9上料机UI.viewmodel
                         BFO7.Value = epsonRC90.Rc90Out[31];
                         BFO8.Value = epsonRC90.Rc90Out[32];
                         BFO9.Value = epsonRC90.Rc90Out[33];
+
+                        BFO11.Value = epsonRC90.Rc90Out[34];
+                        BFO12.Value = epsonRC90.Rc90Out[35];
+                        BFO13.Value = epsonRC90.Rc90Out[36];
+                        BFO16.Value = epsonRC90.Rc90Out[37];
                         //倍服告知机械手是否有料
                         epsonRC90.Rc90In[5] = (bool)RSuckValue1.Value;
                         epsonRC90.Rc90In[6] = (bool)RSuckValue2.Value;
@@ -3424,9 +3492,9 @@ namespace HS9上料机UI.viewmodel
                             M20029 = XinJieOut[29] ? "Visible" : "Collapsed";
                             M20030 = XinJieOut[30] ? "Visible" : "Collapsed";
                         }
-                        down_flag = EpsonStatusSafeGuard || EpsonStatusEStop;
+                        down_flag = XinJieOut[21] || EpsonStatusEStop;
                         waitinput_flag = XinJieOut[15] || (!EpsonStatusSafeGuard && EpsonStatusPaused);
-                        jigdown_flag = !TestCheckedAL || !TestCheckedBL;
+                        jigdown_flag = !TestCheckedAL || !TestCheckedBL || XinJieOut[22];
                         waittray_flag = XinJieOut[16];
                         waittake_flag = XinJieOut[17];
                         #endregion
@@ -3460,7 +3528,9 @@ namespace HS9上料机UI.viewmodel
                             {
                                 liaoinput += uint.Parse(ShangLiao.Value.ToString());
                                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
-
+                                //LouLiaoCount
+                                louliao += uint.Parse(LouLiaoCount.Value.ToString());
+                                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "louliao", louliao.ToString());
                                 try
                                 {
                                     GlobalVar.Worksheet.Cells[13, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[13, 6].Value) + 1;
@@ -3522,6 +3592,7 @@ namespace HS9上料机UI.viewmodel
                                 }
                             }
                         }
+                        Light_Alarm.Value = AlarmTextGridShow == "Visible" && EpsonStatusPaused;
                         #endregion
                         #region 界面数据显示
                         //良率界面显示
@@ -3656,16 +3727,21 @@ namespace HS9上料机UI.viewmodel
         }
         void Write及时雨()
         {
-            TestCount_1 = epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString();            
+            TestCount_1 = epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString();
             Yield_1 = epsonRC90.YanmadeTester[0].Yield_Nomal.ToString();
+            PassCount_1 = epsonRC90.YanmadeTester[0].PassCount_Nomal.ToString();
             TestCount_2 = epsonRC90.YanmadeTester[1].TestCount_Nomal.ToString();
             Yield_2 = epsonRC90.YanmadeTester[1].Yield_Nomal.ToString();
+            PassCount_2 = epsonRC90.YanmadeTester[1].PassCount_Nomal.ToString();
             TestCount_3 = epsonRC90.YanmadeTester[2].TestCount_Nomal.ToString();
             Yield_3 = epsonRC90.YanmadeTester[2].Yield_Nomal.ToString();
+            PassCount_3 = epsonRC90.YanmadeTester[2].PassCount_Nomal.ToString();
             TestCount_4 = epsonRC90.YanmadeTester[3].TestCount_Nomal.ToString();
             Yield_4 = epsonRC90.YanmadeTester[3].Yield_Nomal.ToString();
+            PassCount_4 = epsonRC90.YanmadeTester[3].PassCount_Nomal.ToString();
             //TestCount_Total = (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString();
             TestCount_Total = liaoinput.ToString();
+            LouxiliaoCount = louliao.ToString();
 
             Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_1", epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString());
             Inifile.INIWriteValue(iniFClient, "DataList", "Yield_1", epsonRC90.YanmadeTester[0].Yield_Nomal.ToString());
@@ -4155,6 +4231,7 @@ namespace HS9上料机UI.viewmodel
 
                 liaoinput = uint.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "liaoinput", "0"));
                 liaooutput = uint.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "liaooutput", "0"));
+                louliao = uint.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Summary", "louliao", "0"));
 
                 TotalAlarmNum = int.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", "0"));
 

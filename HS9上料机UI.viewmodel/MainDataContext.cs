@@ -335,6 +335,7 @@ namespace HS9上料机UI.viewmodel
         public string Waitfortray { set; get; }
         public string Waitfortake { set; get; }
         public string TestCount_Total { set; get; }
+        public string TestCount_Total1 { set; get; }
         public string LouxiliaoCount { set; get; }
         public string Yield_Total { set; get; }
         public string AchievingRate_ { set; get; }
@@ -479,7 +480,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2018121301";
+        string VersionMsg = "2019010801";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -490,6 +491,8 @@ namespace HS9上料机UI.viewmodel
         int MaterialStatus = 0;
         string index_ini, index_ini_old = "";
         bool unloadreadindexflag = false;
+        bool red_normal = false, green_flicker = false, green_normal = false, yellow_flicker = false, yellow_normal = false;
+        int signal_lamp = 0;
         #endregion
         #region 功能
         #region 初始化
@@ -2315,15 +2318,35 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: 测试工位1，产品没放好":                    
                     SaveAlarm("测试工位1，产品没放好");
+                    if (liaoinput > 0)
+                    {
+                        liaoinput -= 1;
+                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
+                    }
                     break;
                 case "MsgRev: 测试工位2，产品没放好":
                     SaveAlarm("测试工位2，产品没放好");
+                    if (liaoinput > 0)
+                    {
+                        liaoinput -= 1;
+                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
+                    }
                     break;
                 case "MsgRev: 测试工位3，产品没放好":
                     SaveAlarm("测试工位3，产品没放好");
+                    if (liaoinput > 0)
+                    {
+                        liaoinput -= 1;
+                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
+                    }
                     break;
                 case "MsgRev: 测试工位4，产品没放好":
                     SaveAlarm("测试工位4，产品没放好");
+                    if (liaoinput > 0)
+                    {
+                        liaoinput -= 1;
+                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
+                    }
                     break;
                 case "MsgRev: 测试工位1，产品没放好，样本":
                     ShowAlarmTextGrid("测试工位1，产品没放好，样本\n请将样本扶好");
@@ -3466,6 +3489,32 @@ namespace HS9上料机UI.viewmodel
                         OutputSafedoorFlag.Value = XinJieOut[32];
                         epsonRC90.Rc90In[15] = XinJieOut[31];
 
+                        green_flicker = XinJieOut[33];
+                        yellow_normal = XinJieOut[34];
+                        yellow_flicker = XinJieOut[35];
+                        red_normal = XinJieOut[36];
+                        green_normal = XinJieOut[37];
+                        if (green_normal)
+                        {
+                            signal_lamp = 1;
+                        }
+                        if (green_flicker)
+                        {
+                            signal_lamp = 2;
+                        }
+                        if (yellow_normal)
+                        {
+                            signal_lamp = 3;
+                        }
+                        if (yellow_flicker)
+                        {
+                            signal_lamp = 4;
+                        }
+                        if (red_normal)
+                        {
+                            signal_lamp = 5;
+                        }
+
                         XinJieIn[50] = !TestCheckedAL; XinJieIn[51] = !TestCheckedBL;
 
                         UnloadTrayFinish.Value = XinJieOut[9];
@@ -3741,6 +3790,7 @@ namespace HS9上料机UI.viewmodel
             PassCount_4 = epsonRC90.YanmadeTester[3].PassCount_Nomal.ToString();
             //TestCount_Total = (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString();
             TestCount_Total = liaoinput.ToString();
+            TestCount_Total1 = (epsonRC90.YanmadeTester[0].PassCount + epsonRC90.YanmadeTester[1].PassCount + epsonRC90.YanmadeTester[2].PassCount + epsonRC90.YanmadeTester[3].PassCount).ToString();
             LouxiliaoCount = louliao.ToString();
 
             Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_1", epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString());
@@ -3806,6 +3856,10 @@ namespace HS9上料机UI.viewmodel
             Inifile.INIWriteValue(iniAlarmPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
             //string line = Inifile.INIGetStringValue(initestPath, "Other", "line", "L1");
             Inifile.INIWriteValue(iniParameterPath, "Sample", "MNO", MNO);
+
+
+            Inifile.INIWriteValue(iniFClient, "state", "state", signal_lamp.ToString());
+
         }
         private void TakePhoteCallback()
         {

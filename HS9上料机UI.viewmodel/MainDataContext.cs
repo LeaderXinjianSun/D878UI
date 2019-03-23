@@ -480,7 +480,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2019010801";
+        string VersionMsg = "2019030701";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -2567,6 +2567,19 @@ namespace HS9上料机UI.viewmodel
                 case "MsgRev: 测试机4，产品没放好，GRR":
                     ShowAlarmTextGrid("放料，测试机4，GRR没放好\n请将GRR放好！");
                     SaveAlarm("放料，测试机4，GRR没放好");
+                    break;
+
+                case "MsgRev: 测试机1，脏污报警":
+                    ShowAlarmTextGrid("测试机1，脏污报警");
+                    break;
+                case "MsgRev: 测试机2，脏污报警":
+                    ShowAlarmTextGrid("测试机2，脏污报警");
+                    break;
+                case "MsgRev: 测试机3，脏污报警":
+                    ShowAlarmTextGrid("测试机3，脏污报警");
+                    break;
+                case "MsgRev: 测试机4，脏污报警":
+                    ShowAlarmTextGrid("测试机4，脏污报警");
                     break;
 
                 case "MsgRev: GRR测试，开始":

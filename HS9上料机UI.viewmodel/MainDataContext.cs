@@ -286,6 +286,10 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 MachineNum_1 { set; get; }
         #endregion
         #region 界面
+        public int DaySampleStartMin { set; get; }
+        public int NightSampleStartMin { set; get; }
+        public int DaySampleStartHour { set; get; }
+        public int NightSampleStartHour { set; get; }
         public int MaterialSelectedIndex { set; get; }
         public ObservableCollection<string> MaterialChangeItemsSource { set; get; } = new ObservableCollection<string>();
         public string HomePageVisibility { set; get; } = "Visible";
@@ -480,7 +484,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2019030701";
+        string VersionMsg = "2019032501";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -493,6 +497,7 @@ namespace HS9上料机UI.viewmodel
         bool unloadreadindexflag = false;
         bool red_normal = false, green_flicker = false, green_normal = false, yellow_flicker = false, yellow_normal = false;
         int signal_lamp = 0;
+        bool isSendSamCMD = false;
         #endregion
         #region 功能
         #region 初始化
@@ -2350,19 +2355,19 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: 测试工位1，产品没放好，样本":
                     ShowAlarmTextGrid("测试工位1，产品没放好，样本\n请将样本扶好");
-                    SaveAlarm("测试工位1，产品没放好，样本");
+                    //SaveAlarm("测试工位1，产品没放好，样本");
                     break;
                 case "MsgRev: 测试工位2，产品没放好，样本":
                     ShowAlarmTextGrid("测试工位2，产品没放好，样本\n请将样本扶好");
-                    SaveAlarm("测试工位2，产品没放好，样本");
+                    //SaveAlarm("测试工位2，产品没放好，样本");
                     break;
                 case "MsgRev: 测试工位3，产品没放好，样本":
                     ShowAlarmTextGrid("测试工位3，产品没放好，样本\n请将样本扶好");
-                    SaveAlarm("测试工位3，产品没放好，样本");
+                    //SaveAlarm("测试工位3，产品没放好，样本");
                     break;
                 case "MsgRev: 测试工位4，产品没放好，样本":
                     ShowAlarmTextGrid("测试工位4，产品没放好，样本\n请将样本扶好");
-                    SaveAlarm("测试工位4，产品没放好，样本");
+                    //SaveAlarm("测试工位4，产品没放好，样本");
                     break;
 
                 case "MsgRev: 测试工位1，产品没放好，GRR":
@@ -2384,7 +2389,7 @@ namespace HS9上料机UI.viewmodel
 
                 case "MsgRev: 样本盘，吸取失败":
                     ShowAlarmTextGrid("样本盘，吸取失败\n请将样本放回原位");
-                    ShowAlarmTextGrid("样本盘，吸取失败");
+                    //ShowAlarmTextGrid("样本盘，吸取失败");
                     break;
                 case "MsgRev: 上料盘1，吸取失败":
                     ShowAlarmTextGrid("上料盘1，吸取失败\n请将产品放回原位");
@@ -2505,35 +2510,35 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: 测试机1，吸取失败，样本":
                     ShowAlarmTextGrid("放料，测试机1，样本吸取失败\n请将样本放回原位！");
-                    SaveAlarm("放料，测试机1，样本吸取失败");
+                    //SaveAlarm("放料，测试机1，样本吸取失败");
                     break;
                 case "MsgRev: 测试机2，吸取失败，样本":
                     ShowAlarmTextGrid("放料，测试机2，样本吸取失败\n请将样本放回原位！");
-                    SaveAlarm("放料，测试机2，样本吸取失败");
+                    //SaveAlarm("放料，测试机2，样本吸取失败");
                     break;
                 case "MsgRev: 测试机3，吸取失败，样本":
                     ShowAlarmTextGrid("放料，测试机3，样本吸取失败\n请将样本放回原位！");
-                    SaveAlarm("放料，测试机3，样本吸取失败");
+                    //SaveAlarm("放料，测试机3，样本吸取失败");
                     break;
                 case "MsgRev: 测试机4，吸取失败，样本":
                     ShowAlarmTextGrid("放料，测试机4，样本吸取失败\n请将样本放回原位！");
-                    SaveAlarm("放料，测试机4，样本吸取失败");
+                    //SaveAlarm("放料，测试机4，样本吸取失败");
                     break;
                 case "MsgRev: 测试机1，产品没放好，样本":
                     ShowAlarmTextGrid("放料，测试机1，样本没放好\n请将样本放好！");
-                    SaveAlarm("放料，测试机1，样本没放好");
+                    //SaveAlarm("放料，测试机1，样本没放好");
                     break;
                 case "MsgRev: 测试机2，产品没放好，样本":
                     ShowAlarmTextGrid("放料，测试机2，样本没放好\n请将样本放好！");
-                    SaveAlarm("放料，测试机2，样本没放好");
+                    //SaveAlarm("放料，测试机2，样本没放好");
                     break;
                 case "MsgRev: 测试机3，产品没放好，样本":
                     ShowAlarmTextGrid("放料，测试机3，样本没放好\n请将样本放好！");
-                    SaveAlarm("放料，测试机3，样本没放好");
+                    //SaveAlarm("放料，测试机3，样本没放好");
                     break;
                 case "MsgRev: 测试机4，产品没放好，样本":
                     ShowAlarmTextGrid("放料，测试机4，样本没放好\n请将样本放好！");
-                    SaveAlarm("放料，测试机4，样本没放好");
+                    //SaveAlarm("放料，测试机4，样本没放好");
                     break;
 
                 case "MsgRev: 测试机1，吸取失败，GRR":
@@ -2609,6 +2614,7 @@ namespace HS9上料机UI.viewmodel
                     LasSam = DateTime.Now;
                     LasSamStr = LasSam.ToString();
                     Inifile.INIWriteValue(iniParameterPath, "Sam", "LasSam", LasSam.ToString());
+                    isSendSamCMD = false;
                     break;
                 default:
                     break;
@@ -3159,8 +3165,32 @@ namespace HS9上料机UI.viewmodel
             {
                 SampleItemsStatus[i / 4 + i % 4 * 8] = SamArray[i / 4, i % 4];
             }
-            SampleTextGridVisibility = (DateTime.Now - LasSam).TotalHours > SampleTimeElapse && IsSamTest || Tester.IsInSampleMode || Tester.IsInGRRMode ? "Visible" : "Collapsed";
-            if ((DateTime.Now - LasSam).TotalHours > SampleTimeElapse)
+
+            DateTime SamStartDatetime,SamDate;
+            if (DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20)
+            {
+                //白班
+                SamStartDatetime = Convert.ToDateTime(DaySampleStartHour.ToString() + ":" + DaySampleStartMin.ToString() + ":00");
+                SamDate = Convert.ToDateTime(DaySampleStartHour.ToString() + ":00:00");
+            }
+            else
+            {
+                //夜班
+                if (DateTime.Now.Hour >= 20)
+                {
+                    SamStartDatetime = Convert.ToDateTime(NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
+                    SamDate = Convert.ToDateTime(NightSampleStartHour.ToString() + ":00:00");
+                }
+                else
+                {
+
+                    SamStartDatetime = Convert.ToDateTime(DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd") + " " + NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
+                    SamDate = Convert.ToDateTime(DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd") + " " + NightSampleStartHour.ToString() + ":00:00");
+                }
+            }
+            //Console.WriteLine(SamStartDatetime);
+            SampleTextGridVisibility = (DateTime.Now - SamDate).TotalSeconds > 0 && (SamDate - LasSam).TotalSeconds > 0 && IsSamTest || Tester.IsInSampleMode || Tester.IsInGRRMode ? "Visible" : "Collapsed";
+            if ((DateTime.Now - SamDate).TotalSeconds > 0)
             {
                 SamMessage = "请测样本";
             }
@@ -3170,10 +3200,24 @@ namespace HS9上料机UI.viewmodel
             }
             else
             {
-                if (Tester.IsInGRRMode)
+                if ((DateTime.Now - SamStartDatetime).TotalSeconds > 0 && SamMessage == "请测样本" && (SamStartDatetime - LasSam).TotalSeconds > 0 && IsSamTest && !isSendSamCMD && epsonRC90.TestSendStatus && EpsonStatusRunning)
                 {
-                    SamMessage = "GRR测试中...";
+                    isSendSamCMD = true;
+                    ShowSampleTestWindow = !ShowSampleTestWindow;
+                    if (epsonRC90.TestSendStatus)
+                    {
+                        await epsonRC90.TestSentNet.SendAsync("GONOGOAction;" + SampleNgitemsNum.ToString());
+                    }
+
                 }
+                else
+                {
+                    if (Tester.IsInGRRMode)
+                    {
+                        SamMessage = "GRR测试中...";
+                    }
+                }
+              
                 
             }
             if (haocaiinit && GlobalVar.Worksheet != null)
@@ -4317,9 +4361,18 @@ namespace HS9上料机UI.viewmodel
                 {
                     SampleTimeElapse = double.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "SampleTimeElapse", "2"));
                     SampleNgitemsNum = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "SampleNgitemsNum", "8"));
+                    DaySampleStartMin = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "DaySampleStartMin", "0"));
+                    NightSampleStartMin = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "NightSampleStartMin", "0"));
+                    DaySampleStartHour = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "DaySampleStartHour", "8"));
+                    NightSampleStartHour = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "NightSampleStartHour", "20"));
+
                 }
                 catch (Exception ex)
                 {
+                    DaySampleStartHour = 8;
+                    NightSampleStartHour = 20;
+                    DaySampleStartMin = 0;
+                    NightSampleStartMin = 0;
                     SampleTimeElapse = 2;
                     SampleNgitemsNum = 8;
                     MsgText = AddMessage(ex.Message);
@@ -4349,6 +4402,50 @@ namespace HS9上料机UI.viewmodel
                 {
                     Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleNgitem" + (i + 1).ToString(), SampleNgitem[i]);
                 }
+                if (DaySampleStartMin < 0)
+                {
+                    DaySampleStartMin = 0;
+                }
+                if (DaySampleStartMin > 59)
+                {
+                    DaySampleStartMin = 59;
+                }
+                if (NightSampleStartMin < 0)
+                {
+                    NightSampleStartMin = 0;
+                }
+                if (NightSampleStartMin > 59)
+                {
+                    NightSampleStartMin = 59;
+                }
+                if (DaySampleStartHour < 8)
+                {
+                    DaySampleStartHour = 8;
+                }
+                if (DaySampleStartHour >= 14)
+                {
+                    DaySampleStartHour = 14;
+                }
+                if (NightSampleStartHour < 0)
+                {
+                    NightSampleStartHour = 0;
+                }
+                if (NightSampleStartHour >= 8 && NightSampleStartHour < 20)
+                {
+                    NightSampleStartHour = 7;
+                }
+                if (NightSampleStartHour > 23)
+                {
+                    NightSampleStartHour = 23;
+                }
+                if (NightSampleStartHour < 8 && NightSampleStartHour >= 2)
+                {
+                    NightSampleStartHour = 2;
+                }
+                Inifile.INIWriteValue(iniParameterPath, "Sam", "DaySampleStartMin", DaySampleStartMin.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "Sam", "NightSampleStartMin", NightSampleStartMin.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "Sam", "DaySampleStartHour", DaySampleStartHour.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "Sam", "NightSampleStartHour", NightSampleStartHour.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleTimeElapse", SampleTimeElapse.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleNgitemsNum", SampleNgitemsNum.ToString());
                 MsgText = AddMessage("参数保存完成");

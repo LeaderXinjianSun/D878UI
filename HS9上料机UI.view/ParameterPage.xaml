@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:bing="clr-namespace:BingLibrary.hjb.mvvm;assembly=BingLibrary"
+             xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HS9上料机UI.view"
              mc:Ignorable="d" 
@@ -69,12 +70,31 @@
                 </StackPanel>
 
                 <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource TextBlockBase}" Text="样本测试时间间隔： "></TextBlock>
+                    <!--<TextBlock Style="{StaticResource TextBlockBase}" Text="样本测试时间间隔： "></TextBlock>
                     <TextBox Style="{StaticResource TextBoxPort}" Text="{Binding SampleTimeElapse}"></TextBox>
-                    <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="时(h)"></TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="时(h)"></TextBlock>-->
+                    
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="白班样本开始：" Width="100"></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="50" Text="{Binding DaySampleStartHour}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="时"></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="50" Text="{Binding DaySampleStartMin}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="分"></TextBlock>
+                    <!--<WindowsFormsHost>
+                        <forms:NumericUpDown Text="{Binding DaySampleStartMin}" Width="100"/>
+                    </WindowsFormsHost>-->
                     <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="测试项数： "></TextBlock>
                     <TextBox Style="{StaticResource TextBoxPort}" Text="{Binding SampleNgitemsNum}"></TextBox>
                     <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="个"></TextBlock>
+                </StackPanel>
+                <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="夜班样本开始：" Width="100"></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="50" Text="{Binding NightSampleStartHour}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="时"></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="50" Text="{Binding NightSampleStartMin}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="分"></TextBlock>
+                    <!--<WindowsFormsHost>
+                        <forms:NumericUpDown Text="{Binding NightSampleStartMin}" Width="100"/>
+                    </WindowsFormsHost>-->
                 </StackPanel>
                 <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
                     <CheckBox Content="样本" Style="{StaticResource CheckBoxBase}" IsChecked="{Binding IsSamTest}"></CheckBox>

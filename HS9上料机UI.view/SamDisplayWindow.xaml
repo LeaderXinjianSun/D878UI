@@ -185,11 +185,11 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <StackPanel Orientation="Vertical">
-                <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                <!--<StackPanel Margin="5,10,5,0" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="时间间隔： "></TextBlock>
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="{Binding SampleTimeElapse}"></TextBlock>
                     <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="时(h)"></TextBlock>
-                </StackPanel>
+                </StackPanel>-->
                 <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="测试项数： "></TextBlock>
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="{Binding SampleNgitemsNum}"></TextBlock>

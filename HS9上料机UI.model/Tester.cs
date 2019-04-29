@@ -312,7 +312,7 @@ namespace HS9上料机UI.model
                         timed = 1000;
                     }
 
-                    if (sw.Elapsed.TotalSeconds > 10)
+                    if (sw.Elapsed.TotalSeconds > 10 && start)
                     {
                         //if (result == "FAIL")
                         //{

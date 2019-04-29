@@ -484,7 +484,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2019032501";
+        string VersionMsg = "2019042901";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -4350,7 +4350,8 @@ namespace HS9上料机UI.viewmodel
                 MNO = Inifile.INIGetStringValue(iniParameterPath, "System", "MNO", "X1374-1");
                 LastQingjie = Convert.ToDateTime(Inifile.INIGetStringValue(iniParameterPath, "System", "LastQingjie", "2018/10/31 8:00:00"));
                 LastQingjieStr = LastQingjie.ToString();
-                IsSamTest = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "IsSamTest", "False"));
+                //IsSamTest = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "IsSamTest", "False"));
+                IsSamTest = true;
                 LasSam = Convert.ToDateTime(Inifile.INIGetStringValue(iniParameterPath, "Sam", "LasSam", "2018/10/31 8:00:00"));
                 LasSamStr = LasSam.ToString();
                 for (int i = 0; i < 8; i++)

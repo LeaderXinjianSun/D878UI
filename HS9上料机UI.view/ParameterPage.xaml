@@ -97,7 +97,7 @@
                     </WindowsFormsHost>-->
                 </StackPanel>
                 <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
-                    <CheckBox Content="样本" Style="{StaticResource CheckBoxBase}" IsChecked="{Binding IsSamTest}"></CheckBox>
+                    <CheckBox IsEnabled="False" Content="样本" Style="{StaticResource CheckBoxBase}" IsChecked="{Binding IsSamTest}"></CheckBox>
                     <TextBlock Style="{StaticResource TextBlockBase}" Width="100" Text="最近样本时刻："></TextBlock>
                     <TextBlock Style="{StaticResource TextBlockBase}" Width="150" Text="{Binding LasSamStr}"></TextBlock>
                 </StackPanel>

@@ -40,7 +40,7 @@
                 <Button  Grid.Column="1" Grid.Row="0" Style="{StaticResource OperationButton}" Content="保存" Command="{bing:ActionAutoWithParam FuncButton}" CommandParameter="0" Width="100" Height="100"></Button>
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Column="1" Header="机台参数">
+        <GroupBox Grid.Column="1" Grid.RowSpan="2" Header="机台参数">
             <StackPanel Orientation="Vertical">
                 <StackPanel Margin="5,5,5,0" Orientation="Horizontal">
                     <CheckBox Content="测试机A" Style="{StaticResource CheckBoxBase}" IsChecked="{Binding TestCheckedAL}"></CheckBox>
@@ -74,10 +74,78 @@
                     <TextBox Style="{StaticResource TextBoxPort}" Text="{Binding SampleTimeElapse}"></TextBox>
                     <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="时(h)"></TextBlock>-->
                     
-                    <TextBlock Style="{StaticResource TextBlockBase}" Text="白班样本开始：" Width="100"></TextBlock>
-                    <TextBox Style="{StaticResource TextBoxPort}" Width="50" Text="{Binding DaySampleStartHour}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="上午样本开始：" Width="130"></TextBlock>
+                    <ComboBox Text="{Binding DaySampleStartHour}" Style="{StaticResource ComboBoxBase}" IsEditable="True" IsReadOnly="True" Width="50">
+                        <ComboBoxItem>6</ComboBoxItem>
+                        <ComboBoxItem>7</ComboBoxItem>
+                        <ComboBoxItem>8</ComboBoxItem>
+                        <ComboBoxItem>9</ComboBoxItem>
+                        <ComboBoxItem>10</ComboBoxItem>
+                        <ComboBoxItem>11</ComboBoxItem>
+                    </ComboBox>
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="时"></TextBlock>
-                    <TextBox Style="{StaticResource TextBoxPort}" Width="50" Text="{Binding DaySampleStartMin}"></TextBox>
+                    <ComboBox Text="{Binding DaySampleStartMin}" Style="{StaticResource ComboBoxBase}" IsEditable="True" IsReadOnly="True" Width="50">
+                        <ComboBoxItem>0</ComboBoxItem>
+                        <ComboBoxItem>1</ComboBoxItem>
+                        <ComboBoxItem>2</ComboBoxItem>
+                        <ComboBoxItem>3</ComboBoxItem>
+                        <ComboBoxItem>4</ComboBoxItem>
+                        <ComboBoxItem>5</ComboBoxItem>
+                        <ComboBoxItem>6</ComboBoxItem>
+                        <ComboBoxItem>7</ComboBoxItem>
+                        <ComboBoxItem>8</ComboBoxItem>
+                        <ComboBoxItem>9</ComboBoxItem>
+                        <ComboBoxItem>10</ComboBoxItem>
+                        <ComboBoxItem>11</ComboBoxItem>
+                        <ComboBoxItem>12</ComboBoxItem>
+                        <ComboBoxItem>13</ComboBoxItem>
+                        <ComboBoxItem>14</ComboBoxItem>
+                        <ComboBoxItem>15</ComboBoxItem>
+                        <ComboBoxItem>16</ComboBoxItem>
+                        <ComboBoxItem>17</ComboBoxItem>
+                        <ComboBoxItem>18</ComboBoxItem>
+                        <ComboBoxItem>19</ComboBoxItem>
+                        <ComboBoxItem>20</ComboBoxItem>
+                        <ComboBoxItem>21</ComboBoxItem>
+                        <ComboBoxItem>22</ComboBoxItem>
+                        <ComboBoxItem>23</ComboBoxItem>
+                        <ComboBoxItem>24</ComboBoxItem>
+                        <ComboBoxItem>25</ComboBoxItem>
+                        <ComboBoxItem>26</ComboBoxItem>
+                        <ComboBoxItem>27</ComboBoxItem>
+                        <ComboBoxItem>28</ComboBoxItem>
+                        <ComboBoxItem>29</ComboBoxItem>
+                        <ComboBoxItem>30</ComboBoxItem>
+                        <ComboBoxItem>31</ComboBoxItem>
+                        <ComboBoxItem>32</ComboBoxItem>
+                        <ComboBoxItem>33</ComboBoxItem>
+                        <ComboBoxItem>34</ComboBoxItem>
+                        <ComboBoxItem>35</ComboBoxItem>
+                        <ComboBoxItem>36</ComboBoxItem>
+                        <ComboBoxItem>37</ComboBoxItem>
+                        <ComboBoxItem>38</ComboBoxItem>
+                        <ComboBoxItem>39</ComboBoxItem>
+                        <ComboBoxItem>40</ComboBoxItem>
+                        <ComboBoxItem>41</ComboBoxItem>
+                        <ComboBoxItem>42</ComboBoxItem>
+                        <ComboBoxItem>43</ComboBoxItem>
+                        <ComboBoxItem>44</ComboBoxItem>
+                        <ComboBoxItem>45</ComboBoxItem>
+                        <ComboBoxItem>46</ComboBoxItem>
+                        <ComboBoxItem>47</ComboBoxItem>
+                        <ComboBoxItem>48</ComboBoxItem>
+                        <ComboBoxItem>49</ComboBoxItem>
+                        <ComboBoxItem>50</ComboBoxItem>
+                        <ComboBoxItem>51</ComboBoxItem>
+                        <ComboBoxItem>52</ComboBoxItem>
+                        <ComboBoxItem>53</ComboBoxItem>
+                        <ComboBoxItem>54</ComboBoxItem>
+                        <ComboBoxItem>55</ComboBoxItem>
+                        <ComboBoxItem>56</ComboBoxItem>
+                        <ComboBoxItem>57</ComboBoxItem>
+                        <ComboBoxItem>58</ComboBoxItem>
+                        <ComboBoxItem>59</ComboBoxItem>
+                    </ComboBox>
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="分"></TextBlock>
                     <!--<WindowsFormsHost>
                         <forms:NumericUpDown Text="{Binding DaySampleStartMin}" Width="100"/>
@@ -87,10 +155,235 @@
                     <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="个"></TextBlock>
                 </StackPanel>
                 <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource TextBlockBase}" Text="夜班样本开始：" Width="100"></TextBlock>
-                    <TextBox Style="{StaticResource TextBoxPort}" Width="50" Text="{Binding NightSampleStartHour}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="下午样本开始：" Width="130"></TextBlock>
+                    <ComboBox Text="{Binding DaySampleStartHour1}" Style="{StaticResource ComboBoxBase}" IsEditable="True" IsReadOnly="True" Width="50">
+                        <ComboBoxItem>12</ComboBoxItem>
+                        <ComboBoxItem>13</ComboBoxItem>
+                        <ComboBoxItem>14</ComboBoxItem>
+                        <ComboBoxItem>15</ComboBoxItem>
+                        <ComboBoxItem>16</ComboBoxItem>
+                        <ComboBoxItem>17</ComboBoxItem>
+                    </ComboBox>
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="时"></TextBlock>
-                    <TextBox Style="{StaticResource TextBoxPort}" Width="50" Text="{Binding NightSampleStartMin}"></TextBox>
+                    <ComboBox Text="{Binding DaySampleStartMin1}" Style="{StaticResource ComboBoxBase}" IsEditable="True" IsReadOnly="True" Width="50">
+                        <ComboBoxItem>0</ComboBoxItem>
+                        <ComboBoxItem>1</ComboBoxItem>
+                        <ComboBoxItem>2</ComboBoxItem>
+                        <ComboBoxItem>3</ComboBoxItem>
+                        <ComboBoxItem>4</ComboBoxItem>
+                        <ComboBoxItem>5</ComboBoxItem>
+                        <ComboBoxItem>6</ComboBoxItem>
+                        <ComboBoxItem>7</ComboBoxItem>
+                        <ComboBoxItem>8</ComboBoxItem>
+                        <ComboBoxItem>9</ComboBoxItem>
+                        <ComboBoxItem>10</ComboBoxItem>
+                        <ComboBoxItem>11</ComboBoxItem>
+                        <ComboBoxItem>12</ComboBoxItem>
+                        <ComboBoxItem>13</ComboBoxItem>
+                        <ComboBoxItem>14</ComboBoxItem>
+                        <ComboBoxItem>15</ComboBoxItem>
+                        <ComboBoxItem>16</ComboBoxItem>
+                        <ComboBoxItem>17</ComboBoxItem>
+                        <ComboBoxItem>18</ComboBoxItem>
+                        <ComboBoxItem>19</ComboBoxItem>
+                        <ComboBoxItem>20</ComboBoxItem>
+                        <ComboBoxItem>21</ComboBoxItem>
+                        <ComboBoxItem>22</ComboBoxItem>
+                        <ComboBoxItem>23</ComboBoxItem>
+                        <ComboBoxItem>24</ComboBoxItem>
+                        <ComboBoxItem>25</ComboBoxItem>
+                        <ComboBoxItem>26</ComboBoxItem>
+                        <ComboBoxItem>27</ComboBoxItem>
+                        <ComboBoxItem>28</ComboBoxItem>
+                        <ComboBoxItem>29</ComboBoxItem>
+                        <ComboBoxItem>30</ComboBoxItem>
+                        <ComboBoxItem>31</ComboBoxItem>
+                        <ComboBoxItem>32</ComboBoxItem>
+                        <ComboBoxItem>33</ComboBoxItem>
+                        <ComboBoxItem>34</ComboBoxItem>
+                        <ComboBoxItem>35</ComboBoxItem>
+                        <ComboBoxItem>36</ComboBoxItem>
+                        <ComboBoxItem>37</ComboBoxItem>
+                        <ComboBoxItem>38</ComboBoxItem>
+                        <ComboBoxItem>39</ComboBoxItem>
+                        <ComboBoxItem>40</ComboBoxItem>
+                        <ComboBoxItem>41</ComboBoxItem>
+                        <ComboBoxItem>42</ComboBoxItem>
+                        <ComboBoxItem>43</ComboBoxItem>
+                        <ComboBoxItem>44</ComboBoxItem>
+                        <ComboBoxItem>45</ComboBoxItem>
+                        <ComboBoxItem>46</ComboBoxItem>
+                        <ComboBoxItem>47</ComboBoxItem>
+                        <ComboBoxItem>48</ComboBoxItem>
+                        <ComboBoxItem>49</ComboBoxItem>
+                        <ComboBoxItem>50</ComboBoxItem>
+                        <ComboBoxItem>51</ComboBoxItem>
+                        <ComboBoxItem>52</ComboBoxItem>
+                        <ComboBoxItem>53</ComboBoxItem>
+                        <ComboBoxItem>54</ComboBoxItem>
+                        <ComboBoxItem>55</ComboBoxItem>
+                        <ComboBoxItem>56</ComboBoxItem>
+                        <ComboBoxItem>57</ComboBoxItem>
+                        <ComboBoxItem>58</ComboBoxItem>
+                        <ComboBoxItem>59</ComboBoxItem>
+                    </ComboBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="分"></TextBlock>
+                    <!--<WindowsFormsHost>
+                        <forms:NumericUpDown Text="{Binding NightSampleStartMin}" Width="100"/>
+                    </WindowsFormsHost>-->
+                </StackPanel>
+                <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="前夜样本开始：" Width="130"></TextBlock>
+                    
+                    <ComboBox Text="{Binding NightSampleStartHour}" Style="{StaticResource ComboBoxBase}" IsEditable="True" IsReadOnly="True" Width="50">
+                        <ComboBoxItem>18</ComboBoxItem>
+                        <ComboBoxItem>19</ComboBoxItem>
+                        <ComboBoxItem>20</ComboBoxItem>
+                        <ComboBoxItem>21</ComboBoxItem>
+                        <ComboBoxItem>22</ComboBoxItem>
+                        <ComboBoxItem>23</ComboBoxItem>
+                    </ComboBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="时"></TextBlock>
+                    <ComboBox Text="{Binding NightSampleStartMin}" Style="{StaticResource ComboBoxBase}" IsEditable="True" IsReadOnly="True" Width="50">
+                        <ComboBoxItem>0</ComboBoxItem>
+                        <ComboBoxItem>1</ComboBoxItem>
+                        <ComboBoxItem>2</ComboBoxItem>
+                        <ComboBoxItem>3</ComboBoxItem>
+                        <ComboBoxItem>4</ComboBoxItem>
+                        <ComboBoxItem>5</ComboBoxItem>
+                        <ComboBoxItem>6</ComboBoxItem>
+                        <ComboBoxItem>7</ComboBoxItem>
+                        <ComboBoxItem>8</ComboBoxItem>
+                        <ComboBoxItem>9</ComboBoxItem>
+                        <ComboBoxItem>10</ComboBoxItem>
+                        <ComboBoxItem>11</ComboBoxItem>
+                        <ComboBoxItem>12</ComboBoxItem>
+                        <ComboBoxItem>13</ComboBoxItem>
+                        <ComboBoxItem>14</ComboBoxItem>
+                        <ComboBoxItem>15</ComboBoxItem>
+                        <ComboBoxItem>16</ComboBoxItem>
+                        <ComboBoxItem>17</ComboBoxItem>
+                        <ComboBoxItem>18</ComboBoxItem>
+                        <ComboBoxItem>19</ComboBoxItem>
+                        <ComboBoxItem>20</ComboBoxItem>
+                        <ComboBoxItem>21</ComboBoxItem>
+                        <ComboBoxItem>22</ComboBoxItem>
+                        <ComboBoxItem>23</ComboBoxItem>
+                        <ComboBoxItem>24</ComboBoxItem>
+                        <ComboBoxItem>25</ComboBoxItem>
+                        <ComboBoxItem>26</ComboBoxItem>
+                        <ComboBoxItem>27</ComboBoxItem>
+                        <ComboBoxItem>28</ComboBoxItem>
+                        <ComboBoxItem>29</ComboBoxItem>
+                        <ComboBoxItem>30</ComboBoxItem>
+                        <ComboBoxItem>31</ComboBoxItem>
+                        <ComboBoxItem>32</ComboBoxItem>
+                        <ComboBoxItem>33</ComboBoxItem>
+                        <ComboBoxItem>34</ComboBoxItem>
+                        <ComboBoxItem>35</ComboBoxItem>
+                        <ComboBoxItem>36</ComboBoxItem>
+                        <ComboBoxItem>37</ComboBoxItem>
+                        <ComboBoxItem>38</ComboBoxItem>
+                        <ComboBoxItem>39</ComboBoxItem>
+                        <ComboBoxItem>40</ComboBoxItem>
+                        <ComboBoxItem>41</ComboBoxItem>
+                        <ComboBoxItem>42</ComboBoxItem>
+                        <ComboBoxItem>43</ComboBoxItem>
+                        <ComboBoxItem>44</ComboBoxItem>
+                        <ComboBoxItem>45</ComboBoxItem>
+                        <ComboBoxItem>46</ComboBoxItem>
+                        <ComboBoxItem>47</ComboBoxItem>
+                        <ComboBoxItem>48</ComboBoxItem>
+                        <ComboBoxItem>49</ComboBoxItem>
+                        <ComboBoxItem>50</ComboBoxItem>
+                        <ComboBoxItem>51</ComboBoxItem>
+                        <ComboBoxItem>52</ComboBoxItem>
+                        <ComboBoxItem>53</ComboBoxItem>
+                        <ComboBoxItem>54</ComboBoxItem>
+                        <ComboBoxItem>55</ComboBoxItem>
+                        <ComboBoxItem>56</ComboBoxItem>
+                        <ComboBoxItem>57</ComboBoxItem>
+                        <ComboBoxItem>58</ComboBoxItem>
+                        <ComboBoxItem>59</ComboBoxItem>
+                    </ComboBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="分"></TextBlock>
+                    <!--<WindowsFormsHost>
+                        <forms:NumericUpDown Text="{Binding NightSampleStartMin}" Width="100"/>
+                    </WindowsFormsHost>-->
+                </StackPanel>
+                <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="后夜样本开始：" Width="130"></TextBlock>
+                    <ComboBox Text="{Binding NightSampleStartHour1}" Style="{StaticResource ComboBoxBase}" IsEditable="True" IsReadOnly="True" Width="50">
+                        <ComboBoxItem>0</ComboBoxItem>
+                        <ComboBoxItem>1</ComboBoxItem>
+                        <ComboBoxItem>2</ComboBoxItem>
+                        <ComboBoxItem>3</ComboBoxItem>
+                        <ComboBoxItem>4</ComboBoxItem>
+                        <ComboBoxItem>5</ComboBoxItem>
+                    </ComboBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="时"></TextBlock>
+                    <ComboBox Text="{Binding NightSampleStartMin1}" Style="{StaticResource ComboBoxBase}" IsEditable="True" IsReadOnly="True" Width="50">
+                        <ComboBoxItem>0</ComboBoxItem>
+                        <ComboBoxItem>1</ComboBoxItem>
+                        <ComboBoxItem>2</ComboBoxItem>
+                        <ComboBoxItem>3</ComboBoxItem>
+                        <ComboBoxItem>4</ComboBoxItem>
+                        <ComboBoxItem>5</ComboBoxItem>
+                        <ComboBoxItem>6</ComboBoxItem>
+                        <ComboBoxItem>7</ComboBoxItem>
+                        <ComboBoxItem>8</ComboBoxItem>
+                        <ComboBoxItem>9</ComboBoxItem>
+                        <ComboBoxItem>10</ComboBoxItem>
+                        <ComboBoxItem>11</ComboBoxItem>
+                        <ComboBoxItem>12</ComboBoxItem>
+                        <ComboBoxItem>13</ComboBoxItem>
+                        <ComboBoxItem>14</ComboBoxItem>
+                        <ComboBoxItem>15</ComboBoxItem>
+                        <ComboBoxItem>16</ComboBoxItem>
+                        <ComboBoxItem>17</ComboBoxItem>
+                        <ComboBoxItem>18</ComboBoxItem>
+                        <ComboBoxItem>19</ComboBoxItem>
+                        <ComboBoxItem>20</ComboBoxItem>
+                        <ComboBoxItem>21</ComboBoxItem>
+                        <ComboBoxItem>22</ComboBoxItem>
+                        <ComboBoxItem>23</ComboBoxItem>
+                        <ComboBoxItem>24</ComboBoxItem>
+                        <ComboBoxItem>25</ComboBoxItem>
+                        <ComboBoxItem>26</ComboBoxItem>
+                        <ComboBoxItem>27</ComboBoxItem>
+                        <ComboBoxItem>28</ComboBoxItem>
+                        <ComboBoxItem>29</ComboBoxItem>
+                        <ComboBoxItem>30</ComboBoxItem>
+                        <ComboBoxItem>31</ComboBoxItem>
+                        <ComboBoxItem>32</ComboBoxItem>
+                        <ComboBoxItem>33</ComboBoxItem>
+                        <ComboBoxItem>34</ComboBoxItem>
+                        <ComboBoxItem>35</ComboBoxItem>
+                        <ComboBoxItem>36</ComboBoxItem>
+                        <ComboBoxItem>37</ComboBoxItem>
+                        <ComboBoxItem>38</ComboBoxItem>
+                        <ComboBoxItem>39</ComboBoxItem>
+                        <ComboBoxItem>40</ComboBoxItem>
+                        <ComboBoxItem>41</ComboBoxItem>
+                        <ComboBoxItem>42</ComboBoxItem>
+                        <ComboBoxItem>43</ComboBoxItem>
+                        <ComboBoxItem>44</ComboBoxItem>
+                        <ComboBoxItem>45</ComboBoxItem>
+                        <ComboBoxItem>46</ComboBoxItem>
+                        <ComboBoxItem>47</ComboBoxItem>
+                        <ComboBoxItem>48</ComboBoxItem>
+                        <ComboBoxItem>49</ComboBoxItem>
+                        <ComboBoxItem>50</ComboBoxItem>
+                        <ComboBoxItem>51</ComboBoxItem>
+                        <ComboBoxItem>52</ComboBoxItem>
+                        <ComboBoxItem>53</ComboBoxItem>
+                        <ComboBoxItem>54</ComboBoxItem>
+                        <ComboBoxItem>55</ComboBoxItem>
+                        <ComboBoxItem>56</ComboBoxItem>
+                        <ComboBoxItem>57</ComboBoxItem>
+                        <ComboBoxItem>58</ComboBoxItem>
+                        <ComboBoxItem>59</ComboBoxItem>
+                    </ComboBox>
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="分"></TextBlock>
                     <!--<WindowsFormsHost>
                         <forms:NumericUpDown Text="{Binding NightSampleStartMin}" Width="100"/>

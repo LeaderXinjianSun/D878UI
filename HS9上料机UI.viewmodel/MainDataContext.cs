@@ -290,6 +290,10 @@ namespace HS9上料机UI.viewmodel
         public int NightSampleStartMin { set; get; }
         public int DaySampleStartHour { set; get; }
         public int NightSampleStartHour { set; get; }
+        public int DaySampleStartMin1 { set; get; }
+        public int NightSampleStartMin1 { set; get; }
+        public int DaySampleStartHour1 { set; get; }
+        public int NightSampleStartHour1 { set; get; }
         public int MaterialSelectedIndex { set; get; }
         public ObservableCollection<string> MaterialChangeItemsSource { set; get; } = new ObservableCollection<string>();
         public string HomePageVisibility { set; get; } = "Visible";
@@ -484,7 +488,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2019042901";
+        string VersionMsg = "2019050901";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -2322,36 +2326,36 @@ namespace HS9上料机UI.viewmodel
                     SaveAlarm("放料，测试机4，吸取失败");
                     break;
                 case "MsgRev: 测试工位1，产品没放好":                    
-                    SaveAlarm("测试工位1，产品没放好");
-                    if (liaoinput > 0)
-                    {
-                        liaoinput -= 1;
-                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
-                    }
+                    //SaveAlarm("测试工位1，产品没放好");
+                    //if (liaoinput > 0)
+                    //{
+                    //    liaoinput -= 1;
+                    //    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
+                    //}
                     break;
                 case "MsgRev: 测试工位2，产品没放好":
-                    SaveAlarm("测试工位2，产品没放好");
-                    if (liaoinput > 0)
-                    {
-                        liaoinput -= 1;
-                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
-                    }
+                    //SaveAlarm("测试工位2，产品没放好");
+                    //if (liaoinput > 0)
+                    //{
+                    //    liaoinput -= 1;
+                    //    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
+                    //}
                     break;
                 case "MsgRev: 测试工位3，产品没放好":
-                    SaveAlarm("测试工位3，产品没放好");
-                    if (liaoinput > 0)
-                    {
-                        liaoinput -= 1;
-                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
-                    }
+                    //SaveAlarm("测试工位3，产品没放好");
+                    //if (liaoinput > 0)
+                    //{
+                    //    liaoinput -= 1;
+                    //    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
+                    //}
                     break;
                 case "MsgRev: 测试工位4，产品没放好":
-                    SaveAlarm("测试工位4，产品没放好");
-                    if (liaoinput > 0)
-                    {
-                        liaoinput -= 1;
-                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
-                    }
+                    //SaveAlarm("测试工位4，产品没放好");
+                    //if (liaoinput > 0)
+                    //{
+                    //    liaoinput -= 1;
+                    //    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
+                    //}
                     break;
                 case "MsgRev: 测试工位1，产品没放好，样本":
                     ShowAlarmTextGrid("测试工位1，产品没放好，样本\n请将样本扶好");
@@ -2746,37 +2750,37 @@ namespace HS9上料机UI.viewmodel
             {
                 return Task.Run(() =>
                 {
-                    try
-                    {
-                        unloadreadindexflag = true;
-                        ushort nextindex = ushort.Parse(s);
-                        //Inifile.INIWriteValue(initestPath, "Other", "index", "-1");
-                        string ReadIndex1 = Inifile.INIGetStringValue(initestPath, "Other", "index", "-1");
-                        Inifile.INIWriteValue(initestPath, "Other", "trayrequest", "ask" + FlexId[nextindex]);
-                        System.Threading.Thread.Sleep(200);
-                        string ReadIndex = Inifile.INIGetStringValue(initestPath, "Other", "index" , "-1");
-                        while (ReadIndex == ReadIndex1)
-                        {
-                            if (EStop)
-                            {
-                                unloadreadindexflag = false;
-                                return;
-                            }
-                            System.Threading.Thread.Sleep(200);
-                            ReadIndex = Inifile.INIGetStringValue(initestPath, "Other", "index", "-1");
-                        }
-                        unloadreadindexflag = false;
-                        XYIndex.Value = ushort.Parse(ReadIndex) - 1;
-                        if (ushort.Parse(ReadIndex) >= endnum)
-                        {
-                            Inifile.INIWriteValue(initestPath, "Other", "traychange", "Y");
-                        }
-                        System.Threading.Thread.Sleep(100);
-                    }
-                    catch (Exception ex)
-                    {
-                        MsgText = AddMessage(ex.Message);
-                    }
+                    //try
+                    //{
+                    //    unloadreadindexflag = true;
+                    //    ushort nextindex = ushort.Parse(s);
+                    //    //Inifile.INIWriteValue(initestPath, "Other", "index", "-1");
+                    //    string ReadIndex1 = Inifile.INIGetStringValue(initestPath, "Other", "index", "-1");
+                    //    Inifile.INIWriteValue(initestPath, "Other", "trayrequest", "ask" + FlexId[nextindex]);
+                    //    System.Threading.Thread.Sleep(200);
+                    //    string ReadIndex = Inifile.INIGetStringValue(initestPath, "Other", "index" , "-1");
+                    //    while (ReadIndex == ReadIndex1)
+                    //    {
+                    //        if (EStop)
+                    //        {
+                    //            unloadreadindexflag = false;
+                    //            return;
+                    //        }
+                    //        System.Threading.Thread.Sleep(200);
+                    //        ReadIndex = Inifile.INIGetStringValue(initestPath, "Other", "index", "-1");
+                    //    }
+                    //    unloadreadindexflag = false;
+                    //    XYIndex.Value = ushort.Parse(ReadIndex) - 1;
+                    //    if (ushort.Parse(ReadIndex) >= endnum)
+                    //    {
+                    //        Inifile.INIWriteValue(initestPath, "Other", "traychange", "Y");
+                    //    }
+                    //    System.Threading.Thread.Sleep(100);
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    MsgText = AddMessage(ex.Message);
+                    //}
 
                     TUnloadCMD.Value = true;
                     TUnloadCompleted.Value = false;
@@ -3166,31 +3170,56 @@ namespace HS9上料机UI.viewmodel
                 SampleItemsStatus[i / 4 + i % 4 * 8] = SamArray[i / 4, i % 4];
             }
 
-            DateTime SamStartDatetime,SamDate;
-            if (DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20)
+            DateTime SamStartDatetime,SamDate,SamDateBigin;
+            if (DateTime.Now.Hour >= 6 && DateTime.Now.Hour < 12)
             {
-                //白班
+                //上午
                 SamStartDatetime = Convert.ToDateTime(DaySampleStartHour.ToString() + ":" + DaySampleStartMin.ToString() + ":00");
                 SamDate = Convert.ToDateTime(DaySampleStartHour.ToString() + ":00:00");
+                //SamDateBigin = Convert.ToDateTime("06:00:00");
             }
             else
             {
-                //夜班
-                if (DateTime.Now.Hour >= 20)
+                if (DateTime.Now.Hour >= 12 && DateTime.Now.Hour < 18)
                 {
-                    SamStartDatetime = Convert.ToDateTime(NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
-                    SamDate = Convert.ToDateTime(NightSampleStartHour.ToString() + ":00:00");
+                    //下午
+                    SamStartDatetime = Convert.ToDateTime(DaySampleStartHour1.ToString() + ":" + DaySampleStartMin1.ToString() + ":00");
+                    SamDate = Convert.ToDateTime(DaySampleStartHour1.ToString() + ":00:00");
+                    //SamDateBigin = Convert.ToDateTime("12:00:00");
                 }
                 else
                 {
-
-                    SamStartDatetime = Convert.ToDateTime(DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd") + " " + NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
-                    SamDate = Convert.ToDateTime(DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd") + " " + NightSampleStartHour.ToString() + ":00:00");
+                    if (DateTime.Now.Hour >= 18)
+                    {
+                        //前夜
+                        SamStartDatetime = Convert.ToDateTime(NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
+                        SamDate = Convert.ToDateTime(NightSampleStartHour.ToString() + ":00:00");
+                        //SamDateBigin = Convert.ToDateTime("18:00:00");
+                    }
+                    else
+                    {
+                        //后夜
+                        SamStartDatetime = Convert.ToDateTime(NightSampleStartHour1.ToString() + ":" + NightSampleStartMin1.ToString() + ":00");
+                        SamDate = Convert.ToDateTime(NightSampleStartHour1.ToString() + ":00:00");
+                        //SamDateBigin = Convert.ToDateTime("00:00:00");
+                    }
                 }
+                ////夜班
+                //if (DateTime.Now.Hour >= 20)
+                //{
+                //    SamStartDatetime = Convert.ToDateTime(NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
+                //    SamDate = Convert.ToDateTime(NightSampleStartHour.ToString() + ":00:00");
+                //}
+                //else
+                //{
+
+                //    SamStartDatetime = Convert.ToDateTime(DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd") + " " + NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
+                //    SamDate = Convert.ToDateTime(DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd") + " " + NightSampleStartHour.ToString() + ":00:00");
+                //}
             }
             //Console.WriteLine(SamStartDatetime);
             SampleTextGridVisibility = (DateTime.Now - SamDate).TotalSeconds > 0 && (SamDate - LasSam).TotalSeconds > 0 && IsSamTest || Tester.IsInSampleMode || Tester.IsInGRRMode ? "Visible" : "Collapsed";
-            if ((DateTime.Now - SamDate).TotalSeconds > 0)
+            if ((DateTime.Now - SamDate).TotalSeconds > 0 && (DateTime.Now - LasSam).TotalHours > 6)
             {
                 SamMessage = "请测样本";
             }
@@ -3200,7 +3229,7 @@ namespace HS9上料机UI.viewmodel
             }
             else
             {
-                if ((DateTime.Now - SamStartDatetime).TotalSeconds > 0 && SamMessage == "请测样本" && (SamStartDatetime - LasSam).TotalSeconds > 0 && IsSamTest && !isSendSamCMD && epsonRC90.TestSendStatus && EpsonStatusRunning)
+                if ((DateTime.Now - SamStartDatetime).TotalSeconds > 0 && SamMessage == "请测样本" && (SamStartDatetime - LasSam).TotalHours > 6 && IsSamTest && !isSendSamCMD && epsonRC90.TestSendStatus && EpsonStatusRunning)
                 {
                     isSendSamCMD = true;
                     ShowSampleTestWindow = !ShowSampleTestWindow;
@@ -3580,7 +3609,7 @@ namespace HS9上料机UI.viewmodel
                             _UnloadTrayFinish = XinJieOut[9];
                             if (!_UnloadTrayFinish && (ushort)XYIndex.Value != 0)
                             {
-                                Inifile.INIWriteValue(initestPath, "Other", "traychange", "Y");
+                                //Inifile.INIWriteValue(initestPath, "Other", "traychange", "Y");
                                 MsgText = AddMessage("下料，换盘");
                             }
 
@@ -4367,6 +4396,11 @@ namespace HS9上料机UI.viewmodel
                     DaySampleStartHour = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "DaySampleStartHour", "8"));
                     NightSampleStartHour = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "NightSampleStartHour", "20"));
 
+                    DaySampleStartMin1 = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "DaySampleStartMin1", "0"));
+                    NightSampleStartMin1 = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "NightSampleStartMin1", "0"));
+                    DaySampleStartHour1 = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "DaySampleStartHour1", "14"));
+                    NightSampleStartHour1 = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "NightSampleStartHour1", "2"));
+
                 }
                 catch (Exception ex)
                 {
@@ -4374,6 +4408,10 @@ namespace HS9上料机UI.viewmodel
                     NightSampleStartHour = 20;
                     DaySampleStartMin = 0;
                     NightSampleStartMin = 0;
+                    DaySampleStartHour1 = 14;
+                    NightSampleStartHour1 = 2;
+                    DaySampleStartMin1 = 0;
+                    NightSampleStartMin1 = 0;
                     SampleTimeElapse = 2;
                     SampleNgitemsNum = 8;
                     MsgText = AddMessage(ex.Message);
@@ -4403,50 +4441,56 @@ namespace HS9上料机UI.viewmodel
                 {
                     Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleNgitem" + (i + 1).ToString(), SampleNgitem[i]);
                 }
-                if (DaySampleStartMin < 0)
-                {
-                    DaySampleStartMin = 0;
-                }
-                if (DaySampleStartMin > 59)
-                {
-                    DaySampleStartMin = 59;
-                }
-                if (NightSampleStartMin < 0)
-                {
-                    NightSampleStartMin = 0;
-                }
-                if (NightSampleStartMin > 59)
-                {
-                    NightSampleStartMin = 59;
-                }
-                if (DaySampleStartHour < 8)
-                {
-                    DaySampleStartHour = 8;
-                }
-                if (DaySampleStartHour >= 14)
-                {
-                    DaySampleStartHour = 14;
-                }
-                if (NightSampleStartHour < 0)
-                {
-                    NightSampleStartHour = 0;
-                }
-                if (NightSampleStartHour >= 8 && NightSampleStartHour < 20)
-                {
-                    NightSampleStartHour = 7;
-                }
-                if (NightSampleStartHour > 23)
-                {
-                    NightSampleStartHour = 23;
-                }
-                if (NightSampleStartHour < 8 && NightSampleStartHour >= 2)
-                {
-                    NightSampleStartHour = 2;
-                }
+                //if (DaySampleStartMin < 0)
+                //{
+                //    DaySampleStartMin = 0;
+                //}
+                //if (DaySampleStartMin > 59)
+                //{
+                //    DaySampleStartMin = 59;
+                //}
+                //if (NightSampleStartMin < 0)
+                //{
+                //    NightSampleStartMin = 0;
+                //}
+                //if (NightSampleStartMin > 59)
+                //{
+                //    NightSampleStartMin = 59;
+                //}
+                //if (DaySampleStartHour < 8)
+                //{
+                //    DaySampleStartHour = 8;
+                //}
+                //if (DaySampleStartHour >= 14)
+                //{
+                //    DaySampleStartHour = 14;
+                //}
+                //if (NightSampleStartHour < 0)
+                //{
+                //    NightSampleStartHour = 0;
+                //}
+                //if (NightSampleStartHour >= 8 && NightSampleStartHour < 20)
+                //{
+                //    NightSampleStartHour = 7;
+                //}
+                //if (NightSampleStartHour > 23)
+                //{
+                //    NightSampleStartHour = 23;
+                //}
+                //if (NightSampleStartHour < 8 && NightSampleStartHour >= 2)
+                //{
+                //    NightSampleStartHour = 2;
+                //}
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "DaySampleStartMin", DaySampleStartMin.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "NightSampleStartMin", NightSampleStartMin.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "DaySampleStartHour", DaySampleStartHour.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "NightSampleStartHour", NightSampleStartHour.ToString());
+
+                Inifile.INIWriteValue(iniParameterPath, "Sam", "DaySampleStartMin1", DaySampleStartMin1.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "Sam", "NightSampleStartMin1", NightSampleStartMin1.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "Sam", "DaySampleStartHour1", DaySampleStartHour1.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "Sam", "NightSampleStartHour1", NightSampleStartHour1.ToString());
+
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleTimeElapse", SampleTimeElapse.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleNgitemsNum", SampleNgitemsNum.ToString());
                 MsgText = AddMessage("参数保存完成");

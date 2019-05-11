@@ -488,7 +488,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2019050901";
+        string VersionMsg = "2019051101";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -3218,7 +3218,7 @@ namespace HS9上料机UI.viewmodel
                 //}
             }
             //Console.WriteLine(SamStartDatetime);
-            SampleTextGridVisibility = (DateTime.Now - SamDate).TotalSeconds > 0 && (SamDate - LasSam).TotalSeconds > 0 && IsSamTest || Tester.IsInSampleMode || Tester.IsInGRRMode ? "Visible" : "Collapsed";
+            SampleTextGridVisibility = (DateTime.Now - SamDate).TotalSeconds > 0 && (SamDate - LasSam).TotalSeconds > 6 && IsSamTest || Tester.IsInSampleMode || Tester.IsInGRRMode ? "Visible" : "Collapsed";
             if ((DateTime.Now - SamDate).TotalSeconds > 0 && (DateTime.Now - LasSam).TotalHours > 6)
             {
                 SamMessage = "请测样本";
@@ -4128,6 +4128,7 @@ namespace HS9上料机UI.viewmodel
                                         string[] arrFieldAndOldValue = { parnum.ToUpper(), "FLUKE", (string)dt.Rows[0]["BARCODE"], (string)dt1.Rows[0]["NGITEM"], tres, MNO, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.ToString("HHmmss"), flexnum };
                                         oraDB.insertSQL1("BARSAMREC".ToUpper(), arrFieldAndNewValue, arrFieldAndOldValue);
                                         MsgText = AddMessage("插入样本记录 " + (string)dt.Rows[0]["BARCODE"]);
+                                        SaveCSVfileSample(arrFieldAndOldValue);
                                     }
                                     catch (Exception ex)
                                     {
@@ -4288,6 +4289,29 @@ namespace HS9上料机UI.viewmodel
                     Csvfile.AddNewLine(filepath, heads);
                 }
                 string[] conte = { tr.TestTime, tr.Barcode, tr.TestResult, tr.TestCycleTime, tr.Index };
+                Csvfile.AddNewLine(filepath, conte);
+            }
+            catch (Exception ex)
+            {
+                MsgText = AddMessage(ex.Message);
+            }
+        }
+        private void SaveCSVfileSample(string[] arrFieldAndOldValue)
+        {
+            string filepath = "D:\\样本记录\\样本记录" + GetBanci() + ".csv";
+            if (!Directory.Exists("D:\\样本记录"))
+            {
+                Directory.CreateDirectory("D:\\样本记录");
+            }
+            try
+            {
+
+                if (!File.Exists(filepath))
+                {
+                    string[] heads = {"DateTime", "PARTNUM", "SITEM", "BARCODE", "NGITEM", "TRES", "MNO", "CDATE", "CTIME", "SR01" };
+                    Csvfile.AddNewLine(filepath, heads);
+                }
+                string[] conte = { System.DateTime.Now.ToString(), arrFieldAndOldValue[0], arrFieldAndOldValue[1], arrFieldAndOldValue[2], arrFieldAndOldValue[3], arrFieldAndOldValue[4], arrFieldAndOldValue[5], arrFieldAndOldValue[6], arrFieldAndOldValue[7], arrFieldAndOldValue[8], arrFieldAndOldValue[9] };
                 Csvfile.AddNewLine(filepath, conte);
             }
             catch (Exception ex)

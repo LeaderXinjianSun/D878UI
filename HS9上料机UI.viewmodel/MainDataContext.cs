@@ -488,7 +488,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2019051101";
+        string VersionMsg = "2019051201";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -4311,7 +4311,7 @@ namespace HS9上料机UI.viewmodel
                     string[] heads = {"DateTime", "PARTNUM", "SITEM", "BARCODE", "NGITEM", "TRES", "MNO", "CDATE", "CTIME", "SR01" };
                     Csvfile.AddNewLine(filepath, heads);
                 }
-                string[] conte = { System.DateTime.Now.ToString(), arrFieldAndOldValue[0], arrFieldAndOldValue[1], arrFieldAndOldValue[2], arrFieldAndOldValue[3], arrFieldAndOldValue[4], arrFieldAndOldValue[5], arrFieldAndOldValue[6], arrFieldAndOldValue[7], arrFieldAndOldValue[8], arrFieldAndOldValue[9] };
+                string[] conte = { System.DateTime.Now.ToString(), arrFieldAndOldValue[0], arrFieldAndOldValue[1], arrFieldAndOldValue[2], arrFieldAndOldValue[3], arrFieldAndOldValue[4], arrFieldAndOldValue[5], arrFieldAndOldValue[6], arrFieldAndOldValue[7], arrFieldAndOldValue[8] };
                 Csvfile.AddNewLine(filepath, conte);
             }
             catch (Exception ex)

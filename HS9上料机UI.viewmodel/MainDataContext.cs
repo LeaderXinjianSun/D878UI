@@ -16,6 +16,7 @@ using ViewROI;
 using System.Data;
 using 臻鼎科技OraDB;
 using OfficeOpenXml;
+using System.Diagnostics;
 
 namespace HS9上料机UI.viewmodel
 {
@@ -286,6 +287,9 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 MachineNum_1 { set; get; }
         #endregion
         #region 界面
+        public string SamStart_ { set; get; }
+        public string SamStart_H { set; get; }
+        public string SamStart_Begin { set; get; }
         public int DaySampleStartMin { set; get; }
         public int NightSampleStartMin { set; get; }
         public int DaySampleStartHour { set; get; }
@@ -380,6 +384,7 @@ namespace HS9上料机UI.viewmodel
         public ObservableCollection<string> SampleNgitem { set; get; } = new ObservableCollection<string>();
         public ObservableCollection<string> SampleItemsStatus { set; get; } = new ObservableCollection<string>();
         public int SampleNgitemsNum { set; get; }
+        public int SamTimesLimit { set; get; }
         #endregion
         #endregion
         #region 统计
@@ -488,7 +493,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2019051201";
+        string VersionMsg = "2019052401";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -502,6 +507,8 @@ namespace HS9上料机UI.viewmodel
         bool red_normal = false, green_flicker = false, green_normal = false, yellow_flicker = false, yellow_normal = false;
         int signal_lamp = 0;
         bool isSendSamCMD = false;
+        Stopwatch Unloadsw = new Stopwatch();
+        bool lockuiflag = false;
         #endregion
         #region 功能
         #region 初始化
@@ -848,20 +855,20 @@ namespace HS9上料机UI.viewmodel
         #region 测试
         public void TestFunc()
         {
-            //SampleNgitem[0] = System.DateTime.Now.ToString();
-            FileInfo existingFile = new FileInfo("C:\\life  control of consumables.xlsx");
-            try
-            {
-                ExcelPackage package = new ExcelPackage(existingFile);
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+            ////SampleNgitem[0] = System.DateTime.Now.ToString();
+            //FileInfo existingFile = new FileInfo("C:\\life  control of consumables.xlsx");
+            //try
+            //{
+            //    ExcelPackage package = new ExcelPackage(existingFile);
+            //    ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
 
-            }
-            catch (Exception ex)
-            {
-                
-                throw;
-            }
-            
+            //}
+            //catch (Exception ex)
+            //{
+
+            //    throw;
+            //}
+            LockUI();
         }
         #endregion
         public async void ChangeMaterialOperate()
@@ -1335,7 +1342,7 @@ namespace HS9上料机UI.viewmodel
                         }
                         break;
                     case "3":
-                        Light_Cmd.Value = true;
+                        Light_Cmd.Value = !(bool)Light_Cmd.Value;
                         break;
                     default:
                         break;
@@ -2648,6 +2655,7 @@ namespace HS9上料机UI.viewmodel
                     TMoveProcessStart(TwinCatProcessStartCallback, strs[1]);
                     break;
                 case "ULOAD":
+                    Unloadsw.Restart();
                     ULoadProcessStart(TwinCatProcessStartCallback, strs[1]);
                     break;
                 case "ResetCMD":
@@ -3066,6 +3074,11 @@ namespace HS9上料机UI.viewmodel
             }
             #endregion
             #region 其他
+            if (lockuiflag)
+            {
+                lockuiflag = false;
+                LockUI();
+            }
             if (++MinTick > 60)
             {
                 MinTick = 0;
@@ -3176,7 +3189,7 @@ namespace HS9上料机UI.viewmodel
                 //上午
                 SamStartDatetime = Convert.ToDateTime(DaySampleStartHour.ToString() + ":" + DaySampleStartMin.ToString() + ":00");
                 SamDate = Convert.ToDateTime(DaySampleStartHour.ToString() + ":00:00");
-                //SamDateBigin = Convert.ToDateTime("06:00:00");
+                SamDateBigin = Convert.ToDateTime("06:00:00");
             }
             else
             {
@@ -3185,7 +3198,7 @@ namespace HS9上料机UI.viewmodel
                     //下午
                     SamStartDatetime = Convert.ToDateTime(DaySampleStartHour1.ToString() + ":" + DaySampleStartMin1.ToString() + ":00");
                     SamDate = Convert.ToDateTime(DaySampleStartHour1.ToString() + ":00:00");
-                    //SamDateBigin = Convert.ToDateTime("12:00:00");
+                    SamDateBigin = Convert.ToDateTime("12:00:00");
                 }
                 else
                 {
@@ -3194,14 +3207,14 @@ namespace HS9上料机UI.viewmodel
                         //前夜
                         SamStartDatetime = Convert.ToDateTime(NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
                         SamDate = Convert.ToDateTime(NightSampleStartHour.ToString() + ":00:00");
-                        //SamDateBigin = Convert.ToDateTime("18:00:00");
+                        SamDateBigin = Convert.ToDateTime("18:00:00");
                     }
                     else
                     {
                         //后夜
                         SamStartDatetime = Convert.ToDateTime(NightSampleStartHour1.ToString() + ":" + NightSampleStartMin1.ToString() + ":00");
                         SamDate = Convert.ToDateTime(NightSampleStartHour1.ToString() + ":00:00");
-                        //SamDateBigin = Convert.ToDateTime("00:00:00");
+                        SamDateBigin = Convert.ToDateTime("00:00:00");
                     }
                 }
                 ////夜班
@@ -3217,9 +3230,12 @@ namespace HS9上料机UI.viewmodel
                 //    SamDate = Convert.ToDateTime(DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd") + " " + NightSampleStartHour.ToString() + ":00:00");
                 //}
             }
+            SamStart_ = SamStartDatetime.ToString();
+            SamStart_H = SamDate.ToString();
+            SamStart_Begin = SamDateBigin.ToString();
             //Console.WriteLine(SamStartDatetime);
-            SampleTextGridVisibility = (DateTime.Now - SamDate).TotalSeconds > 0 && (SamDate - LasSam).TotalSeconds > 6 && IsSamTest || Tester.IsInSampleMode || Tester.IsInGRRMode ? "Visible" : "Collapsed";
-            if ((DateTime.Now - SamDate).TotalSeconds > 0 && (DateTime.Now - LasSam).TotalHours > 6)
+            SampleTextGridVisibility = (DateTime.Now - SamDate).TotalSeconds > 0 && (SamDateBigin - LasSam).TotalSeconds > 0 && IsSamTest || Tester.IsInSampleMode || Tester.IsInGRRMode ? "Visible" : "Collapsed";
+            if ((DateTime.Now - SamDate).TotalSeconds > 0 && (SamDateBigin - LasSam).TotalSeconds > 0)
             {
                 SamMessage = "请测样本";
             }
@@ -3229,7 +3245,7 @@ namespace HS9上料机UI.viewmodel
             }
             else
             {
-                if ((DateTime.Now - SamStartDatetime).TotalSeconds > 0 && SamMessage == "请测样本" && (SamStartDatetime - LasSam).TotalHours > 6 && IsSamTest && !isSendSamCMD && epsonRC90.TestSendStatus && EpsonStatusRunning)
+                if ((DateTime.Now - SamStartDatetime).TotalSeconds > 0 && SamMessage == "请测样本" && (SamDateBigin - LasSam).TotalSeconds > 0 && IsSamTest && !isSendSamCMD && epsonRC90.TestSendStatus && EpsonStatusRunning)
                 {
                     isSendSamCMD = true;
                     ShowSampleTestWindow = !ShowSampleTestWindow;
@@ -3462,6 +3478,8 @@ namespace HS9上料机UI.viewmodel
         public void Run()
         {
             bool restarfirstinit = true, _UnloadTrayFinish = true;
+            
+            Unloadsw.Start();
             while (true)
             {
                 System.Threading.Thread.Sleep(10);
@@ -3580,6 +3598,23 @@ namespace HS9上料机UI.viewmodel
                         yellow_flicker = XinJieOut[35];
                         red_normal = XinJieOut[36];
                         green_normal = XinJieOut[37];
+
+
+                        if (XinJieOut[37] && !Tester.IsInSampleMode && !Tester.IsInGRRMode)
+                        {
+                            if (Unloadsw.Elapsed.TotalMinutes >= 3)
+                            {
+                                EpsonOpetate(2);
+                                ShowAlarmTextGrid("3分钟未产出");
+                                Unloadsw.Restart();
+                            }                        
+                        }
+                        else
+                        {
+                            Unloadsw.Restart();
+                        }
+
+
                         if (green_normal)
                         {
                             signal_lamp = 1;
@@ -4031,6 +4066,20 @@ namespace HS9上料机UI.viewmodel
             }
             PhotoComplete.Value = true;
         }
+        async void LockUI()
+        {
+            GlobalVar.metro.ChangeAccent("Red");
+            while (true)
+            {
+                string rr = await GlobalVar.metro.ShowLoginOnlyPassword("样本测试错误，锁机！");
+                string ss = GetPassWord();
+                if (rr == ss)
+                {
+                    break;
+                }
+            }
+            GlobalVar.metro.ChangeAccent("Blue");
+        }
         #endregion
         #region 数据库
         private void ConnectDBTest()
@@ -4068,12 +4117,23 @@ namespace HS9上料机UI.viewmodel
         }
         private async void CheckSam()
         {
+            bool flag = true;
             for (int i = 0; i < SampleNgitemsNum; i++)
             {
                 for (int j = 0; j < 4; j++)
                 {
                     string flex = Inifile.INIGetStringValue(initestPath, "A", "id" + (j + 1).ToString(), "0");
                     SamArray[i, j] = CheckfromDt(flex, SampleNgitem[i], DateTime.Now.ToString("yyyyMMdd"));
+                    if (SamArray[i, j] == "Limit")
+                    {
+                        if (flag)
+                        {
+                            flag = false;
+                            lockuiflag = true;
+                            EpsonOpetate(2);
+                        }
+
+                    }
                     if (SamArray[i, j] != "ok" && SamArray[i, j] != "")
                     {
                         if (epsonRC90.TestSendStatus)
@@ -4127,8 +4187,15 @@ namespace HS9上料机UI.viewmodel
                                         string[] arrFieldAndNewValue = { "PARTNUM", "SITEM", "BARCODE", "NGITEM", "TRES", "MNO", "CDATE", "CTIME", "SR01" };
                                         string[] arrFieldAndOldValue = { parnum.ToUpper(), "FLUKE", (string)dt.Rows[0]["BARCODE"], (string)dt1.Rows[0]["NGITEM"], tres, MNO, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.ToString("HHmmss"), flexnum };
                                         oraDB.insertSQL1("BARSAMREC".ToUpper(), arrFieldAndNewValue, arrFieldAndOldValue);
-                                        MsgText = AddMessage("插入样本记录 " + (string)dt.Rows[0]["BARCODE"]);
+             
                                         SaveCSVfileSample(arrFieldAndOldValue);
+                                        DataSet samtimesds = oraDB.selectSQL("BARSAMREC", new string[] { "BARCODE" }, new string[] { (string)dt.Rows[0]["BARCODE"] });
+                                        MsgText = AddMessage("插入样本记录 " + (string)dt.Rows[0]["BARCODE"] + " " + samtimesds.Tables[0].Rows.Count.ToString());
+                                        if (samtimesds.Tables[0].Rows.Count > SamTimesLimit)
+                                        {
+                                            ShowAlarmTextGrid((string)dt.Rows[0]["BARCODE"] + "样本记录" + samtimesds.Tables[0].Rows.Count.ToString() +" > " + SamTimesLimit.ToString());
+                                            return "Limit";
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
@@ -4415,6 +4482,7 @@ namespace HS9上料机UI.viewmodel
                 {
                     SampleTimeElapse = double.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "SampleTimeElapse", "2"));
                     SampleNgitemsNum = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "SampleNgitemsNum", "8"));
+                    SamTimesLimit = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "SamTimesLimit", "100"));
                     DaySampleStartMin = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "DaySampleStartMin", "0"));
                     NightSampleStartMin = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "NightSampleStartMin", "0"));
                     DaySampleStartHour = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "DaySampleStartHour", "8"));
@@ -4438,6 +4506,7 @@ namespace HS9上料机UI.viewmodel
                     NightSampleStartMin1 = 0;
                     SampleTimeElapse = 2;
                     SampleNgitemsNum = 8;
+                    SamTimesLimit = 100;
                     MsgText = AddMessage(ex.Message);
                 }
                 PcsGrrNeedNum = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "PcsGrrNeedNum", "4"));
@@ -4517,6 +4586,8 @@ namespace HS9上料机UI.viewmodel
 
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleTimeElapse", SampleTimeElapse.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleNgitemsNum", SampleNgitemsNum.ToString());
+ 
+                Inifile.INIWriteValue(iniParameterPath, "Sam", "SamTimesLimit", SamTimesLimit.ToString());
                 MsgText = AddMessage("参数保存完成");
             }
             catch (Exception ex)

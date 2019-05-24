@@ -199,7 +199,18 @@
                     <TextBlock HorizontalAlignment="Left" Style="{StaticResource TextBlockBase}" Width="100" Text="最近样本时刻："></TextBlock>
                     <TextBlock HorizontalAlignment="Left" Style="{StaticResource TextBlockBase}" Width="150" Text="{Binding LasSamStr}"></TextBlock>
                 </StackPanel>
-
+                <StackPanel  Margin="5,10,5,0" Orientation ="Vertical">
+                    <TextBlock HorizontalAlignment="Left" Style="{StaticResource TextBlockBase}" Width="100" Text="计划样本时刻："></TextBlock>
+                    <TextBlock HorizontalAlignment="Left" Style="{StaticResource TextBlockBase}" Width="150" Text="{Binding SamStart_}"></TextBlock>
+                </StackPanel>
+                <StackPanel  Margin="5,10,5,0" Orientation ="Vertical">
+                    <TextBlock HorizontalAlignment="Left" Style="{StaticResource TextBlockBase}" Width="100" Text="样本提醒时刻："></TextBlock>
+                    <TextBlock HorizontalAlignment="Left" Style="{StaticResource TextBlockBase}" Width="150" Text="{Binding SamStart_H}"></TextBlock>
+                </StackPanel>
+                <StackPanel  Margin="5,10,5,0" Orientation ="Vertical">
+                    <TextBlock HorizontalAlignment="Left" Style="{StaticResource TextBlockBase}" Width="100" Text="样本阶段："></TextBlock>
+                    <TextBlock HorizontalAlignment="Left" Style="{StaticResource TextBlockBase}" Width="150" Text="{Binding SamStart_Begin}"></TextBlock>
+                </StackPanel>
             </StackPanel>
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>

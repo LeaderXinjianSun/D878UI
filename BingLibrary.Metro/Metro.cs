@@ -46,9 +46,10 @@ namespace BingLibrary.hjb.Metro
         public async Task<List<string>> ShowLogin(string Title, string PasswordWatermark = "请输入你的密码", bool isAccented = true)
         {
             LoginDialogData result = await ((MetroWindow)Application.Current.MainWindow).ShowLoginAsync(Title, "输入你的凭证:", new LoginDialogSettings { ColorScheme = isAccented ? MetroDialogColorScheme.Accented : MetroDialogColorScheme.Theme, AffirmativeButtonText = "确  认", PasswordWatermark = PasswordWatermark, NegativeButtonText = "取  消", InitialUsername = "Administrator" });
-            new List<string>().Add(result?.Username);
-            new List<string>().Add(result?.Password);
-            return new List<string>();
+            List<string> rst = new List<string>();
+            rst.Add(result?.Username);
+            rst.Add(result?.Password);
+            return rst;
         }
 
         public async Task<string> ShowLoginOnlyPassword(string Title, string PasswordWatermark = "请输入你的密码", bool isAccented = true)

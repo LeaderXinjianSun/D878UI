@@ -493,7 +493,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2019052401";
+        string VersionMsg = "2019071501";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -2443,19 +2443,19 @@ namespace HS9上料机UI.viewmodel
                     SaveAlarm("上料盘10，吸取失败");
                     break;
                 case "MsgRev: 测试机1，连续NG":
-                    ShowAlarmTextGrid("测试机1，连续NG");
+                    ShowAlarmTextGrid("测试机1，连续三次NG，请进行清洁");
                     //RecordAlarmString("测试机1，连续NG");
                     break;
                 case "MsgRev: 测试机2，连续NG":
-                    ShowAlarmTextGrid("测试机2，连续NG");
+                    ShowAlarmTextGrid("测试机2，连续三次NG，请进行清洁");
                     //RecordAlarmString("测试机2，连续NG");
                     break;
                 case "MsgRev: 测试机3，连续NG":
-                    ShowAlarmTextGrid("测试机3，连续NG");
+                    ShowAlarmTextGrid("测试机3，连续三次NG，请进行清洁");
                     //RecordAlarmString("测试机3，连续NG");
                     break;
                 case "MsgRev: 测试机4，连续NG":
-                    ShowAlarmTextGrid("测试机4，连续NG");
+                    ShowAlarmTextGrid("测试机4，连续三次NG，请进行清洁");
                     //RecordAlarmString("测试机4，连续NG");
                     break;
                 case "MsgRev: 测试机1，上传软体异常":
@@ -3421,7 +3421,14 @@ namespace HS9上料机UI.viewmodel
             SaveCSVfileRecord(tr);
             if (isRecord && !Tester.IsInSampleMode && !Tester.IsInGRRMode)
             {
-                epsonRC90.YanmadeTester[index - 1].UpdateNormalWithTestTimes(rst);
+                if (epsonRC90.YanmadeTester[index - 1].TestSpan > 5)
+                {
+                    epsonRC90.YanmadeTester[index - 1].UpdateNormalWithTestTimes(rst);
+                }
+                else
+                {
+                    MsgText = AddMessage(bar + " 测试时间小于5秒，不纳入良率统计");
+                }    
             }
             else
             {

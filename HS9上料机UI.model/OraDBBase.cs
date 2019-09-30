@@ -489,7 +489,7 @@ namespace 臻鼎科技OraDB
                 str1 += string.Format("{0}='{1}' and ", arrField[i], arrValue[i]);
             }
             strSQL += str1.Substring(0, str1.Length - 5);
-            strSQL += " ORDER BY SDATE DESC, STIME DESC";
+            strSQL += " ORDER BY ITSDATE DESC, ITSTIME DESC";
             return strSQL;
         }
 

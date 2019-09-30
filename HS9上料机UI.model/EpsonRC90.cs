@@ -30,8 +30,8 @@ namespace HS9上料机UI.model
         public UploadSoftwareStatus[] uploadSoftwareStatus = new UploadSoftwareStatus[4];
         #endregion
         private string iniParameterPath = System.Environment.CurrentDirectory + "\\Parameter.ini";
-        //private string iniFilepath = @"d:\test.ini";
-
+        private string iniFilepath = @"d:\test.ini";
+        string UnloadIndex = "Null";
         #endregion
         #region 事件
         public delegate void PrintEventHandler(string ModelMessageStr);
@@ -449,6 +449,14 @@ namespace HS9上料机UI.model
                                 case "TestResultCount":
                                     TestResult tr = strs[1] == "OK" ? TestResult.Pass : TestResult.Ng;
                                     YanmadeTester[int.Parse(strs[2]) - 1].Update(tr);
+                                    UnloadIndex = strs[2];
+                                    break;
+                                case "CheckResult":
+                                    string rst = Inifile.INIGetStringValue(iniFilepath, "A", "result" + UnloadIndex, "NG");
+                                    if (TestSendStatus)
+                                    {
+                                        await TestSentNet.SendAsync("CheckResult;"  + rst);
+                                    }
                                     break;
                                 case "SamLoop":
                                     SamMessage(int.Parse(strs[1]), int.Parse(strs[2]), int.Parse(strs[3]));

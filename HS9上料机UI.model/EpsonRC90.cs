@@ -452,11 +452,21 @@ namespace HS9上料机UI.model
                                     UnloadIndex = strs[2];
                                     break;
                                 case "CheckResult":
-                                    string rst = Inifile.INIGetStringValue(iniFilepath, "A", "result" + UnloadIndex, "NG");
-                                    if (TestSendStatus)
-                                    {
-                                        await TestSentNet.SendAsync("CheckResult;"  + rst);
-                                    }
+                                    Task.Run(async () =>{
+                                        DateTime RecTime = DateTime.Now;
+                                        while (Inifile.INIGetStringValue(iniFilepath, "A", "result" + UnloadIndex, "-1") == "-1" && (DateTime.Now - RecTime).TotalMinutes < 2)
+                                        {
+                                            await Task.Delay(200);
+                                        }
+                                        string rst = Inifile.INIGetStringValue(iniFilepath, "A", "result" + UnloadIndex, "NG");
+                                        if (TestSendStatus)
+                                        {
+                                            await TestSentNet.SendAsync("CheckResult;" + rst);                                        
+                                        }
+                                        Inifile.INIWriteValue(iniFilepath, "A", "result" + UnloadIndex, "-1");
+                                        ModelPrint("result" + UnloadIndex + ":" + rst + " 被清空成-1");
+                                    });
+
                                     break;
                                 case "SamLoop":
                                     SamMessage(int.Parse(strs[1]), int.Parse(strs[2]), int.Parse(strs[3]));

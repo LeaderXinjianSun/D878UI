@@ -493,7 +493,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2019093002";
+        string VersionMsg = "2019111801";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -509,6 +509,7 @@ namespace HS9上料机UI.viewmodel
         bool isSendSamCMD = false;
         Stopwatch Unloadsw = new Stopwatch();
         bool lockuiflag = false;
+        bool 漏吸料报警 = false;
         #endregion
         #region 功能
         #region 初始化
@@ -2260,7 +2261,7 @@ namespace HS9上料机UI.viewmodel
         #endregion
         #endregion
         #region 事件响应函数
-        private void ModelPrintEventProcess(string str)
+        private async void ModelPrintEventProcess(string str)
         {
             MsgText = AddMessage(str);
             if (DangbanFirstProduct != GetBanci())
@@ -2270,6 +2271,15 @@ namespace HS9上料机UI.viewmodel
                     DangbanFirstProduct = GetBanci();
                     Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "DangbanFirstProduct", DangbanFirstProduct);
                     MsgText = AddMessage(DangbanFirstProduct + " 开班第1片");
+                }
+            }
+            if (str.Contains("连续NG"))
+            {
+                isSendSamCMD = true;
+                ShowSampleTestWindow = !ShowSampleTestWindow;
+                if (epsonRC90.TestSendStatus)
+                {
+                    await epsonRC90.TestSentNet.SendAsync("GONOGOAction;" + SampleNgitemsNum.ToString());
                 }
             }
             switch (str)
@@ -2479,10 +2489,12 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: 黑色盘满，换盘":
                     ShowAlarmTextGrid("黑色盘满，换盘");
+                    Csvfile.AddNewLine("D:\\黑色盘满记录.csv", new string[] { DateTime.Now.ToString(), "黑色盘满，换盘" });
                     //RecordAlarmString("黑色盘满，换盘");
                     break;
                 case "MsgRev: 红色盘满，换盘":
                     ShowAlarmTextGrid("红色盘满，换盘");
+                    Csvfile.AddNewLine("D:\\红色盘满记录.csv", new string[] { DateTime.Now.ToString(), "红色盘满，换盘" });
                     //RecordAlarmString("红色盘满，换盘");
                     break;
                 case "MsgRev: A爪手掉料":
@@ -3007,6 +3019,14 @@ namespace HS9上料机UI.viewmodel
                     //RecordAlarmString(PLCMessage);
                 }
 
+            }
+            if (漏吸料报警 != XinJieOut[50 + 35])
+            {
+                漏吸料报警 = XinJieOut[50 + 35];
+                if (漏吸料报警)
+                {
+                    Csvfile.AddNewLine("D:\\漏吸料报警记录.csv", new string[] { DateTime.Now.ToString(), "上料盘漏吸料报警" });
+                }
             }
             #endregion
             #region 及时雨

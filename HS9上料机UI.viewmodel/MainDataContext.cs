@@ -493,7 +493,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2019111801";
+        string VersionMsg = "2019112901";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -2859,576 +2859,583 @@ namespace HS9上料机UI.viewmodel
         }
         private async void DispatcherTimerTickUpdateUi(Object sender, EventArgs e)
         {
-            #region PLC报警显示
-            
-            PLCMessageVisibility = "Collapsed";
-            PLCMessage = "";
-            string plsmsgstr = "";
-            if (XinJieOut != null)
+            try
             {
-                for (int i = 0; i < 50; i++)
+                #region PLC报警显示
+
+                PLCMessageVisibility = "Collapsed";
+                PLCMessage = "";
+                string plsmsgstr = "";
+                if (XinJieOut != null)
                 {
-                    if (XinJieOut[50 + i])
+                    if (漏吸料报警 != XinJieOut[50 + 35])
                     {
-                        switch (i)
+                        漏吸料报警 = XinJieOut[50 + 35];
+                        if (漏吸料报警)
                         {
-                            case 0:
-                                PLCMessage = "上料满盘缺料";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 1:
-                                PLCMessage = "上料空盘满";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 2:
-                                PLCMessage = "下料满盘满";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 3:
-                                PLCMessage = "下料空盘缺";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 4:
-                                PLCMessage = "上料吸空盘失败";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 5:
-                                PLCMessage = "下料吸空盘失败";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 6:
-                                PLCMessage = "上料空盘轴未准备好";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 7:
-                                PLCMessage = "下料蓝盘轴未准备好";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 8:
-                                PLCMessage = "上料无杆气缸置位超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 9:
-                                PLCMessage = "上料无杆气缸复位超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 10:
-                                PLCMessage = "上料上下气缸复位超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 11:
-                                PLCMessage = "下料无杆气缸置位超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 12:
-                                PLCMessage = "下料无杆气缸复位超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 13:
-                                PLCMessage = "下料上下气缸复位超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 14:
-                                PLCMessage = "上料满盘电机上升超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 15:
-                                PLCMessage = "上料满盘电机下降超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 16:
-                                PLCMessage = "上料空盘电机上升超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 17:
-                                PLCMessage = "上料空盘电机下降超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 18:
-                                PLCMessage = "下料满盘电机上升超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 19:
-                                PLCMessage = "下料空盘电机下降超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 20:
-                                PLCMessage = "下料满盘电机上升超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 21:
-                                PLCMessage = "下料空盘电机下降超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 22:
-                                PLCMessage = "下料XY吸取失败报警";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 23:
-                                PLCMessage = "下料XY未准备好报警";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 33:
-                                PLCMessage = "测试机良率超下限";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 24:
-                                PLCMessage = "机械手暂停报警";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 34:
-                                PLCMessage = "上料满盘未准备好";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 35:
-                                PLCMessage = "上料盘漏吸料报警";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 36:
-                                PLCMessage = "相机拍照超时";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            case 32:
-                                PLCMessage = "测试机被屏蔽";
-                                PLCMessageVisibility = "Visible";
-                                break;
-                            default:
-                                break;
+                            Csvfile.AddNewLine("D:\\漏吸料报警记录.csv", new string[] { DateTime.Now.ToString(), "上料盘漏吸料报警" });
+                        }
+                    }
+                    for (int i = 0; i < 50; i++)
+                    {
+                        if (XinJieOut[50 + i])
+                        {
+                            switch (i)
+                            {
+                                case 0:
+                                    PLCMessage = "上料满盘缺料";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 1:
+                                    PLCMessage = "上料空盘满";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 2:
+                                    PLCMessage = "下料满盘满";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 3:
+                                    PLCMessage = "下料空盘缺";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 4:
+                                    PLCMessage = "上料吸空盘失败";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 5:
+                                    PLCMessage = "下料吸空盘失败";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 6:
+                                    PLCMessage = "上料空盘轴未准备好";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 7:
+                                    PLCMessage = "下料蓝盘轴未准备好";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 8:
+                                    PLCMessage = "上料无杆气缸置位超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 9:
+                                    PLCMessage = "上料无杆气缸复位超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 10:
+                                    PLCMessage = "上料上下气缸复位超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 11:
+                                    PLCMessage = "下料无杆气缸置位超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 12:
+                                    PLCMessage = "下料无杆气缸复位超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 13:
+                                    PLCMessage = "下料上下气缸复位超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 14:
+                                    PLCMessage = "上料满盘电机上升超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 15:
+                                    PLCMessage = "上料满盘电机下降超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 16:
+                                    PLCMessage = "上料空盘电机上升超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 17:
+                                    PLCMessage = "上料空盘电机下降超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 18:
+                                    PLCMessage = "下料满盘电机上升超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 19:
+                                    PLCMessage = "下料空盘电机下降超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 20:
+                                    PLCMessage = "下料满盘电机上升超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 21:
+                                    PLCMessage = "下料空盘电机下降超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 22:
+                                    PLCMessage = "下料XY吸取失败报警";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 23:
+                                    PLCMessage = "下料XY未准备好报警";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 33:
+                                    PLCMessage = "测试机良率超下限";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 24:
+                                    PLCMessage = "机械手暂停报警";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 34:
+                                    PLCMessage = "上料满盘未准备好";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 35:
+                                    PLCMessage = "上料盘漏吸料报警";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 36:
+                                    PLCMessage = "相机拍照超时";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                case 32:
+                                    PLCMessage = "测试机被屏蔽";
+                                    PLCMessageVisibility = "Visible";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            break;
                         }
 
-                        break;
+                    }
+
+
+
+                }
+
+
+                PLCAlarmStatus = PLCMessageVisibility == "Visible" && (PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料XY吸取失败报警");
+                if (_PLCAlarmStatus != PLCAlarmStatus)
+                {
+                    _PLCAlarmStatus = PLCAlarmStatus;
+                    if (plsmsgstr != PLCMessage && _PLCAlarmStatus && (PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料XY吸取失败报警"))
+                    {
+                        plsmsgstr = PLCMessage;
+                        Inifile.INIWriteValue(iniFClient, "Alarm", "Name", PLCMessage);
+                        //TotalAlarmNum++;
+                        //Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
+                        //RecordAlarmString(PLCMessage);
                     }
 
                 }
-
-
-
-            }
-
-
-            PLCAlarmStatus = PLCMessageVisibility == "Visible" && (PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料XY吸取失败报警");
-            if (_PLCAlarmStatus != PLCAlarmStatus)
-            {
-                _PLCAlarmStatus = PLCAlarmStatus;
-                if (plsmsgstr != PLCMessage && _PLCAlarmStatus && (PLCMessage == "上料吸空盘失败" || PLCMessage == "下料吸空盘失败" || PLCMessage == "下料XY吸取失败报警"))
+                #endregion
+                #region 及时雨
+                if (++DecTick >= 6)
                 {
-                    plsmsgstr = PLCMessage;
-                    Inifile.INIWriteValue(iniFClient, "Alarm", "Name", PLCMessage);
-                    //TotalAlarmNum++;
-                    //Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
-                    //RecordAlarmString(PLCMessage);
-                }
-
-            }
-            if (漏吸料报警 != XinJieOut[50 + 35])
-            {
-                漏吸料报警 = XinJieOut[50 + 35];
-                if (漏吸料报警)
-                {
-                    Csvfile.AddNewLine("D:\\漏吸料报警记录.csv", new string[] { DateTime.Now.ToString(), "上料盘漏吸料报警" });
-                }
-            }
-            #endregion
-            #region 及时雨
-            if (++DecTick >= 6)
-            {
-                DecTick = 0;
-                work_flag = DangbanFirstProduct == GetBanci();
-                if (work_flag && !EpsonStatusPaused && !waitinput_flag)
-                {
-                    run_min += 0.1;
-                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "run_min", run_min.ToString("F2"));
-                }
-                if (work_flag)
-                {
-                    work_min += 0.1;
-                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "work_min", work_min.ToString("F2"));
-                }
-                if (down_flag)
-                {
-                    down_min += 0.1;
-                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "down_min", down_min.ToString("F2"));
-                }
-                if (jigdown_flag)
-                {
-                    jigdown_min += 0.1;
-                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "jigdown_min", jigdown_min.ToString("F2"));
-                }
-                if (waitinput_flag)
-                {
-                    waitinput_min += 0.1;
-                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waitinput_min", waitinput_min.ToString("F2"));
-                }
-                if (waittray_flag)
-                {
-                    waittray_min += 0.1;
-                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittray_min", waittray_min.ToString("F2"));
-                }
-                if (waittake_flag)
-                {
-                    waittake_min += 0.1;
-                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittake_min", waittake_min.ToString("F2"));
-                }
-                if (run_min == 0 || UPH == 0)
-                    AchievingRate = 100;
-                else
-                    AchievingRate = Math.Round(liaooutput / ((double)UPH / 60 * run_min) * 100, 2);
-                if (work_min == 0)
-                {
-                    ProperRate = 0;
-                    ProperRate_AutoMation = 0;
-                    ProperRate_Jig = 0;
-                }
-                else
-                {
-                    ProperRate = Math.Round((1 - (down_min + jigdown_min) / work_min) * 100, 2);
-                    ProperRate_AutoMation = Math.Round((1 - down_min / work_min) * 100, 2);
-                    ProperRate_Jig = Math.Round((1 - jigdown_min / work_min) * 100, 2);
-                }
-
-                if (AlarmTextGridShow != "Visible" && PLCMessageVisibility != "Visible")
-                {
-                    Inifile.INIWriteValue(iniFClient, "Alarm", "Name", "NULL");
-                }
-                Write及时雨();
-            }
-            #endregion
-            #region 其他
-            if (lockuiflag)
-            {
-                lockuiflag = false;
-                LockUI();
-            }
-            if (++MinTick > 60)
-            {
-                MinTick = 0;
-                ConnectDBTest();
-            }
-            if (Isloagin || !(LoginString != "登出"))
-            {
-                if (++loadintimes > 30)
-                {
-                    Isloagin = false;
-                    LoginString = "登录";
-                    MsgText = AddMessage("自动登出");
-                }
-            }
-            else
-            {
-                loadintimes = 0;
-            }
-
-            if (myAlarmRecordQueue.Count > 0)
-            {
-                lock (this)
-                {
-                    foreach (AlarmRecord item in myAlarmRecordQueue)
+                    DecTick = 0;
+                    work_flag = DangbanFirstProduct == GetBanci();
+                    if (work_flag && !EpsonStatusPaused && !waitinput_flag)
                     {
-                        alarmRecord.Add(item);
+                        run_min += 0.1;
+                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "run_min", run_min.ToString("F2"));
                     }
-                    myAlarmRecordQueue.Clear();
-                }
-            }
-            if (myTestRecordQueue.Count > 0)
-            {
-                lock (this)
-                {
-                    foreach (TestRecord item in myTestRecordQueue)
+                    if (work_flag)
                     {
-                        testRecord.Add(item);
+                        work_min += 0.1;
+                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "work_min", work_min.ToString("F2"));
                     }
-                    myTestRecordQueue.Clear();
-                }
-            }
-            if (autoClean)
-            {
-                MsgText = AddMessage("换班，数据清零");
-                alarmRecord.Clear();
-                testRecord.Clear();
-                for (int i = 0; i < 4; i++)
-                {
-                    epsonRC90.YanmadeTester[i].Clean();
-                }
-
-                run_min = 0;
-                work_min = 0;
-                down_min = 0;
-                jigdown_min = 0;
-                waitinput_min = 0;
-                waittray_min = 0;
-                waittake_min = 0;
-                liaooutput = 0;
-                liaoinput = 0;
-                louliao = 0;
-                TotalAlarmNum = 0;
-
-                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "run_min", run_min.ToString("F2"));
-                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "work_min", work_min.ToString("F2"));
-                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "down_min", down_min.ToString("F2"));
-                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "jigdown_min", jigdown_min.ToString("F2"));
-                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waitinput_min", waitinput_min.ToString("F2"));
-                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittray_min", waittray_min.ToString("F2"));
-                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittake_min", waittake_min.ToString("F2"));
-                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
-                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "louliao", louliao.ToString());
-                Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaooutput", liaooutput.ToString());
-                Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
-
-
-
-
-
-
-
-
-
-
-
-                //liaoinput = 0;
-
-                autoClean = false;
-
-            }
-            TimeSpan ts = System.DateTime.Now - LastQingjie;
-            if (AllowCleanActionCommand && ts.TotalHours > 2)
-            {
-                if (epsonRC90.TestSendStatus)
-                {
-                    await epsonRC90.TestSentNet.SendAsync("TestersCleanAction");
-                    AllowCleanActionCommand = false;
-                }
-            }
-            for (int i = 0; i < 32; i++)
-            {
-                SampleItemsStatus[i / 4 + i % 4 * 8] = SamArray[i / 4, i % 4];
-            }
-
-            DateTime SamStartDatetime,SamDate,SamDateBigin;
-            if (DateTime.Now.Hour >= 6 && DateTime.Now.Hour < 12)
-            {
-                //上午
-                SamStartDatetime = Convert.ToDateTime(DaySampleStartHour.ToString() + ":" + DaySampleStartMin.ToString() + ":00");
-                SamDate = Convert.ToDateTime(DaySampleStartHour.ToString() + ":00:00");
-                SamDateBigin = Convert.ToDateTime("06:00:00");
-            }
-            else
-            {
-                if (DateTime.Now.Hour >= 12 && DateTime.Now.Hour < 18)
-                {
-                    //下午
-                    SamStartDatetime = Convert.ToDateTime(DaySampleStartHour1.ToString() + ":" + DaySampleStartMin1.ToString() + ":00");
-                    SamDate = Convert.ToDateTime(DaySampleStartHour1.ToString() + ":00:00");
-                    SamDateBigin = Convert.ToDateTime("12:00:00");
-                }
-                else
-                {
-                    if (DateTime.Now.Hour >= 18)
+                    if (down_flag)
                     {
-                        //前夜
-                        SamStartDatetime = Convert.ToDateTime(NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
-                        SamDate = Convert.ToDateTime(NightSampleStartHour.ToString() + ":00:00");
-                        SamDateBigin = Convert.ToDateTime("18:00:00");
+                        down_min += 0.1;
+                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "down_min", down_min.ToString("F2"));
+                    }
+                    if (jigdown_flag)
+                    {
+                        jigdown_min += 0.1;
+                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "jigdown_min", jigdown_min.ToString("F2"));
+                    }
+                    if (waitinput_flag)
+                    {
+                        waitinput_min += 0.1;
+                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waitinput_min", waitinput_min.ToString("F2"));
+                    }
+                    if (waittray_flag)
+                    {
+                        waittray_min += 0.1;
+                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittray_min", waittray_min.ToString("F2"));
+                    }
+                    if (waittake_flag)
+                    {
+                        waittake_min += 0.1;
+                        Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittake_min", waittake_min.ToString("F2"));
+                    }
+                    if (run_min == 0 || UPH == 0)
+                        AchievingRate = 100;
+                    else
+                        AchievingRate = Math.Round(liaooutput / ((double)UPH / 60 * run_min) * 100, 2);
+                    if (work_min == 0)
+                    {
+                        ProperRate = 0;
+                        ProperRate_AutoMation = 0;
+                        ProperRate_Jig = 0;
                     }
                     else
                     {
-                        //后夜
-                        SamStartDatetime = Convert.ToDateTime(NightSampleStartHour1.ToString() + ":" + NightSampleStartMin1.ToString() + ":00");
-                        SamDate = Convert.ToDateTime(NightSampleStartHour1.ToString() + ":00:00");
-                        SamDateBigin = Convert.ToDateTime("00:00:00");
+                        ProperRate = Math.Round((1 - (down_min + jigdown_min) / work_min) * 100, 2);
+                        ProperRate_AutoMation = Math.Round((1 - down_min / work_min) * 100, 2);
+                        ProperRate_Jig = Math.Round((1 - jigdown_min / work_min) * 100, 2);
                     }
-                }
-                ////夜班
-                //if (DateTime.Now.Hour >= 20)
-                //{
-                //    SamStartDatetime = Convert.ToDateTime(NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
-                //    SamDate = Convert.ToDateTime(NightSampleStartHour.ToString() + ":00:00");
-                //}
-                //else
-                //{
 
-                //    SamStartDatetime = Convert.ToDateTime(DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd") + " " + NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
-                //    SamDate = Convert.ToDateTime(DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd") + " " + NightSampleStartHour.ToString() + ":00:00");
-                //}
-            }
-            SamStart_ = SamStartDatetime.ToString();
-            SamStart_H = SamDate.ToString();
-            SamStart_Begin = SamDateBigin.ToString();
-            //Console.WriteLine(SamStartDatetime);
-            SampleTextGridVisibility = (DateTime.Now - SamDate).TotalSeconds > 0 && (SamDateBigin - LasSam).TotalSeconds > 0 && IsSamTest || Tester.IsInSampleMode || Tester.IsInGRRMode ? "Visible" : "Collapsed";
-            if ((DateTime.Now - SamDate).TotalSeconds > 0 && (SamDateBigin - LasSam).TotalSeconds > 0)
-            {
-                SamMessage = "请测样本";
-            }
-            if (Tester.IsInSampleMode)
-            {
-                SamMessage = "样本测试中...";
-            }
-            else
-            {
-                if ((DateTime.Now - SamStartDatetime).TotalSeconds > 0 && SamMessage == "请测样本" && (SamDateBigin - LasSam).TotalSeconds > 0 && IsSamTest && !isSendSamCMD && epsonRC90.TestSendStatus && EpsonStatusRunning)
-                {
-                    isSendSamCMD = true;
-                    ShowSampleTestWindow = !ShowSampleTestWindow;
-                    if (epsonRC90.TestSendStatus)
+                    if (AlarmTextGridShow != "Visible" && PLCMessageVisibility != "Visible")
                     {
-                        await epsonRC90.TestSentNet.SendAsync("GONOGOAction;" + SampleNgitemsNum.ToString());
+                        Inifile.INIWriteValue(iniFClient, "Alarm", "Name", "NULL");
                     }
-
+                    Write及时雨();
+                }
+                #endregion
+                #region 其他
+                if (lockuiflag)
+                {
+                    lockuiflag = false;
+                    LockUI();
+                }
+                if (++MinTick > 60)
+                {
+                    MinTick = 0;
+                    ConnectDBTest();
+                }
+                if (Isloagin || !(LoginString != "登出"))
+                {
+                    if (++loadintimes > 30)
+                    {
+                        Isloagin = false;
+                        LoginString = "登录";
+                        MsgText = AddMessage("自动登出");
+                    }
                 }
                 else
                 {
-                    if (Tester.IsInGRRMode)
-                    {
-                        SamMessage = "GRR测试中...";
-                    }
+                    loadintimes = 0;
                 }
-              
-                
-            }
-            if (haocaiinit && GlobalVar.Worksheet != null)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    GlobalVar.Worksheet.Cells[i * 2 + 3, 3].Value = FlexId[i];
-                    GlobalVar.Worksheet.Cells[i * 2 + 1 + 3, 3].Value = FlexId[i];
-                    GlobalVar.Worksheet.Cells[i * 2 + 3, 2].Value = MNO;
-                    GlobalVar.Worksheet.Cells[i * 2 + 1 + 3, 2].Value = MNO;
-                    MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i * 2 + 3, 1].Value + "," + FlexId[i]);
-                    MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i * 2 + 3 + 1, 1].Value + "," + FlexId[i]);
-                }
-                for (int i = 0; i < 6; i++)
-                {
-                    GlobalVar.Worksheet.Cells[i + 11, 3].Value = "NA";
-                    GlobalVar.Worksheet.Cells[i + 11, 2].Value = MNO;
-                    MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i + 11, 1].Value + "," + "NA");
-                }
-                for (int i = 1; i <= GlobalVar.Worksheet.Dimension.End.Column; i++)
-                {
-                    GlobalVar.Mdt.Columns.Add((string)GlobalVar.Worksheet.Cells[2, i].Value);
-                }
-                MaterialSelectedIndex = 0;
-                haocaiinit = false;
-                try
-                {
-                    GlobalVar.Package.Save();
-                }
-                catch (Exception ex)
-                {
 
-                    MsgText = AddMessage(ex.Message);
-                }
-            }
-            if (GlobalVar.Worksheet != null)
-            {
-                GlobalVar.Mdt.Clear();
-                for (int i = 3; i <= GlobalVar.Worksheet.Dimension.End.Row; i++)
+                if (myAlarmRecordQueue.Count > 0)
                 {
-                    DataRow dr = GlobalVar.Mdt.NewRow();
-                    for (int j = 1; j <= GlobalVar.Worksheet.Dimension.End.Column; j++)
+                    lock (this)
                     {
-                        dr[j - 1] = GlobalVar.Worksheet.Cells[i, j].Value;
-                    }
-                    GlobalVar.Mdt.Rows.Add(dr);
-                }
-                MaterialStatus = 0;
-                for (int i = 3; i <= GlobalVar.Worksheet.Dimension.End.Row; i++)
-                {
-                    try
-                    {
-                        if (Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 6].Value) > Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 4].Value))
+                        foreach (AlarmRecord item in myAlarmRecordQueue)
                         {
-                            MatetialMessage = (string)GlobalVar.Worksheet.Cells[i, 1].Value + "," + (string)GlobalVar.Worksheet.Cells[i, 3].Value + " 使用寿命到达上限";
-                            MaterialStatus = 2;
-                            break;
+                            alarmRecord.Add(item);
+                        }
+                        myAlarmRecordQueue.Clear();
+                    }
+                }
+                if (myTestRecordQueue.Count > 0)
+                {
+                    lock (this)
+                    {
+                        foreach (TestRecord item in myTestRecordQueue)
+                        {
+                            testRecord.Add(item);
+                        }
+                        myTestRecordQueue.Clear();
+                    }
+                }
+                if (autoClean)
+                {
+                    MsgText = AddMessage("换班，数据清零");
+                    alarmRecord.Clear();
+                    testRecord.Clear();
+                    for (int i = 0; i < 4; i++)
+                    {
+                        epsonRC90.YanmadeTester[i].Clean();
+                    }
+
+                    run_min = 0;
+                    work_min = 0;
+                    down_min = 0;
+                    jigdown_min = 0;
+                    waitinput_min = 0;
+                    waittray_min = 0;
+                    waittake_min = 0;
+                    liaooutput = 0;
+                    liaoinput = 0;
+                    louliao = 0;
+                    TotalAlarmNum = 0;
+
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "run_min", run_min.ToString("F2"));
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "work_min", work_min.ToString("F2"));
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "down_min", down_min.ToString("F2"));
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "jigdown_min", jigdown_min.ToString("F2"));
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waitinput_min", waitinput_min.ToString("F2"));
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittray_min", waittray_min.ToString("F2"));
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "waittake_min", waittake_min.ToString("F2"));
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaoinput", liaoinput.ToString());
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "louliao", louliao.ToString());
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "liaooutput", liaooutput.ToString());
+                    Inifile.INIWriteValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", TotalAlarmNum.ToString());
+
+
+
+
+
+
+
+
+
+
+
+                    //liaoinput = 0;
+
+                    autoClean = false;
+
+                }
+                TimeSpan ts = System.DateTime.Now - LastQingjie;
+                if (AllowCleanActionCommand && ts.TotalHours > 2)
+                {
+                    if (epsonRC90.TestSendStatus)
+                    {
+                        await epsonRC90.TestSentNet.SendAsync("TestersCleanAction");
+                        AllowCleanActionCommand = false;
+                    }
+                }
+                for (int i = 0; i < 32; i++)
+                {
+                    SampleItemsStatus[i / 4 + i % 4 * 8] = SamArray[i / 4, i % 4];
+                }
+
+                DateTime SamStartDatetime, SamDate, SamDateBigin;
+                if (DateTime.Now.Hour >= 6 && DateTime.Now.Hour < 12)
+                {
+                    //上午
+                    SamStartDatetime = Convert.ToDateTime(DaySampleStartHour.ToString() + ":" + DaySampleStartMin.ToString() + ":00");
+                    SamDate = Convert.ToDateTime(DaySampleStartHour.ToString() + ":00:00");
+                    SamDateBigin = Convert.ToDateTime("06:00:00");
+                }
+                else
+                {
+                    if (DateTime.Now.Hour >= 12 && DateTime.Now.Hour < 18)
+                    {
+                        //下午
+                        SamStartDatetime = Convert.ToDateTime(DaySampleStartHour1.ToString() + ":" + DaySampleStartMin1.ToString() + ":00");
+                        SamDate = Convert.ToDateTime(DaySampleStartHour1.ToString() + ":00:00");
+                        SamDateBigin = Convert.ToDateTime("12:00:00");
+                    }
+                    else
+                    {
+                        if (DateTime.Now.Hour >= 18)
+                        {
+                            //前夜
+                            SamStartDatetime = Convert.ToDateTime(NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
+                            SamDate = Convert.ToDateTime(NightSampleStartHour.ToString() + ":00:00");
+                            SamDateBigin = Convert.ToDateTime("18:00:00");
                         }
                         else
                         {
-                            if (Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 6].Value) > Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 5].Value))
-                            {
-                                MatetialMessage = (string)GlobalVar.Worksheet.Cells[i, 1].Value + "," + (string)GlobalVar.Worksheet.Cells[i, 3].Value + " 使用寿命预警";
-                                MaterialStatus = 1;
-                            }
+                            //后夜
+                            SamStartDatetime = Convert.ToDateTime(NightSampleStartHour1.ToString() + ":" + NightSampleStartMin1.ToString() + ":00");
+                            SamDate = Convert.ToDateTime(NightSampleStartHour1.ToString() + ":00:00");
+                            SamDateBigin = Convert.ToDateTime("00:00:00");
                         }
                     }
-                    catch (Exception ex)
+                    ////夜班
+                    //if (DateTime.Now.Hour >= 20)
+                    //{
+                    //    SamStartDatetime = Convert.ToDateTime(NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
+                    //    SamDate = Convert.ToDateTime(NightSampleStartHour.ToString() + ":00:00");
+                    //}
+                    //else
+                    //{
+
+                    //    SamStartDatetime = Convert.ToDateTime(DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd") + " " + NightSampleStartHour.ToString() + ":" + NightSampleStartMin.ToString() + ":00");
+                    //    SamDate = Convert.ToDateTime(DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd") + " " + NightSampleStartHour.ToString() + ":00:00");
+                    //}
+                }
+                SamStart_ = SamStartDatetime.ToString();
+                SamStart_H = SamDate.ToString();
+                SamStart_Begin = SamDateBigin.ToString();
+                //Console.WriteLine(SamStartDatetime);
+                SampleTextGridVisibility = (DateTime.Now - SamDate).TotalSeconds > 0 && (SamDateBigin - LasSam).TotalSeconds > 0 && IsSamTest || Tester.IsInSampleMode || Tester.IsInGRRMode ? "Visible" : "Collapsed";
+                if ((DateTime.Now - SamDate).TotalSeconds > 0 && (SamDateBigin - LasSam).TotalSeconds > 0)
+                {
+                    SamMessage = "请测样本";
+                }
+                if (Tester.IsInSampleMode)
+                {
+                    SamMessage = "样本测试中...";
+                }
+                else
+                {
+                    if ((DateTime.Now - SamStartDatetime).TotalSeconds > 0 && SamMessage == "请测样本" && (SamDateBigin - LasSam).TotalSeconds > 0 && IsSamTest && !isSendSamCMD && epsonRC90.TestSendStatus && EpsonStatusRunning)
                     {
-                        MatetialMessage = ex.Message;
-                        MaterialStatus = 2;
-                        MsgText = AddMessage(ex.Message);
+                        isSendSamCMD = true;
+                        ShowSampleTestWindow = !ShowSampleTestWindow;
+                        if (epsonRC90.TestSendStatus)
+                        {
+                            await epsonRC90.TestSentNet.SendAsync("GONOGOAction;" + SampleNgitemsNum.ToString());
+                        }
+
+                    }
+                    else
+                    {
+                        if (Tester.IsInGRRMode)
+                        {
+                            SamMessage = "GRR测试中...";
+                        }
                     }
 
+
                 }
-                if (haocaisavetimes++ > 10)
+                if (haocaiinit && GlobalVar.Worksheet != null)
                 {
-                    haocaisavetimes = 0;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        GlobalVar.Worksheet.Cells[i * 2 + 3, 3].Value = FlexId[i];
+                        GlobalVar.Worksheet.Cells[i * 2 + 1 + 3, 3].Value = FlexId[i];
+                        GlobalVar.Worksheet.Cells[i * 2 + 3, 2].Value = MNO;
+                        GlobalVar.Worksheet.Cells[i * 2 + 1 + 3, 2].Value = MNO;
+                        MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i * 2 + 3, 1].Value + "," + FlexId[i]);
+                        MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i * 2 + 3 + 1, 1].Value + "," + FlexId[i]);
+                    }
+                    for (int i = 0; i < 6; i++)
+                    {
+                        GlobalVar.Worksheet.Cells[i + 11, 3].Value = "NA";
+                        GlobalVar.Worksheet.Cells[i + 11, 2].Value = MNO;
+                        MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i + 11, 1].Value + "," + "NA");
+                    }
+                    for (int i = 1; i <= GlobalVar.Worksheet.Dimension.End.Column; i++)
+                    {
+                        GlobalVar.Mdt.Columns.Add((string)GlobalVar.Worksheet.Cells[2, i].Value);
+                    }
+                    MaterialSelectedIndex = 0;
+                    haocaiinit = false;
                     try
                     {
                         GlobalVar.Package.Save();
                     }
                     catch (Exception ex)
                     {
-                        MsgText = AddMessage(ex.Message);
 
+                        MsgText = AddMessage(ex.Message);
                     }
                 }
-            }
-
-            switch (MaterialStatus)
-            {
-                case 0:
-
-                    MatetialTextGridVisibility = "Collapsed";
-                    break;
-                case 1:
-                    MatetialTextGridBackground = "Violet";
-                    MatetialTextGridVisibility = "Visible";
-                    break;
-                case 2:
-                    MatetialTextGridBackground = "Red";
-                    MatetialTextGridVisibility = "Visible";
-                    break;
-                default:
-                    break;
-            }
-            if (!unloadreadindexflag)
-            {
-                ushort endnum;
-                switch (MachineNum)
+                if (GlobalVar.Worksheet != null)
                 {
-                    case "1372":
-                        endnum = 14;
-                        break;
-                    case "1373":
-                        endnum = 14;
-                        break;
-                    case "1374":
-                        endnum = 24;
-                        break;
-                    default:
-                        endnum = 24;
-                        break;
-                }
-                index_ini = Inifile.INIGetStringValue(initestPath, "Other", "index", "0");
-                if (index_ini != index_ini_old)
-                {
-                    try
+                    GlobalVar.Mdt.Clear();
+                    for (int i = 3; i <= GlobalVar.Worksheet.Dimension.End.Row; i++)
                     {
-                        if (ushort.Parse(index_ini_old) < endnum - 1 && index_ini == "0")
+                        DataRow dr = GlobalVar.Mdt.NewRow();
+                        for (int j = 1; j <= GlobalVar.Worksheet.Dimension.End.Column; j++)
                         {
-                            NeedUpdateTray.Value = true;
+                            dr[j - 1] = GlobalVar.Worksheet.Cells[i, j].Value;
+                        }
+                        GlobalVar.Mdt.Rows.Add(dr);
+                    }
+                    MaterialStatus = 0;
+                    for (int i = 3; i <= GlobalVar.Worksheet.Dimension.End.Row; i++)
+                    {
+                        try
+                        {
+                            if (Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 6].Value) > Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 4].Value))
+                            {
+                                MatetialMessage = (string)GlobalVar.Worksheet.Cells[i, 1].Value + "," + (string)GlobalVar.Worksheet.Cells[i, 3].Value + " 使用寿命到达上限";
+                                MaterialStatus = 2;
+                                break;
+                            }
+                            else
+                            {
+                                if (Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 6].Value) > Convert.ToInt32(GlobalVar.Worksheet.Cells[i, 5].Value))
+                                {
+                                    MatetialMessage = (string)GlobalVar.Worksheet.Cells[i, 1].Value + "," + (string)GlobalVar.Worksheet.Cells[i, 3].Value + " 使用寿命预警";
+                                    MaterialStatus = 1;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MatetialMessage = ex.Message;
+                            MaterialStatus = 2;
+                            MsgText = AddMessage(ex.Message);
+                        }
+
+                    }
+                    if (haocaisavetimes++ > 10)
+                    {
+                        haocaisavetimes = 0;
+                        try
+                        {
+                            GlobalVar.Package.Save();
+                        }
+                        catch (Exception ex)
+                        {
+                            MsgText = AddMessage(ex.Message);
+
                         }
                     }
-                    catch 
-                    {
-
-                        
-                    }
-
-                    index_ini_old = index_ini;
                 }
-            }
 
-            #endregion
+                switch (MaterialStatus)
+                {
+                    case 0:
+
+                        MatetialTextGridVisibility = "Collapsed";
+                        break;
+                    case 1:
+                        MatetialTextGridBackground = "Violet";
+                        MatetialTextGridVisibility = "Visible";
+                        break;
+                    case 2:
+                        MatetialTextGridBackground = "Red";
+                        MatetialTextGridVisibility = "Visible";
+                        break;
+                    default:
+                        break;
+                }
+                if (!unloadreadindexflag)
+                {
+                    ushort endnum;
+                    switch (MachineNum)
+                    {
+                        case "1372":
+                            endnum = 14;
+                            break;
+                        case "1373":
+                            endnum = 14;
+                            break;
+                        case "1374":
+                            endnum = 24;
+                            break;
+                        default:
+                            endnum = 24;
+                            break;
+                    }
+                    index_ini = Inifile.INIGetStringValue(initestPath, "Other", "index", "0");
+                    if (index_ini != index_ini_old)
+                    {
+                        try
+                        {
+                            if (ushort.Parse(index_ini_old) < endnum - 1 && index_ini == "0")
+                            {
+                                NeedUpdateTray.Value = true;
+                            }
+                        }
+                        catch
+                        {
+
+
+                        }
+
+                        index_ini_old = index_ini;
+                    }
+                }
+
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("DispatcherTimerTickUpdateUi" + ex.Message);
+            }
 
         }
         private void StartUpdateProcess(int index,string bar,string rst,string cyc,bool isRecord)

@@ -6,7 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HS9上料机UI.view"
              mc:Ignorable="d" 
-             d:DesignHeight="708" d:DesignWidth="1024">
+             d:DesignHeight="768" d:DesignWidth="1024">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

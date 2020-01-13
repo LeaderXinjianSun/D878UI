@@ -749,6 +749,14 @@
                                 <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="250" Text="上料负压表10"></TextBlock>
                                 <Ellipse Style="{StaticResource SV10}"></Ellipse>
                             </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="250" Text="上料负压表11"></TextBlock>
+                                <Ellipse Style="{StaticResource SV11}"></Ellipse>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="250" Text="上料负压表12"></TextBlock>
+                                <Ellipse Style="{StaticResource SV12}"></Ellipse>
+                            </StackPanel>
                         </StackPanel>
 
                     </GroupBox>
@@ -801,6 +809,14 @@
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸10"></TextBlock>
                                     <Button Style="{DynamicResource IO_Suck10}" Content="Suck10" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="10"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸11"></TextBlock>
+                                    <Button Style="{DynamicResource IO_Suck11}" Content="Suck11" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="11"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Width="100" Text="吸12"></TextBlock>
+                                    <Button Style="{DynamicResource IO_Suck12}" Content="Suck12" Command="{bing:ActionAutoWithParam TwinCATEXIOSuck}" CommandParameter="12"></Button>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>

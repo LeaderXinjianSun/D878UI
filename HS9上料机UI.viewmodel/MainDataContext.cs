@@ -27,6 +27,7 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 Light_Alarm { set; get; }
         public TwinCATCoil1 Light_Cmd { set; get; }
         public TwinCATCoil1 NeedUpdateTray { set; get; }
+        public TwinCATCoil1 HAxis_Ng { set; get; } //s
         public TwinCATCoil1 InputSafedoorFlag { set; get; }
         public TwinCATCoil1 OutputSafedoorFlag { set; get; }
         public TwinCATCoil1 ShangLiao { set; get; }
@@ -72,6 +73,8 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 PhotoHave8 { set; get; }
         public TwinCATCoil1 PhotoHave9 { set; get; }
         public TwinCATCoil1 PhotoHave10 { set; get; }
+        public TwinCATCoil1 PhotoHave11 { set; get; }
+        public TwinCATCoil1 PhotoHave12 { set; get; }
         public TwinCATCoil1 XErrorCode { set; get; }
         public TwinCATCoil1 YErrorCode { set; get; }
         public TwinCATCoil1 HErrorCode { set; get; }
@@ -92,6 +95,8 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 SuckValue8 { set; get; }
         public TwinCATCoil1 SuckValue9 { set; get; }
         public TwinCATCoil1 SuckValue10 { set; get; }
+        public TwinCATCoil1 SuckValue11 { set; get; }
+        public TwinCATCoil1 SuckValue12 { set; get; }
         public TwinCATCoil1 RSuckValue1 { set; get; }
         public TwinCATCoil1 RSuckValue2 { set; get; }
         public TwinCATCoil1 RSuckValue3 { set; get; }
@@ -102,6 +107,8 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 RSuckValue8 { set; get; }
         public TwinCATCoil1 RSuckValue9 { set; get; }
         public TwinCATCoil1 RSuckValue10 { set; get; }
+        public TwinCATCoil1 RSuckValue11 { set; get; }
+        public TwinCATCoil1 RSuckValue12 { set; get; }
         public TwinCATCoil1 Suck1 { set; get; }
         public TwinCATCoil1 Suck2 { set; get; }
         public TwinCATCoil1 Suck3 { set; get; }
@@ -112,6 +119,8 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 Suck8 { set; get; }
         public TwinCATCoil1 Suck9 { set; get; }
         public TwinCATCoil1 Suck10 { set; get; }
+        public TwinCATCoil1 Suck11 { set; get; }
+        public TwinCATCoil1 Suck12 { set; get; }
         public TwinCATCoil1 BFI1 { set; get; }
         public TwinCATCoil1 BFI2 { set; get; }
         public TwinCATCoil1 BFI3 { set; get; }
@@ -476,7 +485,7 @@ namespace HS9上料机UI.viewmodel
         double DebugTargetU = 0;
         private HdevEngine hdevEngine = new HdevEngine();
         public HObject curImage;
-        private bool[] FindFill = new bool[10];
+        private bool[] FindFill = new bool[12];
         bool EStop = false;
         bool isUpdateImage = false;
         Queue<AlarmRecord> myAlarmRecordQueue = new Queue<AlarmRecord>();
@@ -493,7 +502,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2019112901";
+        string VersionMsg = "2020011101";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -531,6 +540,8 @@ namespace HS9上料机UI.viewmodel
             Light_Cmd = new TwinCATCoil1(new TwinCATCoil("MAIN.Light_Cmd", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             NeedUpdateTray = new TwinCATCoil1(new TwinCATCoil("MAIN.NeedUpdateTray", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            HAxis_Ng = new TwinCATCoil1(new TwinCATCoil("MAIN.HAxis_Ng", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);//s
+
             InputSafedoorFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.InputSafedoorFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             OutputSafedoorFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.OutputSafedoorFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
@@ -729,6 +740,8 @@ namespace HS9上料机UI.viewmodel
             Suck8 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck8", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             Suck9 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck9", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             Suck10 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck10", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            Suck11 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck11", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            Suck12 = new TwinCATCoil1(new TwinCATCoil("MAIN.Suck12", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             PanTopFlag = new TwinCATCoil1(new TwinCATCoil("MAIN.PanTopFlag", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
@@ -742,6 +755,8 @@ namespace HS9上料机UI.viewmodel
             SuckValue8 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue8", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             SuckValue9 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue9", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             SuckValue10 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue10", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            SuckValue11 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue11", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            SuckValue12 = new TwinCATCoil1(new TwinCATCoil("MAIN.SuckValue12", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             RSuckValue1 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue1", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             RSuckValue2 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue2", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -753,6 +768,8 @@ namespace HS9上料机UI.viewmodel
             RSuckValue8 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue8", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             RSuckValue9 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue9", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             RSuckValue10 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue10", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            RSuckValue11 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue11", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            RSuckValue12 = new TwinCATCoil1(new TwinCATCoil("MAIN.RSuckValue12", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             Calc_Start = new TwinCATCoil1(new TwinCATCoil("MAIN.Calc_Start", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
@@ -772,6 +789,8 @@ namespace HS9上料机UI.viewmodel
             PhotoHave8 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave8", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             PhotoHave9 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave9", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             PhotoHave10 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave10", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PhotoHave11 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave11", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            PhotoHave12 = new TwinCATCoil1(new TwinCATCoil("MAIN.PhotoHave12", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
 
             FMoveCMD = new TwinCATCoil1(new TwinCATCoil("MAIN.FMoveCMD", typeof(bool), TwinCATCoil.Mode.Notice), _TwinCATAds);
             FMoveCompleted = new TwinCATCoil1(new TwinCATCoil("MAIN.FMoveCompleted", typeof(bool), TwinCATCoil.Mode.Notice, 1), _TwinCATAds);
@@ -1180,21 +1199,21 @@ namespace HS9上料机UI.viewmodel
             str = "MachineNum;";
             switch (MachineNum)
             {
-                case "1372":
+                case "X1621":
                     str += "1";
                     MachineNum_1.Value = 1;
                     break;
-                case "1373":
+                case "D878":
                     str += "2";
                     MachineNum_1.Value = 2;
                     break;
-                case "1374":
-                    str += "3";
-                    MachineNum_1.Value = 3;
-                    break;
+ //s               case "1374":
+ //s                   str += "3";
+ //s                   MachineNum_1.Value = 3;
+ //s                   break;
                 default:
-                    str += "3";
-                    MachineNum_1.Value = 3;
+                    str += "1";
+                    MachineNum_1.Value = 1;
                     break;
             }
             if (epsonRC90.TestSendStatus)
@@ -2135,6 +2154,12 @@ namespace HS9上料机UI.viewmodel
                 case "10":
                     Suck10.Value = !(bool)Suck10.Value;
                     break;
+                case "11":
+                    Suck11.Value = !(bool)Suck11.Value;
+                    break;
+                case "12":
+                    Suck12.Value = !(bool)Suck12.Value;
+                    break;
                 default:
                     break;
             }
@@ -2231,21 +2256,21 @@ namespace HS9上料机UI.viewmodel
 
                 switch (MachineNum)
                 {
-                    case "1372":
+                    case "X1621":
       
                         MachineNum_1.Value = 1;
                         break;
-                    case "1373":
+                    case "D878":
                     
                         MachineNum_1.Value = 2;
                         break;
-                    case "1374":
+ //s                   case "1374":
                     
-                        MachineNum_1.Value = 3;
-                        break;
+ //s                       MachineNum_1.Value = 3;
+ //s                       break;
                     default:
                       
-                        MachineNum_1.Value = 3;
+                        MachineNum_1.Value = 1;
                         break;
                 }
                 Calc_Start.Value = true;
@@ -2273,15 +2298,15 @@ namespace HS9上料机UI.viewmodel
                     MsgText = AddMessage(DangbanFirstProduct + " 开班第1片");
                 }
             }
-            if (str.Contains("连续NG"))
-            {
-                isSendSamCMD = true;
-                ShowSampleTestWindow = !ShowSampleTestWindow;
-                if (epsonRC90.TestSendStatus)
-                {
-                    await epsonRC90.TestSentNet.SendAsync("GONOGOAction;" + SampleNgitemsNum.ToString());
-                }
-            }
+////            if (str.Contains("连续NG"))
+//            {
+//                isSendSamCMD = true;
+//                ShowSampleTestWindow = !ShowSampleTestWindow;
+//                if (epsonRC90.TestSendStatus)
+//                {
+//                    await epsonRC90.TestSentNet.SendAsync("GONOGOAction;" + SampleNgitemsNum.ToString());
+//                }
+//            }
             switch (str)
             {
                 case "MsgRev: PickAction0":
@@ -2753,17 +2778,18 @@ namespace HS9上料机UI.viewmodel
             ushort endnum;
             switch (MachineNum)
             {
-                case "1372":
-                    endnum = 14;
+                case "X1621":
+                    endnum = 20;
+                    MsgText = AddMessage("endnum " +endnum);
                     break;
-                case "1373":
-                    endnum = 14;
+                case "D878":
+                    endnum = 12;
                     break;
-                case "1374":
-                    endnum = 24;
-                    break;
+//s             case "1374":
+//s                 endnum = 24;
+//s                 break;
                 default:
-                    endnum = 24;
+                    endnum = 20;
                     break;
             }
             Func<Task> startTask = () =>
@@ -3001,6 +3027,12 @@ namespace HS9上料机UI.viewmodel
                                 case 32:
                                     PLCMessage = "测试机被屏蔽";
                                     PLCMessageVisibility = "Visible";
+                                    break;
+                                case 38:
+                                    ShowAlarmTextGrid("NG盘未到位");
+                                    SaveAlarm("NG盘未到位");
+                                    //PLCMessage = "NG盘未到位";
+                                    //PLCMessageVisibility = "Visible";
                                     break;
                                 default:
                                     break;
@@ -3397,17 +3429,18 @@ namespace HS9上料机UI.viewmodel
                     ushort endnum;
                     switch (MachineNum)
                     {
-                        case "1372":
-                            endnum = 14;
+                        case "X1621":
+                            endnum = 20;
+                            MsgText = AddMessage("下料endnum " + endnum);//s 新增测试
                             break;
-                        case "1373":
-                            endnum = 14;
+                        case "D878":
+                            endnum = 12;
                             break;
-                        case "1374":
-                            endnum = 24;
-                            break;
+//s                        case "1374":
+//s                            endnum = 24;
+//s                            break;
                         default:
-                            endnum = 24;
+                            endnum = 20;
                             break;
                     }
                     index_ini = Inifile.INIGetStringValue(initestPath, "Other", "index", "0");
@@ -3415,9 +3448,11 @@ namespace HS9上料机UI.viewmodel
                     {
                         try
                         {
-                            if (ushort.Parse(index_ini_old) < endnum - 1 && index_ini == "0")
+                            if (ushort.Parse(index_ini_old) < 19 && index_ini == "0")
                             {
+                                MsgText = AddMessage("下料满盘换盘 ");//s 新增测试
                                 NeedUpdateTray.Value = true;
+                                
                             }
                         }
                         catch
@@ -3542,6 +3577,8 @@ namespace HS9上料机UI.viewmodel
                         XinJieIn[7] = (bool)Suck8.Value;
                         XinJieIn[8] = (bool)Suck9.Value;
                         XinJieIn[9] = (bool)Suck10.Value;
+                        XinJieIn[10] = (bool)Suck11.Value;
+                        XinJieIn[11] = (bool)Suck12.Value;
 
                         PanTopFlag.Value = XinJieOut[20];
 
@@ -3555,6 +3592,8 @@ namespace HS9上料机UI.viewmodel
                         SuckValue8.Value = XinJieOut[7];
                         SuckValue9.Value = XinJieOut[12];
                         SuckValue10.Value = XinJieOut[13];
+                        SuckValue11.Value = XinJieOut[38];
+                        SuckValue12.Value = XinJieOut[39];
 
                         //测试机测试结果信号，从PLC X10210读出
                         epsonRC90.Rc90In[20] = XinJieOut[40];
@@ -3574,10 +3613,12 @@ namespace HS9上料机UI.viewmodel
                         BFO8.Value = epsonRC90.Rc90Out[32];
                         BFO9.Value = epsonRC90.Rc90Out[33];
 
+                        //脏污清洁
                         BFO11.Value = epsonRC90.Rc90Out[34];
                         BFO12.Value = epsonRC90.Rc90Out[35];
                         BFO13.Value = epsonRC90.Rc90Out[36];
                         BFO16.Value = epsonRC90.Rc90Out[37];
+
                         //倍服告知机械手是否有料
                         epsonRC90.Rc90In[5] = (bool)RSuckValue1.Value;
                         epsonRC90.Rc90In[6] = (bool)RSuckValue2.Value;
@@ -3589,6 +3630,15 @@ namespace HS9上料机UI.viewmodel
                         epsonRC90.Rc90In[12] = (bool)RSuckValue8.Value;
                         epsonRC90.Rc90In[13] = (bool)RSuckValue9.Value;
                         epsonRC90.Rc90In[14] = (bool)RSuckValue10.Value;
+                        epsonRC90.Rc90In[17] = (bool)RSuckValue11.Value;
+                        epsonRC90.Rc90In[18] = (bool)RSuckValue12.Value;
+
+                        //s 新增NG盘传感器
+                        epsonRC90.Rc90In[31] = XinJieOut[48];//m20048
+                        epsonRC90.Rc90In[32]=(bool)HAxis_Ng.Value;//放NG时H轴未在安全位
+
+
+
 
                         IsTCPConnect = epsonRC90.TestSendStatus & epsonRC90.TestReceiveStatus & epsonRC90.MsgReceiveStatus & epsonRC90.IOReceiveStatus & epsonRC90.CtrlStatus;
 
@@ -3797,6 +3847,9 @@ namespace HS9上料机UI.viewmodel
                             }
                         }
                         Light_Alarm.Value = AlarmTextGridShow == "Visible" && EpsonStatusPaused;
+                        
+
+
                         #endregion
                         #region 界面数据显示
                         //良率界面显示
@@ -4098,6 +4151,23 @@ namespace HS9上料机UI.viewmodel
             {
                 PhotoHave10.Value = false;
             }
+            if (FindFill[10])
+            {
+                PhotoHave11.Value = true;
+            }
+            else
+            {
+                PhotoHave11.Value = false;
+            }
+            if (FindFill[11])
+            {
+                PhotoHave12.Value = true;
+            }
+            else
+            {
+                PhotoHave12.Value = false;
+            }
+
             PhotoComplete.Value = true;
         }
         async void LockUI()
@@ -4471,15 +4541,15 @@ namespace HS9上料机UI.viewmodel
 
                 LastBanci = Inifile.INIGetStringValue(iniParameterPath, "System", "Banci", "0");
                 SerialPortCom = Inifile.INIGetStringValue(iniParameterPath, "System", "PLCCOM", "COM7");
-                MachineNum = Inifile.INIGetStringValue(iniParameterPath, "System", "MachineNum", "1374");
+                MachineNum = Inifile.INIGetStringValue(iniParameterPath, "System", "MachineNum", "X1621");
                 UITitle = MachineNum + "UI " + VersionMsg;
                 switch (MachineNum)
                 {
-                    case "1374":
-                        点3 = "点21： ";
+                    case "X1621":
+                        点3 = "点16： ";
                         break;
                     default:
-                        点3 = "点13： ";
+                        点3 = "点9： ";
                         break;
                 }
                 TestCheckedAL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedAL", "True"));
@@ -4501,7 +4571,7 @@ namespace HS9上料机UI.viewmodel
                 TotalAlarmNum = int.Parse(Inifile.INIGetStringValue(iniTimeCalcPath, "Alarm", "TotalAlarmNum", "0"));
 
                 UPH = uint.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "UPH", "250"));
-                MNO = Inifile.INIGetStringValue(iniParameterPath, "System", "MNO", "X1374-1");
+                MNO = Inifile.INIGetStringValue(iniParameterPath, "System", "MNO", "X1621-1");
                 LastQingjie = Convert.ToDateTime(Inifile.INIGetStringValue(iniParameterPath, "System", "LastQingjie", "2018/10/31 8:00:00"));
                 LastQingjieStr = LastQingjie.ToString();
                 //IsSamTest = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "IsSamTest", "False"));
@@ -4664,12 +4734,13 @@ namespace HS9上料机UI.viewmodel
             MsgText = AddMessage("开始拍照 手动");
             Async.RunFuncAsync(cameraHcInspect, null);
         }
+        ////s_modify_start 
         public void cameraHcInspect()
         {
             try
             {
 
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 12; i++)
                 {
                     FindFill[i] = false;
                 }
@@ -4684,8 +4755,9 @@ namespace HS9上料机UI.viewmodel
                     //    break;
                     //case "1373":
                     //    break;
-                    case "1374":
-                        for (int i = 0; i < 10; i++)
+                    
+                    case "X1621":
+                        for (int i = 0; i < 12; i++)
                         {
                             FindFill[i] = hdevEngine.getmeasurements("fill" + (i + 1).ToString()).ToString() == "1";
                             if (FindFill[i])
@@ -4711,14 +4783,16 @@ namespace HS9上料机UI.viewmodel
                             GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions8"));
                             GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions9"));
                             GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions10"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions11"));
+                            GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getRegion("Regions12"));
                             GlobalVar.hWndCtrl.repaint();
                         }
                         break;
-                    default:
+                    default://D878
                         for (int i = 0; i < 10; i++)
                         {
-                            FindFill[i] = hdevEngine.getmeasurements("fill" + (i + 1).ToString()).ToString() == "1" && i < 6;
-                            if (i < 6)
+                            FindFill[i] = hdevEngine.getmeasurements("fill" + (i + 1).ToString()).ToString() == "1" && i < 9;
+                            if (i < 9)
                             {
                                 if (FindFill[i])
                                 {
@@ -4735,7 +4809,7 @@ namespace HS9上料机UI.viewmodel
                         {
                             GlobalVar.hWndCtrl.addIconicVar(hdevEngine.getImage("Image"));
                             GlobalVar.hWndCtrl.repaint();
-                            for (int i = 0; i < 6; i++)
+                            for (int i = 0; i < 9; i++)
                             {
                                 if (FindFill[i])
                                 {
@@ -4757,6 +4831,7 @@ namespace HS9上料机UI.viewmodel
             }
 
         }
+        ////s_modify_end
         #endregion
         #endregion
     }

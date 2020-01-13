@@ -636,6 +636,20 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="SV11">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckValue11.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Ellipse" BasedOn="{StaticResource EllipseIOBase}" x:Key="SV12">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SuckValue12.Value}" Value="true">
+                <Setter Property="Fill" Value="Green"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
     <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck1">
         <Style.Triggers>
             <DataTrigger Binding="{Binding Suck1.Value}" Value="true">
@@ -704,6 +718,22 @@
         <Setter Property="Width" Value="55"></Setter>
         <Style.Triggers>
             <DataTrigger Binding="{Binding Suck10.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck11">
+        <Setter Property="Width" Value="55"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Suck11.Value}" Value="true">
+                <Setter Property="Background" Value="Yellow"></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource TwinCATButtonBase}" x:Key="IO_Suck12">
+        <Setter Property="Width" Value="55"></Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Suck12.Value}" Value="true">
                 <Setter Property="Background" Value="Yellow"></Setter>
             </DataTrigger>
         </Style.Triggers>

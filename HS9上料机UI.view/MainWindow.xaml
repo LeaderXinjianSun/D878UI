@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="{Binding UITitle}" WindowStartupLocation="CenterScreen" WindowState="Normal"
                      BorderThickness="0" GlowBrush="Black"  ResizeMode="CanResizeWithGrip" WindowTransitionsEnabled="True"
-                     Height="768" Width="1024" DataContext="{bing:Data md}" Icon="dog.ico" Closing="MetroWindow_Closing">
+                     Height="768" Width="1024" DataContext="{bing:Data md}" Icon="lion.ico" Closing="MetroWindow_Closing">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

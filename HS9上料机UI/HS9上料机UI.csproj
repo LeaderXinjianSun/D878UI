@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>dog.ico</ApplicationIcon>
+    <ApplicationIcon>lion.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
@@ -127,6 +127,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="dog.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="lion.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

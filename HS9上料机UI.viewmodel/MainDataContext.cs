@@ -17,6 +17,7 @@ using System.Data;
 using 臻鼎科技OraDB;
 using OfficeOpenXml;
 using System.Diagnostics;
+using System.Net;
 
 namespace HS9上料机UI.viewmodel
 {
@@ -458,6 +459,10 @@ namespace HS9上料机UI.viewmodel
         public string SerialPortCom { set; get; }
         public string MachineNum { set; get; }
         public string UITitle { set; get; }
+        public string MachineID { set; get; }
+        public string LineNUM { set; get; }
+        public string ProductNUM { set; get; }
+        public bool AlarmButtonIsEnabled { set; get; } = true;
         #endregion
         #endregion
         #region 变量
@@ -502,7 +507,7 @@ namespace HS9上料机UI.viewmodel
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2020011101";
+        string VersionMsg = "2020011301";
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
@@ -519,6 +524,9 @@ namespace HS9上料机UI.viewmodel
         Stopwatch Unloadsw = new Stopwatch();
         bool lockuiflag = false;
         bool 漏吸料报警 = false;
+        string alarmExcelPath = System.Environment.CurrentDirectory + "\\X1621报警.xlsx";
+        List<AlarmData> AlarmList = new List<AlarmData>();
+        string CurrentAlarmStr = "";
         #endregion
         #region 功能
         #region 初始化
@@ -868,6 +876,29 @@ namespace HS9上料机UI.viewmodel
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
             lastEpsonAlarm = System.DateTime.Now;
+
+            MachineID = Inifile.INIGetStringValue(iniParameterPath, "System", "MachineID", "X162101");
+            LineNUM = Inifile.INIGetStringValue(iniParameterPath, "System", "线体", "null");
+            ProductNUM = Inifile.INIGetStringValue(iniParameterPath, "System", "测试料号", "null");
+            if (File.Exists(alarmExcelPath))
+            {
+                FileInfo existingFile = new FileInfo(alarmExcelPath);
+                using (ExcelPackage package = new ExcelPackage(existingFile))
+                {
+                    // get the first worksheet in the workbook
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                    for (int i = 1; i <= worksheet.Dimension.End.Row; i++)
+                    {
+                        AlarmData ad = new AlarmData();
+                        ad.Code = worksheet.Cells["A" + i.ToString()].Value == null ? "Null" : worksheet.Cells["A" + i.ToString()].Value.ToString();
+                        ad.Content = worksheet.Cells["B" + i.ToString()].Value == null ? "Null" : worksheet.Cells["B" + i.ToString()].Value.ToString();
+                        ad.Start = DateTime.Now;
+                        ad.End = DateTime.Now;
+                        ad.State = false;
+                        AlarmList.Add(ad);
+                    }
+                }
+            }
         }
         #endregion
         #endregion
@@ -2892,6 +2923,44 @@ namespace HS9上料机UI.viewmodel
                 PLCMessageVisibility = "Collapsed";
                 PLCMessage = "";
                 string plsmsgstr = "";
+                #region 大数据
+                for (int i = 0; i < AlarmList.Count; i++)
+                {
+                    if (XinJieOut[50 + i] != AlarmList[i].State)
+                    {
+                        AlarmList[i].State = XinJieOut[50 + i];
+                        if (AlarmList[i].Content != "Null")
+                        {
+                            if (AlarmList[i].State)
+                            {
+                                if (CurrentAlarmStr != AlarmList[i].Content)
+                                {
+                                    CurrentAlarmStr = AlarmList[i].Content;
+                                    AlarmList[i].Start = DateTime.Now;
+                                    AddMessage(AlarmList[i].Code + AlarmList[i].Content + "发生");
+                                    string _ip = GetIp();
+                                    string _class = DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20 ? "D" : "N";
+                                    string _faulttime = "0";
+                                    await BigDataInsert(_ip, MachineID, LineNUM, ProductNUM, _class, AlarmList[i].Content, AlarmList[i].Start.ToString(), _faulttime);
+                                }
+                            }
+                            else
+                            {
+                                AlarmList[i].End = DateTime.Now;
+                                AddMessage(AlarmList[i].Code + AlarmList[i].Content + "解除");
+                                string _ip = GetIp();
+                                string _class = DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20 ? "D" : "N";
+                                string _faulttime = (AlarmList[i].End - AlarmList[i].Start).TotalMinutes.ToString("F0");
+                                if ((AlarmList[i].End - AlarmList[i].Start).TotalHours <= 0.5 && (AlarmList[i].End - AlarmList[i].Start).TotalHours > 0)
+                                {
+                                    await BigDataUpdate(_ip, AlarmList[i].Content, AlarmList[i].Start.ToString(), _class, _faulttime);
+                                }
+                            }
+                        }
+                    }
+                }
+                #endregion
+
                 if (XinJieOut != null)
                 {
                     if (漏吸料报警 != XinJieOut[50 + 35])
@@ -4626,6 +4695,10 @@ namespace HS9上料机UI.viewmodel
         {
             try
             {
+                Inifile.INIWriteValue(iniParameterPath, "System", "MachineID", MachineID);
+                Inifile.INIWriteValue(iniParameterPath, "System", "线体", LineNUM);
+                Inifile.INIWriteValue(iniParameterPath, "System", "测试料号", ProductNUM);
+
                 Inifile.INIWriteValue(iniParameterPath, "System", "PcsGrrNeedNum", PcsGrrNeedNum.ToString());
 
                 Inifile.INIWriteValue(iniParameterPath, "System", "PcsGrrNeedCount", PcsGrrNeedCount.ToString());
@@ -4833,6 +4906,207 @@ namespace HS9上料机UI.viewmodel
         }
         ////s_modify_end
         #endregion
+        #region 大数据
+        public async void AlarmButtonClick()
+        {
+            AlarmButtonIsEnabled = false;
+            await Task.Run(() => {
+                try
+                {
+                    if (!Directory.Exists("D:\\报警记录\\" + DateTime.Now.ToString("yyyyMMdd")))
+                    {
+                        Directory.CreateDirectory("D:\\报警记录\\" + DateTime.Now.ToString("yyyyMMdd"));
+                    }
+                    string path = "D:\\报警记录\\" + DateTime.Now.ToString("yyyyMMdd") + "\\" + DateTime.Now.ToString("yyyyMMddHHmmss") + "AlarmSimple.csv";
+                    Csvfile.AddNewLine(path, new string[] { "Content", "Count", "Time(min)" });
+                    string _class = DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20 ? "D" : "N";
+                    string _ip = GetIp();
+                    string _date;
+                    if (DateTime.Now.Hour < 8)
+                    {
+                        _date = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+                    }
+                    else
+                    {
+                        _date = DateTime.Now.ToString("yyyyMMdd");
+                    }
+
+                    int alarmcount = 0; float alarmelapsed = 0;
+                    foreach (var item in AlarmList)
+                    {
+                        string StrMySQL = "Server=10.89.164.62;Database=dcdb;Uid=dcu;Pwd=dcudata;pooling=false;CharSet=utf8;port=3306";
+                        string stm = "SELECT * FROM TED_FAULT_DATA WHERE COMPUTERIP ='" + _ip + "' AND FAULTID = '" + item.Content +
+    "' AND TDATE = '" + _date + "' AND CLASS = '" + _class + "' AND FL01 = '" + "OFF'";
+                        Mysql mysql = new Mysql();
+                        if (mysql.Connect(StrMySQL))
+                        {
+                            DataSet ds = mysql.Select(stm);
+                            DataTable dt = ds.Tables["table0"];
+                            if (dt.Rows.Count > 0)
+                            {
+                                int i = 0;
+                                float elapsed = 0;
+                                foreach (DataRow datarow in dt.Rows)
+                                {
+                                    try
+                                    {
+                                        elapsed += float.Parse((string)datarow["FAULTTIME"]);
+                                    }
+                                    catch
+                                    { }
+                                    i++;
+                                }
+                                if (i > 0)
+                                {
+                                    alarmcount += i;
+                                    alarmelapsed += elapsed;
+                                    Csvfile.AddNewLine(path, new string[] { item.Content, i.ToString(), elapsed.ToString("F1") });
+                                }
+                            }
+                        }
+                        mysql.DisConnect();
+                    }
+                    Process process1 = new Process();
+                    process1.StartInfo.FileName = path;
+                    process1.StartInfo.Arguments = "";
+                    process1.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
+                    process1.Start();
+                }
+                catch (Exception ex)
+                {
+                    AddMessage(ex.Message);
+                }
+            });
+            await Task.Run(() => {
+                try
+                {
+                    string path = "D:\\报警记录\\" + DateTime.Now.ToString("yyyyMMdd") + "\\" + DateTime.Now.ToString("yyyyMMddHHmmss") + "AlarmTotal.csv";
+                    string _class = DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20 ? "D" : "N";
+                    string _ip = GetIp();
+                    string _date;
+                    if (DateTime.Now.Hour < 8)
+                    {
+                        _date = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+                    }
+                    else
+                    {
+                        _date = DateTime.Now.ToString("yyyyMMdd");
+                    }
+                    string StrMySQL = "Server=10.89.164.62;Database=dcdb;Uid=dcu;Pwd=dcudata;pooling=false;CharSet=utf8;port=3306";
+                    string stm = "SELECT * FROM TED_FAULT_DATA WHERE COMPUTERIP ='" + _ip +
+                            "' AND TDATE = '" + _date + "' AND CLASS = '" + _class + "' AND FL01 = '" + "OFF'";
+
+                    Mysql mysql = new Mysql();
+                    if (mysql.Connect(StrMySQL))
+                    {
+                        DataSet ds = mysql.Select(stm);
+                        DataTable dt = ds.Tables["table0"];
+                        if (dt.Rows.Count > 0)
+                        {
+                            string strHead = DateTime.Now.ToString("yyyyMMddHHmmss") + "AlarmTotal";
+                            string strColumns = "";
+                            for (int i = 0; i < dt.Columns.Count; i++)
+                            {
+                                strColumns += dt.Columns[i].ColumnName + ",";
+                            }
+                            strColumns = strColumns.Substring(0, strColumns.Length - 1);
+                            Csvfile.SaveToCsv(dt, path, strHead, strColumns);
+
+                            Process process1 = new Process();
+                            process1.StartInfo.FileName = path;
+                            process1.StartInfo.Arguments = "";
+                            process1.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
+                            process1.Start();
+                        }
+                    }
+                    mysql.DisConnect();
+                }
+                catch (Exception ex)
+                {
+                    AddMessage(ex.Message);
+                }
+            });
+            AlarmButtonIsEnabled = true;
+        }
+        string GetIp()
+        {
+            string ipstring = "127.0.0.1";
+            string hostName = Dns.GetHostName();
+            System.Net.IPAddress[] addressList = Dns.GetHostAddresses(hostName);//会返回所有地址，包括IPv4和IPv6 
+            foreach (var item in addressList)
+            {
+                ipstring = item.ToString();
+                string[] ss = ipstring.Split(new string[] { "." }, StringSplitOptions.None);
+                if (ss.Length == 4 && ss[0] == "10")
+                {
+                    return ipstring;
+                }
+            }
+            return "127.0.0.1";
+        }
+        private async Task BigDataInsert(string COMPUTERIP, string MACID, string LINEID, string PARTNUM, string CLASS, string FAULTID, string FAULTSTARTTIME, string FAULTTIME)
+        {
+            int result = await Task.Run<int>(() =>
+            {
+                try
+                {
+                    string _TDate;
+                    if (DateTime.Now.Hour < 8)
+                    {
+                        _TDate = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+                    }
+                    else
+                    {
+                        _TDate = DateTime.Now.ToString("yyyyMMdd");
+                    }
+
+                    string StrMySQL = "Server=10.89.164.62;Database=dcdb;Uid=dcu;Pwd=dcudata;pooling=false;CharSet=utf8;port=3306";
+                    string stm = "insert into TED_FAULT_DATA (WORKSTATION,COMPUTERIP,MACID,LINEID,PARTNUM,TDATE,TTIME,CLASS,FAULTID,FAULTSTARTTIME,FAULTTIME,REPAIRRESULT,REPAIRER,FL01) VALUES ('JASPER','"
+    + COMPUTERIP + "','" + MACID + "','" + LINEID + "','" + PARTNUM + "','" + _TDate + "','" + DateTime.Now.ToString("HHmmss") + "','"
+    + CLASS + "','" + FAULTID + "','" + FAULTSTARTTIME + "','" + FAULTTIME + "','NA','NA','ON')";
+                    Mysql mysql = new Mysql();
+                    int res = -1;
+                    if (mysql.Connect(StrMySQL))
+                    {
+                        res = mysql.executeQuery(stm);
+                    }
+                    mysql.DisConnect();
+                    return res;
+                }
+                catch (Exception ex)
+                {
+                    return -999;
+                }
+            });
+            AddMessage("上传报警" + result.ToString());
+        }
+        private async Task BigDataUpdate(string ip, string content, string starttime, string _class, string faulttime)
+        {
+            int result = await Task.Run<int>(() =>
+            {
+                try
+                {
+                    string StrMySQL = "Server=10.89.164.62;Database=dcdb;Uid=dcu;Pwd=dcudata;pooling=false;CharSet=utf8;port=3306";
+
+                    string stm = "update TED_FAULT_DATA SET CLASS = '" + _class + "',FAULTTIME = '" + faulttime + "',FL01 = 'OFF' WHERE COMPUTERIP = '"
+                    + ip + "' AND FAULTID = '" + content + "' AND FAULTSTARTTIME = '" + starttime + "'";
+                    Mysql mysql = new Mysql();
+                    int res = -1;
+                    if (mysql.Connect(StrMySQL))
+                    {
+                        res = mysql.executeQuery(stm);
+                    }
+                    mysql.DisConnect();
+                    return res;
+                }
+                catch (Exception ex)
+                {
+                    return -999;
+                }
+            });
+            AddMessage("更新报警" + result.ToString());
+        }
+        #endregion
         #endregion
     }
     public class AlarmRecord
@@ -4860,5 +5134,13 @@ namespace HS9上料机UI.viewmodel
             TestCycleTime = testCycleTime;
             Index = index;
         }
+    }
+    class AlarmData
+    {
+        public string Code { set; get; }
+        public string Content { set; get; }
+        public DateTime Start { set; get; }
+        public DateTime End { set; get; }
+        public bool State { set; get; }
     }
 }

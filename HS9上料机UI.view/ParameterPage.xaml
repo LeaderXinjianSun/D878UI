@@ -36,6 +36,25 @@
                         <ComboBox Style="{StaticResource ComboBoxBase}" x:Name="Com" Text="{Binding SerialPortCom}" DropDownOpened="ComboBox_DropDownOpened" IsEditable="True" IsReadOnly="True"></ComboBox>
                     </StackPanel>
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="波特率： 19200&#13;数据位： 8&#13;停止位： 1&#13;奇偶校验： Even"></TextBlock>
+                    <GroupBox Header="大数据" Grid.Column="1" Grid.Row="1">
+                        <Grid>
+                            <StackPanel Margin="10" Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Text="机台编号" Width="60"></TextBlock>
+                                    <TextBox Width="100" Text="{Binding MachineID}"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Text="线体" Width="60"></TextBlock>
+                                    <TextBox Width="100" Text="{Binding LineNUM}"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Text="测试料号" Width="60"></TextBlock>
+                                    <TextBox Width="100" Text="{Binding ProductNUM}"></TextBox>
+                                </StackPanel>
+                                <Button Content="Alarm" Width="60" IsEnabled="{Binding AlarmButtonIsEnabled}" HorizontalAlignment="Right" Margin="10" Command="{bing:ActionAuto AlarmButtonClick}"></Button>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
                 </StackPanel>
                 <Button  Grid.Column="1" Grid.Row="0" Style="{StaticResource OperationButton}" Content="保存" Command="{bing:ActionAutoWithParam FuncButton}" CommandParameter="0" Width="100" Height="100"></Button>
             </Grid>

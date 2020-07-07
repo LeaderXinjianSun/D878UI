@@ -319,8 +319,8 @@
             <TabItem Header="底座">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition Height="2*"></RowDefinition>
+                        <RowDefinition Height="83*"></RowDefinition>
+                        <RowDefinition Height="266*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -365,7 +365,7 @@
                             </StackPanel>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Grid.Row="1" Header="手动操作">
+                    <GroupBox Header="手动操作" Margin="0,1,0,0" Grid.Row="1">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition></ColumnDefinition>
@@ -387,11 +387,12 @@
                                 <Button Grid.Column="2" Grid.Row="1" Content="F-" FontSize="30" PreviewMouseDown="{bing:ActionAuto JogActionF_Minus}" PreviewMouseUp="{bing:ActionAuto JogActionF_Stop}"></Button>
                             </Grid>
                             <Grid Grid.Column="1" VerticalAlignment="Center">
-                                <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
-                                    <Button Style="{StaticResource DebugButton1}" Content="上料盘" Margin="0" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="6"></Button>
-                                    <Button Style="{StaticResource DebugButton1}" Content="穴1" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="7"></Button>
-                                    <Button Style="{StaticResource DebugButton1}" Content="穴2" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="8"></Button>
-                                    <Button Style="{StaticResource DebugButton1}" Content="穴3" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="9"></Button>
+                                <StackPanel HorizontalAlignment="Center" Orientation="Vertical" Height="430" Margin="56,0" VerticalAlignment="Bottom">
+                                    <Button Style="{StaticResource DebugButton1}" Content="上料盘1" Margin="0" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="6" ></Button>
+                                    <Button Style="{StaticResource DebugButton1}" Content="上料盘2" Margin="0" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="25"></Button>
+                                    <Button Style="{StaticResource DebugButton1}" Content="穴1" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="7" Height="36"/>
+                                    <Button Style="{StaticResource DebugButton1}" Content="穴2" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="8"/>
+                                    <Button Style="{StaticResource DebugButton1}" Content="穴3" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="9"/>
                                     <Button Style="{StaticResource DebugButton1}" Content="穴4" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="10"></Button>
                                     <Button Style="{StaticResource DebugButton1}" Content="NG盘" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="11"></Button>
                                     <Button Style="{StaticResource DebugButton1}" Content="Noise盘" Command="{bing:ActionAutoWithParam MovetoPointAction}" CommandParameter="24"></Button>
@@ -404,10 +405,16 @@
                         <Grid VerticalAlignment="Center">
                             <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="上料盘："></TextBlock>
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="上料盘1："></TextBlock>
                                     <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding FPosition1.Value}"></TextBox>
 
                                     <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="6"></Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="上料盘2："></TextBlock>
+                                    <TextBox Style="{StaticResource TextBoxCor}" Text="{Binding FPosition9.Value}"></TextBox>
+
+                                    <Button Style="{StaticResource DebugButton2}" Content="Get" Command="{bing:ActionAutoWithParam GetCoord}" CommandParameter="25"></Button>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Style="{StaticResource  TextBlockParameterName}" Text="穴1："></TextBlock>
@@ -820,7 +827,7 @@
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
-                        
+
                     </GroupBox>
                 </Grid>
             </TabItem>

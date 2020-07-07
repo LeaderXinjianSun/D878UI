@@ -20,6 +20,8 @@ using OfficeOpenXml;
 using System.IO;
 
 
+
+
 namespace HS9上料机UI.view
 {
     /// <summary>
@@ -33,7 +35,7 @@ namespace HS9上料机UI.view
             this.SetBinding(ShowYieldAdminControlWindowProperty, "ShowYieldAdminControlWindow");
             this.SetBinding(ShowSampleTestWindowProperty, "ShowSampleTestWindow");
             if (System.Environment.CurrentDirectory != @"C:\Debug")
-            {
+            {                              
                 System.Windows.MessageBox.Show("软件安装目录必须为C:\\Debug");
                 System.Windows.Application.Current.Shutdown();
             }
@@ -53,12 +55,9 @@ namespace HS9上料机UI.view
                     {
                         GlobalVar.Package = new ExcelPackage(existingFile);
                         GlobalVar.Worksheet = GlobalVar.Package.Workbook.Worksheets[1];
-                        
-
                     }
                     catch (Exception ex)
                     {
-
                         System.Windows.MessageBox.Show(ex.Message , "耗材表格文件异常");
                         System.Windows.Application.Current.Shutdown();
                     }
@@ -66,6 +65,7 @@ namespace HS9上料机UI.view
             }
 
         }
+
 
         private async void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

@@ -104,7 +104,7 @@
                 <TextBlock Style="{StaticResource YieldTextBlock}" Grid.Column="1" Text="{Binding PassStatusDisplay3}" Foreground="{Binding PassStatusColor3}"></TextBlock>
                 <TextBlock Style="{StaticResource YieldTextBlock}" Grid.Column="1" Grid.Row="1" Text="{Binding PassStatusDisplay4}" Foreground="{Binding PassStatusColor4}"></TextBlock>
             </Grid>
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1"  Visibility="Hidden">
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
@@ -144,7 +144,8 @@
                 <TextBlock Grid.Column="3" Grid.Row="3" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestCycle2}"></Run></TextBlock>
                 <TextBlock Grid.Column="4" Grid.Row="3" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestCycle3}"></Run></TextBlock>
                 <TextBlock Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="4" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestCycleAve}"></Run></TextBlock>
-            </Grid>
+           
+        </Grid>
             <Grid Grid.Row="2">
                 <TabControl TabStripPlacement ="Bottom">
                     <TabItem Header="数据">
@@ -212,7 +213,7 @@
                            
                         </Grid>
                     </TabItem>
-                    <TabItem Header="统计" IsEnabled="{Binding Isloagin}">
+                    <TabItem Header="统计" IsEnabled="{Binding Isloagin}" Margin="0,0,-4,0" HorizontalAlignment="Right" Width="65">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition></RowDefinition>
@@ -267,8 +268,50 @@
                             <TextBlock Text="%" Style="{StaticResource TextBlockGrid}" Grid.Row="4" Grid.Column="5"></TextBlock>
                         </Grid>   
                     </TabItem>
+                    <TabItem Header="流程" IsEnabled="{Binding Isloagin}" Margin="4,0,-4,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="治具" Style="{StaticResource CycleTextBlock}"></TextBlock>
+                            <TextBlock Text="1#" Grid.Column="1" Style="{StaticResource CycleTextBlock}"></TextBlock>
+                            <TextBlock Text="2#" Grid.Column="2" Style="{StaticResource CycleTextBlock}"></TextBlock>
+                            <TextBlock Text="3#" Grid.Column="3" Style="{StaticResource CycleTextBlock}"></TextBlock>
+                            <TextBlock Text="4#" Grid.Column="4" Style="{StaticResource CycleTextBlock}"></TextBlock>
+                            <TextBlock Text="测试" Grid.Column="0" Grid.Row="1" Style="{StaticResource CycleTextBlock}"></TextBlock>
+                            <TextBlock Text="上料" Grid.Column="0" Grid.Row="2" Style="{StaticResource CycleTextBlock}"></TextBlock>
+                            <TextBlock Text="工时" Grid.Column="0" Grid.Row="3" Style="{StaticResource CycleTextBlock}"></TextBlock>
+                            <TextBlock Text="平均" Grid.Column="0" Grid.Row="4" Style="{StaticResource CycleTextBlock}"></TextBlock>
+
+                            <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestTime0}"></Run></TextBlock>
+                            <TextBlock Grid.Column="2" Grid.Row="1" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestTime1}"></Run></TextBlock>
+                            <TextBlock Grid.Column="3" Grid.Row="1" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestTime2}"></Run></TextBlock>
+                            <TextBlock Grid.Column="4" Grid.Row="1" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestTime3}"></Run></TextBlock>
+
+                            <TextBlock Grid.Column="1" Grid.Row="2" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestIdle0}"></Run></TextBlock>
+                            <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestIdle1}"></Run></TextBlock>
+                            <TextBlock Grid.Column="3" Grid.Row="2" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestIdle2}"></Run></TextBlock>
+                            <TextBlock Grid.Column="4" Grid.Row="2" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestIdle3}"></Run></TextBlock>
+
+                            <TextBlock Grid.Column="1" Grid.Row="3" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestCycle0}"></Run></TextBlock>
+                            <TextBlock Grid.Column="2" Grid.Row="3" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestCycle1}"></Run></TextBlock>
+                            <TextBlock Grid.Column="3" Grid.Row="3" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestCycle2}"></Run></TextBlock>
+                            <TextBlock Grid.Column="4" Grid.Row="3" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestCycle3}"></Run></TextBlock>
+                            <TextBlock Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="4" Style="{StaticResource CycleTextBlock}"><Run Text="{Binding TestCycleAve}"></Run></TextBlock>
+                        </Grid>
+                    </TabItem>
                 </TabControl>
- 
             </Grid>
         </Grid>
     </Grid>

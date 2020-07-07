@@ -493,6 +493,23 @@ namespace 臻鼎科技OraDB
             return strSQL;
         }
 
+        public static string getSelectStringwithOrder2(string strTable, string[] arrField, string[] arrValue)
+        {
+            string strSQL = string.Empty;
+            if (arrField.Length != arrValue.Length)
+            {
+                throw new Exception("字段的个数和值的个数不一致");
+            }
+            strSQL = string.Format("select * from {0} where ", strTable);
+            string str1 = "";
+            for (int i = 0; i < arrField.Length; i++)
+            {
+                str1 += string.Format("{0}='{1}' and ", arrField[i], arrValue[i]);
+            }
+            strSQL += str1.Substring(0, str1.Length - 5);
+            strSQL += " ORDER BY CDATE , CTIME";
+            return strSQL;
+        }
         public static string getSelectString(string strTable, string[] arrField)
         {
             string strSQL = string.Empty;
@@ -528,6 +545,11 @@ namespace 臻鼎科技OraDB
         public DataSet selectSQLwithOrder(string strTable, string[] arrField, string[] arrValue)
         {
             return executeQuery(getSelectStringwithOrder(strTable, arrField, arrValue));
+        }
+
+        public DataSet selectSQLwithOrder2(string strTable, string[] arrField, string[] arrValue)
+        {
+            return executeQuery(getSelectStringwithOrder2(strTable, arrField, arrValue));
         }
 
         public DataSet selectSQL(string strTable, string[] arrField)

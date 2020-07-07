@@ -17,8 +17,8 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="193*"></RowDefinition>
+            <RowDefinition Height="161*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -38,20 +38,36 @@
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="波特率： 19200&#13;数据位： 8&#13;停止位： 1&#13;奇偶校验： Even"></TextBlock>
                     <GroupBox Header="大数据" Grid.Column="1" Grid.Row="1">
                         <Grid>
-                            <StackPanel Margin="10" Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal">
+                            <StackPanel Margin="2" Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal" Margin="1">
+                                    <TextBlock VerticalAlignment="Center" Text="机种" Width="60"></TextBlock>
+                                    <TextBox IsReadOnly="{Binding BigDataEditIsReadOnly}" Width="100" Text="{Binding PM}"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="1">
+                                    <TextBlock VerticalAlignment="Center" Text="组别" Width="60"></TextBlock>
+                                    <TextBox IsReadOnly="{Binding BigDataEditIsReadOnly}" Width="100" Text="{Binding GROUP1}"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="1">
+                                    <TextBlock VerticalAlignment="Center" Text="轨道" Width="60"></TextBlock>
+                                    <TextBox IsReadOnly="{Binding BigDataEditIsReadOnly}" Width="100" Text="{Binding TRACK}"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="1">
                                     <TextBlock VerticalAlignment="Center" Text="机台编号" Width="60"></TextBlock>
-                                    <TextBox Width="100" Text="{Binding MachineID}"></TextBox>
+                                    <TextBox IsReadOnly="{Binding BigDataEditIsReadOnly}" Width="100" Text="{Binding MACID}"></TextBox>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Text="线体" Width="60"></TextBlock>
-                                    <TextBox Width="100" Text="{Binding LineNUM}"></TextBox>
+                                <StackPanel Orientation="Horizontal" Margin="1">
+                                    <TextBlock VerticalAlignment="Center" Text="工站" Width="60"></TextBlock>
+                                    <TextBox IsReadOnly="{Binding BigDataEditIsReadOnly}" Width="100" Text="{Binding WORKSTATION }"></TextBox>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Text="测试料号" Width="60"></TextBlock>
-                                    <TextBox Width="100" Text="{Binding ProductNUM}"></TextBox>
+                                <StackPanel Orientation="Horizontal" Margin="1">
+                                    <TextBlock VerticalAlignment="Center" Text="三色灯编号" Width="60"></TextBlock>
+                                    <TextBox IsReadOnly="{Binding BigDataEditIsReadOnly}" Width="100" Text="{Binding LIGHT_ID}"></TextBox>
                                 </StackPanel>
-                                <Button Content="Alarm" Width="60" IsEnabled="{Binding AlarmButtonIsEnabled}" HorizontalAlignment="Right" Margin="10" Command="{bing:ActionAuto AlarmButtonClick}"></Button>
+                                <StackPanel Orientation="Horizontal" Margin="1">
+                                    <Button Content="{Binding BigDataPeramEdit}" Width="100" Height="20" HorizontalAlignment="Right" Margin="5" Command="{Binding BigDataPeramEditCommand}"></Button>
+                                    <Button Content="Alarm" Width="100" Height="20" IsEnabled="{Binding AlarmButtonIsEnabled}" Command="{Binding BigDataAlarmGetCommand}"></Button>
+                                </StackPanel>
+
                             </StackPanel>
                         </Grid>
                     </GroupBox>
@@ -76,7 +92,7 @@
                     <ComboBox Style="{StaticResource ComboBoxBase}" Text="{Binding MachineNum}" IsEditable="True" IsReadOnly="True">
                         <ComboBoxItem Content="X1621"></ComboBoxItem>
                         <ComboBoxItem Content="D878"></ComboBoxItem>
-                        
+
                     </ComboBox>
                 </StackPanel>
                 <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
@@ -92,7 +108,7 @@
                     <!--<TextBlock Style="{StaticResource TextBlockBase}" Text="样本测试时间间隔： "></TextBlock>
                     <TextBox Style="{StaticResource TextBoxPort}" Text="{Binding SampleTimeElapse}"></TextBox>
                     <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="时(h)"></TextBlock>-->
-                    
+
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="上午样本开始：" Width="130"></TextBlock>
                     <ComboBox Text="{Binding DaySampleStartHour}" Style="{StaticResource ComboBoxBase}" IsEditable="True" IsReadOnly="True" Width="50">
                         <ComboBoxItem>6</ComboBoxItem>
@@ -252,11 +268,11 @@
                     </WindowsFormsHost>-->
                     <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="样本管控： "></TextBlock>
                     <TextBox Style="{StaticResource TextBoxPort}" Text="{Binding SamTimesLimit}"></TextBox>
-                    <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="次"></TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="天"></TextBlock>
                 </StackPanel>
                 <StackPanel Margin="5,10,5,0" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="前夜样本开始：" Width="130"></TextBlock>
-                    
+
                     <ComboBox Text="{Binding NightSampleStartHour}" Style="{StaticResource ComboBoxBase}" IsEditable="True" IsReadOnly="True" Width="50">
                         <ComboBoxItem>18</ComboBoxItem>
                         <ComboBoxItem>19</ComboBoxItem>
@@ -329,6 +345,9 @@
                         <ComboBoxItem>59</ComboBoxItem>
                     </ComboBox>
                     <TextBlock Style="{StaticResource TextBlockBase}" Text="分"></TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="样本管控： "></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Text="{Binding SamTimesLimit_Count}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Margin="5,5" Text="次"></TextBlock>
                     <!--<WindowsFormsHost>
                         <forms:NumericUpDown Text="{Binding NightSampleStartMin}" Width="100"/>
                     </WindowsFormsHost>-->
@@ -437,6 +456,62 @@
                         <ComboBoxItem Content="9"></ComboBoxItem>
                         <ComboBoxItem Content="10"></ComboBoxItem>
                     </ComboBox>
+                </StackPanel>
+
+                <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="70" Text="刷卡启用："></TextBlock>
+                    <ComboBox Style="{StaticResource ComboBoxBase}" Text="{Binding cardOpen}" IsEditable="True" IsReadOnly="True" >
+                        <ComboBoxItem Content="启用"></ComboBoxItem>
+                        <ComboBoxItem Content="不启用"></ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="70" Text="连续NG："></TextBlock>
+                    <ComboBox Style="{StaticResource ComboBoxGRR}" Text="{Binding PcsNgCount}" IsEditable="True" IsReadOnly="True">
+                        <ComboBoxItem Content="1"></ComboBoxItem>
+                        <ComboBoxItem Content="2"></ComboBoxItem>
+                        <ComboBoxItem Content="3"></ComboBoxItem>
+                        <ComboBoxItem Content="4"></ComboBoxItem>
+                        <ComboBoxItem Content="5"></ComboBoxItem>
+                        <ComboBoxItem Content="6"></ComboBoxItem>
+                        <ComboBoxItem Content="7"></ComboBoxItem>
+                        <ComboBoxItem Content="8"></ComboBoxItem>
+                        <ComboBoxItem Content="9"></ComboBoxItem>
+                        <ComboBoxItem Content="10"></ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="70" Text="良率高线："></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="60" Text="{Binding FpyMax}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="%  "></TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="70" Text="良率低线："></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="60" Text="{Binding FpyMin}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="%  "></TextBlock>
+  
+                </StackPanel>
+                <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="70" Text="良率停机："></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="60" Text="{Binding FpyStop}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="%  "></TextBlock>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="70" Text="投入产品数："></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="60" Text="{Binding FpyInput}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Text="pcs  "></TextBlock>
+                </StackPanel>
+                <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="70" Text="治具ID1："></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="100" Text="{Binding MachId1}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="70" Text="   治具ID2："></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="100" Text="{Binding MachId2}"></TextBox>
+                </StackPanel>
+                <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="70" Text="治具ID3："></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="100" Text="{Binding MachId3}"></TextBox>
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="70" Text="   治具ID4："></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="100" Text="{Binding MachId4}"></TextBox>
+                </StackPanel>
+                <StackPanel  Margin="5,10,5,0" Orientation ="Horizontal">
+                    <TextBlock Style="{StaticResource TextBlockBase}" Width="70" Text="人员工号："></TextBlock>
+                    <TextBox Style="{StaticResource TextBoxPort}" Width="100" Text="{Binding Opertor}"></TextBox>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

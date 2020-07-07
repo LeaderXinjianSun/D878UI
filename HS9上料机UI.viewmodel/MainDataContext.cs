@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,15 +11,18 @@ using BingLibrary.hjb.Metro;
 using HS9上料机UI.model;
 using BingLibrary.hjb.PLC;
 using BingLibrary.hjb.tools;
-using System.Collections.ObjectModel;
 using BingLibrary.hjb.file;
 using System.Windows.Threading;
 using ViewROI;
 using System.Data;
 using 臻鼎科技OraDB;
 using OfficeOpenXml;
-using System.Diagnostics;
 using System.Net;
+using 读写器530SDK;
+using SXJLibrary;
+using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.ViewModel;
+
 
 namespace HS9上料机UI.viewmodel
 {
@@ -222,6 +227,7 @@ namespace HS9上料机UI.viewmodel
         public TwinCATCoil1 FPosition6 { set; get; }
         public TwinCATCoil1 FPosition7 { set; get; }
         public TwinCATCoil1 FPosition8 { set; get; }
+        public TwinCATCoil1 FPosition9 { set; get; }
 
         public TwinCATCoil1 TPosition1 { set; get; }
         public TwinCATCoil1 TPosition2 { set; get; }
@@ -385,6 +391,17 @@ namespace HS9上料机UI.viewmodel
         public string SamMessage { set; get; }
         public int PcsGrrNeedNum { set; get; }
         public int PcsGrrNeedCount { set; get; }
+        public string cardOpen { set; get; }//s刷卡/启用刷卡判断
+        public int PcsNgCount { set; get; }
+        public int FpyMax { set; get; }
+        public int FpyMin { set; get; }
+        public int FpyStop { set; get; }
+        public int FpyInput { set; get; }
+        public string MachId1 { set; get; }
+        public string MachId2 { set; get; }
+        public string MachId3 { set; get; }
+        public string MachId4 { set; get; }
+        public string Opertor { set; get; }
         public string MatetialMessage { set; get; }
         public string MatetialTextGridBackground { set; get; }
         public string MatetialTextGridVisibility { set; get; }
@@ -395,6 +412,7 @@ namespace HS9上料机UI.viewmodel
         public ObservableCollection<string> SampleItemsStatus { set; get; } = new ObservableCollection<string>();
         public int SampleNgitemsNum { set; get; }
         public int SamTimesLimit { set; get; }
+        public int SamTimesLimit_Count { set; get; }
         #endregion
         #endregion
         #region 统计
@@ -417,7 +435,7 @@ namespace HS9上料机UI.viewmodel
         public double TestIdle2 { set; get; }
         public double TestIdle3 { set; get; }
 
-        public double TestCycle0 { set; get; } 
+        public double TestCycle0 { set; get; }
         public double TestCycle1 { set; get; }
         public double TestCycle2 { set; get; }
         public double TestCycle3 { set; get; }
@@ -459,12 +477,117 @@ namespace HS9上料机UI.viewmodel
         public string SerialPortCom { set; get; }
         public string MachineNum { set; get; }
         public string UITitle { set; get; }
-        public string MachineID { set; get; }
-        public string LineNUM { set; get; }
-        public string ProductNUM { set; get; }
-        public bool AlarmButtonIsEnabled { set; get; } = true;
+        //public string MachineID { set; get; }//s/旧版大数据
+        //public string LineNUM { set; get; }//s/旧版大数据
+        //public string ProductNUM { set; get; }//s/旧版大数据
+        //public bool AlarmButtonIsEnabled { set; get; } = true;//s/旧版大数据
+        #endregion
+
+        #region 大数据  //s/新版大数据
+        private bool bigDataEditIsReadOnly;
+
+        public bool BigDataEditIsReadOnly
+        {
+            get { return bigDataEditIsReadOnly; }
+            set
+            {
+                bigDataEditIsReadOnly = value;
+                this.RaisePropertyChanged("BigDataEditIsReadOnly");
+            }
+        }
+        private string pM;
+
+        public string PM
+        {
+            get { return pM; }
+            set
+            {
+                pM = value;
+                this.RaisePropertyChanged("PM");
+            }
+        }
+        private string gROUP1;
+
+        public string GROUP1
+        {
+            get { return gROUP1; }
+            set
+            {
+                gROUP1 = value;
+                this.RaisePropertyChanged("GROUP1");
+            }
+        }
+        private string tRACK;
+
+        public string TRACK
+        {
+            get { return tRACK; }
+            set
+            {
+                tRACK = value;
+                this.RaisePropertyChanged("TRACK");
+            }
+        }
+        private string mACID;
+
+        public string MACID
+        {
+            get { return mACID; }
+            set
+            {
+                mACID = value;
+                this.RaisePropertyChanged("MACID");
+            }
+        }
+        private string wORKSTATION;
+
+        public string WORKSTATION
+        {
+            get { return wORKSTATION; }
+            set
+            {
+                wORKSTATION = value;
+                this.RaisePropertyChanged("WORKSTATION");
+            }
+        }
+        private string lIGHT_ID;
+
+        public string LIGHT_ID
+        {
+            get { return lIGHT_ID; }
+            set
+            {
+                lIGHT_ID = value;
+                this.RaisePropertyChanged("LIGHT_ID");
+            }
+        }
+        private string bigDataPeramEdit;
+
+        public string BigDataPeramEdit
+        {
+            get { return bigDataPeramEdit; }
+            set
+            {
+                bigDataPeramEdit = value;
+                this.RaisePropertyChanged("BigDataPeramEdit");
+            }
+        }
+        private bool alarmButtonIsEnabled;
+
+        public bool AlarmButtonIsEnabled
+        {
+            get { return alarmButtonIsEnabled; }
+            set
+            {
+                alarmButtonIsEnabled = value;
+                this.RaisePropertyChanged("AlarmButtonIsEnabled");
+            }
+        }
+
+
         #endregion
         #endregion
+
         #region 变量
         TwinCATAds _TwinCATAds = new TwinCATAds();
         string MessageStr = "";
@@ -477,6 +600,7 @@ namespace HS9上料机UI.viewmodel
         private string iniTimeCalcPath = System.Environment.CurrentDirectory + "\\TimeCalc.ini";
         private string iniAlarmPath = System.Environment.CurrentDirectory + "\\AlarmRecord.ini";
         private string initestPath = @"D:\test.ini";
+        
         private string iniFClient = @"C:\FClient.ini";
         public static DispatcherTimer dispatcherTimer = new DispatcherTimer();
         bool autoClean = false;
@@ -497,24 +621,24 @@ namespace HS9上料机UI.viewmodel
         Queue<TestRecord> myTestRecordQueue = new Queue<TestRecord>();
         string barstr = "";
         DateTime lastEpsonAlarm;
-        short MinTick = 0,DecTick = 0;
-        double down_min = 0, jigdown_min = 0, waitinput_min = 0, waittray_min = 0, waittake_min = 0, run_min = 0,  work_min = 0;
+        short MinTick = 0, DecTick = 0;
+        double down_min = 0, jigdown_min = 0, waitinput_min = 0, waittray_min = 0, waittake_min = 0, run_min = 0, work_min = 0;
         bool down_flag = false, jigdown_flag = false, waitinput_flag = false, waittray_flag = false, waittake_flag = false, work_flag = false;
         bool PLCAlarmStatus = false;
         double AchievingRate, ProperRate, ProperRate_AutoMation, ProperRate_Jig;
         string DangbanFirstProduct = "";
-        uint liaoinput = 0, liaooutput = 0,louliao = 0;
+        uint liaoinput = 0, liaooutput = 0, louliao = 0;
         bool _PLCAlarmStatus = false;
         bool shangLiaoFlag = false, loadsuckFlag = false, unloadsuckFlag = false, _bfo2 = false;
         string[] FlexId = new string[4];
-        string VersionMsg = "2020011301";
+        string VersionMsg = "2020042901";//刷卡选择/大数据/新版大数据
         DateTime LastQingjie = System.DateTime.Now;
         DateTime LasSam = System.DateTime.Now;
         bool AllowCleanActionCommand = true;
         List<int[]> SamOrderList = new List<int[]>();
         string[,] SamArray = new string[8, 4];
         DateTime SamStart = DateTime.Now;
-        bool haocaiinit = true;int haocaisavetimes = 0;
+        bool haocaiinit = true; int haocaisavetimes = 0;
         int MaterialStatus = 0;
         string index_ini, index_ini_old = "";
         bool unloadreadindexflag = false;
@@ -527,18 +651,52 @@ namespace HS9上料机UI.viewmodel
         string alarmExcelPath = System.Environment.CurrentDirectory + "\\X1621报警.xlsx";
         List<AlarmData> AlarmList = new List<AlarmData>();
         string CurrentAlarmStr = "";
+        CReader reader = new CReader(); int CardStatus = 1;//s
+        bool autoCard = false;//s刷卡/换班刷卡
+        bool minutesCard = false;//s刷卡/15分钟刷卡
+        bool cardPassFlag = false;//s刷卡/刷卡完成
+        bool testCard = false;//s刷卡/测试刷卡/epson内存点238
+        bool cardOpenFlag = false;//s刷卡/刷卡启用
+        #region //s/大数据
+        int AlarmCount = 0;//s/大数据
+        int LampColor = 1;
+        int LampGreenElapse, LampGreenFlickerElapse, LampYellowElapse, LampYellowFlickerElapse, LampRedElapse;
+        int _LampGreenFlickerElapse;
+        string CurrentAlarm = "";
+        Stopwatch LampGreenSw = new Stopwatch();
+
+        // 后增刷卡
+        bool CardLockFlag; DateTime CardLockTime;
+
+        //后增样本管控天数
+        int TotalWorkTime;
+
+
+        #endregion
+
         #endregion
         #region 功能
         #region 初始化
         #region 构造函数
+
+        #region //s/大数据
+        public DelegateCommand BigDataPeramEditCommand { get; set; }
+        public DelegateCommand BigDataAlarmGetCommand { get; set; }
+        #endregion
+
         public mainData()
         {
             TwincatVarInit();
             Init();
             cameraHcInit();
+            this.BigDataPeramEditCommand = new DelegateCommand(new Action(this.BigDataPeramEditCommandExecute));//s/大数据
+            this.BigDataAlarmGetCommand = new DelegateCommand(new Action(this.BigDataAlarmGetCommandCommandExecute));//s/大数据
             Async.RunFuncAsync(ConnectDBTest, null);
             Async.RunFuncAsync(PLCWork, null);
             Async.RunFuncAsync(Run, null);
+
+            UIRun();//s/大数据
+            BigDataRun();//s/大数据
         }
         #endregion
         #region Twincat实例化
@@ -633,6 +791,8 @@ namespace HS9上料机UI.viewmodel
             FPosition6 = new TwinCATCoil1(new TwinCATCoil("MAIN.FPosition6", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
             FPosition7 = new TwinCATCoil1(new TwinCATCoil("MAIN.FPosition7", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
             FPosition8 = new TwinCATCoil1(new TwinCATCoil("MAIN.FPosition8", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
+            FPosition9 = new TwinCATCoil1(new TwinCATCoil("MAIN.FPosition9", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
+
 
             TPosition1 = new TwinCATCoil1(new TwinCATCoil("MAIN.TPosition1", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
             TPosition2 = new TwinCATCoil1(new TwinCATCoil("MAIN.TPosition2", typeof(double), TwinCATCoil.Mode.Notice), _TwinCATAds);
@@ -862,7 +1022,7 @@ namespace HS9上料机UI.viewmodel
             ReadParameter();
             ReadAlarmRecordfromCSV();
             ReadRecordfromCSV();
-            Xinjie = new ThingetPLC();           
+            Xinjie = new ThingetPLC();
             epsonRC90 = new EpsonRC90();
             epsonRC90.ModelPrint += ModelPrintEventProcess;
             epsonRC90.EpsonStatusUpdate += EpsonStatusUpdateProcess;
@@ -877,28 +1037,60 @@ namespace HS9上料机UI.viewmodel
             dispatcherTimer.Start();
             lastEpsonAlarm = System.DateTime.Now;
 
-            MachineID = Inifile.INIGetStringValue(iniParameterPath, "System", "MachineID", "X162101");
-            LineNUM = Inifile.INIGetStringValue(iniParameterPath, "System", "线体", "null");
-            ProductNUM = Inifile.INIGetStringValue(iniParameterPath, "System", "测试料号", "null");
-            if (File.Exists(alarmExcelPath))
+            #region //s/旧版大数据
+            //MachineID = Inifile.INIGetStringValue(iniParameterPath, "System", "MachineID", "X162101");
+            //LineNUM = Inifile.INIGetStringValue(iniParameterPath, "System", "线体", "null");
+            //ProductNUM = Inifile.INIGetStringValue(iniParameterPath, "System", "测试料号", "null");
+            #endregion
+            #region //s/大数据
+            PM = Inifile.INIGetStringValue(iniParameterPath, "BigData", "PM", "D878");
+            GROUP1 = Inifile.INIGetStringValue(iniParameterPath, "BigData", "GROUP1", "NA");
+            TRACK = Inifile.INIGetStringValue(iniParameterPath, "BigData", "TRACK", "NA");
+            MACID = Inifile.INIGetStringValue(iniParameterPath, "BigData", "MACID", "NA");
+            WORKSTATION = Inifile.INIGetStringValue(iniParameterPath, "BigData", "WORKSTATION", "NA");
+            LIGHT_ID = Inifile.INIGetStringValue(iniParameterPath, "BigData", "LIGHT_ID", "NA");
+            LampGreenElapse = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "BigData", "LampGreenElapse", "0"));
+            LampGreenFlickerElapse = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "BigData", "LampGreenFlickerElapse", "0"));
+            LampYellowElapse = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "BigData", "LampYellowElapse", "0"));
+            LampYellowFlickerElapse = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "BigData", "LampYellowFlickerElapse", "0"));
+            LampRedElapse = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "BigData", "LampRedElapse", "0"));
+
+
+            this.BigDataEditIsReadOnly = true;
+            this.BigDataPeramEdit = "Edit";
+            #endregion
+            #region 报警文档
+            try
             {
-                FileInfo existingFile = new FileInfo(alarmExcelPath);
-                using (ExcelPackage package = new ExcelPackage(existingFile))
+                if (File.Exists(alarmExcelPath))
                 {
-                    // get the first worksheet in the workbook
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                    for (int i = 1; i <= worksheet.Dimension.End.Row; i++)
+                    FileInfo existingFile = new FileInfo(alarmExcelPath);
+                    using (ExcelPackage package = new ExcelPackage(existingFile))
                     {
-                        AlarmData ad = new AlarmData();
-                        ad.Code = worksheet.Cells["A" + i.ToString()].Value == null ? "Null" : worksheet.Cells["A" + i.ToString()].Value.ToString();
-                        ad.Content = worksheet.Cells["B" + i.ToString()].Value == null ? "Null" : worksheet.Cells["B" + i.ToString()].Value.ToString();
-                        ad.Start = DateTime.Now;
-                        ad.End = DateTime.Now;
-                        ad.State = false;
-                        AlarmList.Add(ad);
+                        // get the first worksheet in the workbook
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                        for (int i = 1; i <= worksheet.Dimension.End.Row; i++)
+                        {
+                            AlarmData ad = new AlarmData();
+                            ad.Code = worksheet.Cells["A" + i.ToString()].Value == null ? "Null" : worksheet.Cells["A" + i.ToString()].Value.ToString();
+                            ad.Content = worksheet.Cells["B" + i.ToString()].Value == null ? "Null" : worksheet.Cells["B" + i.ToString()].Value.ToString();
+                            ad.Start = DateTime.Now;
+                            ad.End = DateTime.Now;
+                            ad.State = false;
+                            AlarmList.Add(ad);
+                        }
                     }
                 }
+                else
+                {
+                    AddMessage("报警.xlsx 文件不存在");
+                }
             }
+            catch (Exception ex)
+            {
+                AddMessage(ex.Message);
+            }
+            #endregion
         }
         #endregion
         #endregion
@@ -924,7 +1116,8 @@ namespace HS9上料机UI.viewmodel
         #endregion
         public async void ChangeMaterialOperate()
         {
-            string rr = await GlobalVar.metro.ShowLoginOnlyPassword("确认将 "+ MaterialChangeItemsSource[MaterialSelectedIndex] + " 更换？");
+            string[] arrFieldAndOldValue = new string [9];
+            string rr = await GlobalVar.metro.ShowLoginOnlyPassword("确认将 " + MaterialChangeItemsSource[MaterialSelectedIndex] + " 更换？");
             string ss = GetPassWord();
             if (rr == ss)
             {
@@ -934,7 +1127,12 @@ namespace HS9上料机UI.viewmodel
                     GlobalVar.Worksheet.Cells[MaterialSelectedIndex + 3, 7].Value = GlobalVar.Worksheet.Cells[MaterialSelectedIndex + 3, 8].Value;
                     GlobalVar.Worksheet.Cells[MaterialSelectedIndex + 3, 8].Value = System.DateTime.Now.ToString();
                     GlobalVar.Worksheet.Cells[MaterialSelectedIndex + 3, 6].Value = 0;
-
+                    for (int i =0; i < 9; i ++)
+                    {
+                        arrFieldAndOldValue[i] = GlobalVar.Worksheet.Cells[MaterialSelectedIndex + 3, i+1].Value.ToString();
+                    }
+                    SaveCSVfileMaterial(arrFieldAndOldValue);
+                    MsgText = AddMessage("插入耗材管控记录 ");
                 }
                 catch (Exception ex)
                 {
@@ -994,7 +1192,7 @@ namespace HS9上料机UI.viewmodel
                         Isloagin = false;
                     }
                     break;
-                case "6": 
+                case "6":
                     HomePageVisibility = "Collapsed";
                     CameraPageVisibility = "Collapsed";
                     ParameterPageVisibility = "Visible";
@@ -1081,7 +1279,7 @@ namespace HS9上料机UI.viewmodel
                             if (!epsonRC90.uploadSoftwareStatus[i].status)
                             {
                                 epsonRC90.uploadSoftwareStatus[i].ResetCommand();
-                                
+
                             }
                         }
 
@@ -1089,14 +1287,14 @@ namespace HS9上料机UI.viewmodel
                     AlarmTextGridShow = "Collapsed";
                     if (epsonRC90.CtrlStatus)
                     {
-                        await epsonRC90.CtrlNet.SendAsync("$continue");            
+                        await epsonRC90.CtrlNet.SendAsync("$continue");
                     }
 
                     break;
                 case "4":
                     AlarmTextGridShow = "Collapsed";
                     GlobalVar.metro.ChangeAccent("Red");
-                    var r = await GlobalVar.metro.ShowConfirm("确认","确定进行停止机械手重启操作吗？");
+                    var r = await GlobalVar.metro.ShowConfirm("确认", "确定进行停止机械手重启操作吗？");
                     if (r && epsonRC90.CtrlStatus)
                     {
                         await epsonRC90.CtrlNet.SendAsync("$stop");
@@ -1122,28 +1320,28 @@ namespace HS9上料机UI.viewmodel
                     YieldAddNum4 = YieldAddNum3 = YieldAddNum2 = YieldAddNum1 = 0;
                     YieldAddNum1Enable = epsonRC90.YanmadeTester[0].Yield_Nomal < 95 && epsonRC90.YanmadeTester[0].TestCount_Nomal >= 100 + epsonRC90.AdminAddNum[0];
                     if (YieldAddNum1Enable)
-                    {       
+                    {
                         YieldAddNum1 = 200;
                     }
                     YieldAddNum2Enable = epsonRC90.YanmadeTester[1].Yield_Nomal < 95 && epsonRC90.YanmadeTester[1].TestCount_Nomal >= 100 + epsonRC90.AdminAddNum[1];
                     if (YieldAddNum2Enable)
-                    {                       
+                    {
                         YieldAddNum2 = 200;
                     }
                     YieldAddNum3Enable = epsonRC90.YanmadeTester[2].Yield_Nomal < 95 && epsonRC90.YanmadeTester[2].TestCount_Nomal >= 100 + epsonRC90.AdminAddNum[2];
                     if (YieldAddNum3Enable)
-                    {                        
+                    {
                         YieldAddNum3 = 200;
                     }
                     YieldAddNum4Enable = epsonRC90.YanmadeTester[3].Yield_Nomal < 95 && epsonRC90.YanmadeTester[3].TestCount_Nomal >= 100 + epsonRC90.AdminAddNum[3];
                     if (YieldAddNum4Enable)
-                    {                        
+                    {
                         YieldAddNum4 = 200;
                     }
                     break;
                 case "11":
                     if (YieldAddNum1Enable)
-                    {                        
+                    {
                         epsonRC90.AdminAddNum[0] = epsonRC90.YanmadeTester[0].TestCount_Nomal - 100 + YieldAddNum1;
                     }
                     if (YieldAddNum2Enable)
@@ -1177,7 +1375,7 @@ namespace HS9上料机UI.viewmodel
                         await epsonRC90.TestSentNet.SendAsync("GRRTimesAsk;" + PcsGrrNeedNum.ToString() + ";" + PcsGrrNeedCount.ToString());
                     }
                     break;
-              
+
                 default:
                     break;
             }
@@ -1217,7 +1415,7 @@ namespace HS9上料机UI.viewmodel
             }
             else
             {
-                str += "0;0";         
+                str += "0;0";
 
             }
             if (epsonRC90.TestSendStatus)
@@ -1238,10 +1436,10 @@ namespace HS9上料机UI.viewmodel
                     str += "2";
                     MachineNum_1.Value = 2;
                     break;
- //s               case "1374":
- //s                   str += "3";
- //s                   MachineNum_1.Value = 3;
- //s                   break;
+                //s               case "1374":
+                //s                   str += "3";
+                //s                   MachineNum_1.Value = 3;
+                //s                   break;
                 default:
                     str += "1";
                     MachineNum_1.Value = 1;
@@ -1323,17 +1521,17 @@ namespace HS9上料机UI.viewmodel
             string rs = "";
             if (DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20)
             {
-                rs += DateTime.Now.ToString("yyyyMMdd") + "Day";
+                rs += DateTime.Now.ToString("yyyyMMdd") + "_D";
             }
             else
             {
                 if (DateTime.Now.Hour >= 0 && DateTime.Now.Hour < 8)
                 {
-                    rs += DateTime.Now.AddDays(-1).ToString("yyyyMMdd") + "Night";
+                    rs += DateTime.Now.AddDays(-1).ToString("yyyyMMdd") + "_N";
                 }
                 else
                 {
-                    rs += DateTime.Now.ToString("yyyyMMdd") + "Night";
+                    rs += DateTime.Now.ToString("yyyyMMdd") + "_N";
                 }
             }
             return rs;
@@ -1341,14 +1539,14 @@ namespace HS9上料机UI.viewmodel
         private string[] PassStatusProcess(double f)
         {
             string[] strs = new string[2];
-            if (f > 98)
+            if (f > FpyMax)
             {
                 strs[0] = "良率" + f.ToString() + "% 优秀";
                 strs[1] = "Blue";
             }
             else
             {
-                if (f > 95)
+                if (f > FpyMin)
                 {
                     strs[0] = "良率" + f.ToString() + "% 正常";
                     strs[1] = "Green";
@@ -1402,7 +1600,7 @@ namespace HS9上料机UI.viewmodel
             catch
             {
 
-               
+
             }
         }
         public void TwinCATButtonOperate(object p)
@@ -1506,12 +1704,12 @@ namespace HS9上料机UI.viewmodel
                         break;
                 }
             }
-            catch 
+            catch
             {
 
-               
+
             }
-            
+
 
         }
         public void JogActionH_Plus()
@@ -1917,6 +2115,10 @@ namespace HS9上料机UI.viewmodel
                             DebugTargetF = (double)FPosition8.Value;
                             ServoPTPF();
                             break;
+                        case "25":
+                            DebugTargetF = (double)FPosition9.Value;
+                            ServoPTPF();
+                            break;
                         default:
                             break;
                     }
@@ -2044,6 +2246,9 @@ namespace HS9上料机UI.viewmodel
                         break;
                     case "24":
                         FPosition8.Value = (double)FPos.Value;
+                        break;
+                    case "25":
+                        FPosition9.Value = (double)FPos.Value;
                         break;
                     case "13":
                         TPosition1.Value = (double)TPos.Value;
@@ -2217,6 +2422,7 @@ namespace HS9上料机UI.viewmodel
                 Inifile.INIWriteValue(TwincatParameterPath, "F", "FPosition6", FPosition6.Value.ToString());
                 Inifile.INIWriteValue(TwincatParameterPath, "F", "FPosition7", FPosition7.Value.ToString());
                 Inifile.INIWriteValue(TwincatParameterPath, "F", "FPosition8", FPosition8.Value.ToString());
+                Inifile.INIWriteValue(TwincatParameterPath, "F", "FPosition9", FPosition9.Value.ToString());
                 Inifile.INIWriteValue(TwincatParameterPath, "T", "TPosition1", TPosition1.Value.ToString());
                 Inifile.INIWriteValue(TwincatParameterPath, "T", "TPosition2", TPosition2.Value.ToString());
                 Inifile.INIWriteValue(TwincatParameterPath, "T", "TPosition3", TPosition3.Value.ToString());
@@ -2268,6 +2474,7 @@ namespace HS9上料机UI.viewmodel
                 FPosition6.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "F", "FPosition6", "260.402"));
                 FPosition7.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "F", "FPosition7", "170.004"));
                 FPosition8.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "F", "FPosition8", "170.004"));
+                FPosition9.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "F", "FPosition9", "170.004"));
                 TPosition1.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "T", "TPosition1", "-28.4904"));
                 TPosition2.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "T", "TPosition2", "-303.9456"));
                 TPosition3.Value = double.Parse(Inifile.INIGetStringValue(TwincatParameterPath, "T", "TPosition3", "-565.848"));
@@ -2288,19 +2495,19 @@ namespace HS9上料机UI.viewmodel
                 switch (MachineNum)
                 {
                     case "X1621":
-      
+
                         MachineNum_1.Value = 1;
                         break;
                     case "D878":
-                    
+
                         MachineNum_1.Value = 2;
                         break;
- //s                   case "1374":
-                    
- //s                       MachineNum_1.Value = 3;
- //s                       break;
+                    //s                   case "1374":
+
+                    //s                       MachineNum_1.Value = 3;
+                    //s                       break;
                     default:
-                      
+
                         MachineNum_1.Value = 1;
                         break;
                 }
@@ -2329,36 +2536,40 @@ namespace HS9上料机UI.viewmodel
                     MsgText = AddMessage(DangbanFirstProduct + " 开班第1片");
                 }
             }
-////            if (str.Contains("连续NG"))
-//            {
-//                isSendSamCMD = true;
-//                ShowSampleTestWindow = !ShowSampleTestWindow;
-//                if (epsonRC90.TestSendStatus)
-//                {
-//                    await epsonRC90.TestSentNet.SendAsync("GONOGOAction;" + SampleNgitemsNum.ToString());
-//                }
-//            }
+            ////            if (str.Contains("连续NG"))
+            //            {
+            //                isSendSamCMD = true;
+            //                ShowSampleTestWindow = !ShowSampleTestWindow;
+            //                if (epsonRC90.TestSendStatus)
+            //                {
+            //                    await epsonRC90.TestSentNet.SendAsync("GONOGOAction;" + SampleNgitemsNum.ToString());
+            //                }
+            //            }
             switch (str)
             {
                 case "MsgRev: PickAction0":
-                    try
-                    {
-                        GlobalVar.Worksheet.Cells[11, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[11, 6].Value) + 1;
-                    }
-                    catch (Exception ex)
-                    {
-                        MsgText = AddMessage(ex.Message);
-                    }
+                    #region 上料機A抓手吸嘴
+                    //try
+                    //{
+                    //    GlobalVar.Worksheet.Cells[11, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[11, 6].Value) + 1;//上料機A抓手吸嘴
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    MsgText = AddMessage(ex.Message);
+                    //}
+                    #endregion
                     break;
                 case "MsgRev: PickAction1":
-                    try
-                    {
-                        GlobalVar.Worksheet.Cells[12, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[12, 6].Value) + 1;
-                    }
-                    catch (Exception ex)
-                    {
-                        MsgText = AddMessage(ex.Message);
-                    }
+                    #region 上料機A抓手吸嘴
+                    //try
+                    //{
+                    //    GlobalVar.Worksheet.Cells[12, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[12, 6].Value) + 1;//上料機B抓手吸嘴
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    MsgText = AddMessage(ex.Message);
+                    //}
+                    #endregion
                     break;
                 case "MsgRev: 请确认，不得取走上料盘产品":
                     ShowAlarmTextGrid("请确认，\n不得取走上料盘产品！");
@@ -2398,7 +2609,7 @@ namespace HS9上料机UI.viewmodel
                     ShowAlarmTextGrid("放料，测试机4，吸取失败\n请将产品取走，防止叠料！");
                     SaveAlarm("放料，测试机4，吸取失败");
                     break;
-                case "MsgRev: 测试工位1，产品没放好":                    
+                case "MsgRev: 测试工位1，产品没放好":
                     //SaveAlarm("测试工位1，产品没放好");
                     //if (liaoinput > 0)
                     //{
@@ -2689,7 +2900,7 @@ namespace HS9上料机UI.viewmodel
                     break;
                 case "MsgRev: 样本测试，结束":
                     Tester.IsInSampleMode = false;
-          
+
                     LasSam = DateTime.Now;
                     LasSamStr = LasSam.ToString();
                     Inifile.INIWriteValue(iniParameterPath, "Sam", "LasSam", LasSam.ToString());
@@ -2804,21 +3015,21 @@ namespace HS9上料机UI.viewmodel
             };
             await startTask();
         }
-        public async void ULoadProcessStart(TwinCatProcessedDelegate callback,string s)
+        public async void ULoadProcessStart(TwinCatProcessedDelegate callback, string s)
         {
             ushort endnum;
             switch (MachineNum)
             {
                 case "X1621":
                     endnum = 20;
-                    MsgText = AddMessage("endnum " +endnum);
+                    //  MsgText = AddMessage("endnum " +endnum);
                     break;
                 case "D878":
                     endnum = 12;
                     break;
-//s             case "1374":
-//s                 endnum = 24;
-//s                 break;
+                //s             case "1374":
+                //s                 endnum = 24;
+                //s                 break;
                 default:
                     endnum = 20;
                     break;
@@ -2923,43 +3134,43 @@ namespace HS9上料机UI.viewmodel
                 PLCMessageVisibility = "Collapsed";
                 PLCMessage = "";
                 string plsmsgstr = "";
-                #region 大数据
-                for (int i = 0; i < AlarmList.Count; i++)
-                {
-                    if (XinJieOut[50 + i] != AlarmList[i].State)
-                    {
-                        AlarmList[i].State = XinJieOut[50 + i];
-                        if (AlarmList[i].Content != "Null")
-                        {
-                            if (AlarmList[i].State)
-                            {
-                                if (CurrentAlarmStr != AlarmList[i].Content)
-                                {
-                                    CurrentAlarmStr = AlarmList[i].Content;
-                                    AlarmList[i].Start = DateTime.Now;
-                                    AddMessage(AlarmList[i].Code + AlarmList[i].Content + "发生");
-                                    string _ip = GetIp();
-                                    string _class = DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20 ? "D" : "N";
-                                    string _faulttime = "0";
-                                    await BigDataInsert(_ip, MachineID, LineNUM, ProductNUM, _class, AlarmList[i].Content, AlarmList[i].Start.ToString(), _faulttime);
-                                }
-                            }
-                            else
-                            {
-                                AlarmList[i].End = DateTime.Now;
-                                AddMessage(AlarmList[i].Code + AlarmList[i].Content + "解除");
-                                string _ip = GetIp();
-                                string _class = DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20 ? "D" : "N";
-                                string _faulttime = (AlarmList[i].End - AlarmList[i].Start).TotalMinutes.ToString("F0");
-                                if ((AlarmList[i].End - AlarmList[i].Start).TotalHours <= 0.5 && (AlarmList[i].End - AlarmList[i].Start).TotalHours > 0)
-                                {
-                                    await BigDataUpdate(_ip, AlarmList[i].Content, AlarmList[i].Start.ToString(), _class, _faulttime);
-                                }
-                            }
-                        }
-                    }
-                }
-                #endregion
+                //#region 大数据 //s/旧版大数据，已屏蔽
+                //for (int i = 0; i < AlarmList.Count; i++)
+                //{
+                //    if (XinJieOut[50 + i] != AlarmList[i].State)
+                //    {
+                //        AlarmList[i].State = XinJieOut[50 + i];
+                //        if (AlarmList[i].Content != "Null")
+                //        {
+                //            if (AlarmList[i].State)
+                //            {
+                //                if (CurrentAlarmStr != AlarmList[i].Content)
+                //                {
+                //                    CurrentAlarmStr = AlarmList[i].Content;
+                //                    AlarmList[i].Start = DateTime.Now;
+                //                    AddMessage(AlarmList[i].Code + AlarmList[i].Content + "发生");
+                //                    string _ip = GetIp();
+                //                    string _class = DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20 ? "D" : "N";
+                //                    string _faulttime = "0";
+                //                    await BigDataInsert(_ip, MachineID, LineNUM, ProductNUM, _class, AlarmList[i].Content, AlarmList[i].Start.ToString(), _faulttime);
+                //                }
+                //            }
+                //            else
+                //            {
+                //                AlarmList[i].End = DateTime.Now;
+                //                AddMessage(AlarmList[i].Code + AlarmList[i].Content + "解除");
+                //                string _ip = GetIp();
+                //                string _class = DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20 ? "D" : "N";
+                //                string _faulttime = (AlarmList[i].End - AlarmList[i].Start).TotalMinutes.ToString("F0");
+                //                if ((AlarmList[i].End - AlarmList[i].Start).TotalHours <= 0.5 && (AlarmList[i].End - AlarmList[i].Start).TotalHours > 0)
+                //                {
+                //                    await BigDataUpdate(_ip, AlarmList[i].Content, AlarmList[i].Start.ToString(), _class, _faulttime);
+                //                }
+                //            }
+                //        }
+                //    }
+                //}
+                //#endregion
 
                 if (XinJieOut != null)
                 {
@@ -3097,12 +3308,17 @@ namespace HS9上料机UI.viewmodel
                                     PLCMessage = "测试机被屏蔽";
                                     PLCMessageVisibility = "Visible";
                                     break;
-                                case 38:
-                                    ShowAlarmTextGrid("NG盘未到位");
-                                    SaveAlarm("NG盘未到位");
-                                    //PLCMessage = "NG盘未到位";
-                                    //PLCMessageVisibility = "Visible";
-                                    break;
+                                //case 37:
+                                //    PLCMessage = "测试机良率报警";
+                                //    PLCMessageVisibility = "Visible";
+                                //    EpsonOpetate(2);
+                                //    break;
+                                //s case 38:
+                                //s      ShowAlarmTextGrid("NG盘未到位");
+                                //s      SaveAlarm("NG盘未到位");
+                                //PLCMessage = "NG盘未到位";
+                                //PLCMessageVisibility = "Visible";
+                                //s      break;
                                 default:
                                     break;
                             }
@@ -3301,6 +3517,12 @@ namespace HS9上料机UI.viewmodel
                         AllowCleanActionCommand = false;
                     }
                 }
+
+                if (cardPassFlag)//s刷卡结束，关闭机械手测试点（内存238）
+                {
+                    await epsonRC90.TestSentNet.SendAsync("offTestCard");
+                    cardPassFlag = false;//s刷卡
+                }
                 for (int i = 0; i < 32; i++)
                 {
                     SampleItemsStatus[i / 4 + i % 4 * 8] = SamArray[i / 4, i % 4];
@@ -3399,12 +3621,14 @@ namespace HS9上料机UI.viewmodel
                         MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i * 2 + 3, 1].Value + "," + FlexId[i]);
                         MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i * 2 + 3 + 1, 1].Value + "," + FlexId[i]);
                     }
-                    for (int i = 0; i < 6; i++)
-                    {
-                        GlobalVar.Worksheet.Cells[i + 11, 3].Value = "NA";
-                        GlobalVar.Worksheet.Cells[i + 11, 2].Value = MNO;
-                        MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i + 11, 1].Value + "," + "NA");
-                    }
+                    #region  取消耗材吸嘴
+                    //for (int i = 0; i < 6; i++)
+                    //{
+                    //    GlobalVar.Worksheet.Cells[i + 11, 3].Value = "NA";
+                    //    GlobalVar.Worksheet.Cells[i + 11, 2].Value = MNO;
+                    //    MaterialChangeItemsSource.Add((string)GlobalVar.Worksheet.Cells[i + 11, 1].Value + "," + "NA");
+                    //}
+                    #endregion
                     for (int i = 1; i <= GlobalVar.Worksheet.Dimension.End.Column; i++)
                     {
                         GlobalVar.Mdt.Columns.Add((string)GlobalVar.Worksheet.Cells[2, i].Value);
@@ -3500,14 +3724,14 @@ namespace HS9上料机UI.viewmodel
                     {
                         case "X1621":
                             endnum = 20;
-                            MsgText = AddMessage("下料endnum " + endnum);//s 新增测试
+                            // MsgText = AddMessage("下料endnum " + endnum);//s 新增测试
                             break;
                         case "D878":
                             endnum = 12;
                             break;
-//s                        case "1374":
-//s                            endnum = 24;
-//s                            break;
+                        //s                        case "1374":
+                        //s                            endnum = 24;
+                        //s                            break;
                         default:
                             endnum = 20;
                             break;
@@ -3521,7 +3745,7 @@ namespace HS9上料机UI.viewmodel
                             {
                                 MsgText = AddMessage("下料满盘换盘 ");//s 新增测试
                                 NeedUpdateTray.Value = true;
-                                
+
                             }
                         }
                         catch
@@ -3542,8 +3766,8 @@ namespace HS9上料机UI.viewmodel
             }
 
         }
-        private void StartUpdateProcess(int index,string bar,string rst,string cyc,bool isRecord)
-        {            
+        private void StartUpdateProcess(int index, string bar, string rst, string cyc, bool isRecord)
+        {
             TestRecord tr = new TestRecord(DateTime.Now.ToString(), bar, rst, cyc + " s", index.ToString());
             lock (this)
             {
@@ -3552,14 +3776,15 @@ namespace HS9上料机UI.viewmodel
             SaveCSVfileRecord(tr);
             if (isRecord && !Tester.IsInSampleMode && !Tester.IsInGRRMode)
             {
-                if (epsonRC90.YanmadeTester[index - 1].TestSpan > 5)
+                //if (epsonRC90.YanmadeTester[index - 1].TestSpan > 5) 2020.03.08
+                if (epsonRC90.YanmadeTester[index - 1].TestSpan > 12)//s  2020.03.08修改测试机解码失败及对位失败（12s）不纳入良率计算
                 {
                     epsonRC90.YanmadeTester[index - 1].UpdateNormalWithTestTimes(rst);
                 }
                 else
                 {
-                    MsgText = AddMessage(bar + " 测试时间小于5秒，不纳入良率统计");
-                }    
+                    MsgText = AddMessage(bar + " 测试时间小于10秒，不纳入良率统计");
+                }
             }
             else
             {
@@ -3579,7 +3804,7 @@ namespace HS9上料机UI.viewmodel
             }
 
         }
-        private void SamMessageProcess(int rund,int level,int flex)
+        private void SamMessageProcess(int rund, int level, int flex)
         {
             //SamOrderList.Add(new int[4] { 0, 1, 2, 3 });
             //SamOrderList.Add(new int[4] { 3, 0, 1, 2 });
@@ -3613,11 +3838,15 @@ namespace HS9上料机UI.viewmodel
                 }
             }
         }
+
         public void Run()
         {
             bool restarfirstinit = true, _UnloadTrayFinish = true;
-            
+
             Unloadsw.Start();
+
+            int cardret = 1;//s刷卡
+            int cardcount = 0;//s刷卡
             while (true)
             {
                 System.Threading.Thread.Sleep(10);
@@ -3688,6 +3917,7 @@ namespace HS9上料机UI.viewmodel
                         BFO13.Value = epsonRC90.Rc90Out[36];
                         BFO16.Value = epsonRC90.Rc90Out[37];
 
+
                         //倍服告知机械手是否有料
                         epsonRC90.Rc90In[5] = (bool)RSuckValue1.Value;
                         epsonRC90.Rc90In[6] = (bool)RSuckValue2.Value;
@@ -3703,11 +3933,17 @@ namespace HS9上料机UI.viewmodel
                         epsonRC90.Rc90In[18] = (bool)RSuckValue12.Value;
 
                         //s 新增NG盘传感器
-                        epsonRC90.Rc90In[31] = XinJieOut[48];//m20048
-                        epsonRC90.Rc90In[32]=(bool)HAxis_Ng.Value;//放NG时H轴未在安全位
+                        epsonRC90.Rc90In[31] = XinJieOut[48];//s /m20048/内存131
+                        if (XinJieOut[48])
+                        {
+                            ShowAlarmTextGrid("NG盘未到位");
+                            SaveAlarm("NG盘未到位");
+                        }
 
 
 
+                        epsonRC90.Rc90In[32] = (bool)HAxis_Ng.Value;//s/放NG时H轴未在安全位/内存132
+                        testCard = epsonRC90.Rc90Out[38];//s/测试刷卡/内存238
 
                         IsTCPConnect = epsonRC90.TestSendStatus & epsonRC90.TestReceiveStatus & epsonRC90.MsgReceiveStatus & epsonRC90.IOReceiveStatus & epsonRC90.CtrlStatus;
 
@@ -3746,11 +3982,48 @@ namespace HS9上料机UI.viewmodel
                         OutputSafedoorFlag.Value = XinJieOut[32];
                         epsonRC90.Rc90In[15] = XinJieOut[31];
 
-                        green_flicker = XinJieOut[33];
-                        yellow_normal = XinJieOut[34];
-                        yellow_flicker = XinJieOut[35];
-                        red_normal = XinJieOut[36];
-                        green_normal = XinJieOut[37];
+                        green_flicker = XinJieOut[33];//s/大数据/闪绿
+                        yellow_normal = XinJieOut[34];//s/大数据/长黄
+                        yellow_flicker = XinJieOut[35];//s/大数据/闪黄
+                        red_normal = XinJieOut[36];//s/大数据/长红
+                        green_normal = XinJieOut[37];//s/大数据/长绿
+
+                        #region//s/大数据 灯信号
+                        //if (XinJieOut[36])//长红
+                        //{
+                        //    LampColor = 5;
+                        //    AddMessage("读取XinJieOut[36]!!!");
+                        //}
+                        //else
+                        //{
+                        //    if (XinJieOut[35])//闪黄
+                        //    {
+                        //        LampColor = 4;
+                        //        AddMessage("读取XinJieOut[35]!!!");
+                        //    }
+                        //    else
+                        //    {
+                        //        if (XinJieOut[34])//长黄
+                        //        {
+                        //            LampColor = 3;
+                        //            AddMessage("读取XinJieOut[34]!!!");
+                        //        }
+                        //        else
+                        //        {
+                        //            if (XinJieOut[33])//闪绿
+                        //            {
+                        //                LampColor = 2;
+                        //                AddMessage("读取XinJieOut[33]!!!");
+                        //            }
+                        //            else
+                        //            {
+                        //                LampColor = 1;//常绿
+                        //            }
+                        //        }
+                        //    }
+                        //}
+
+                        #endregion
 
 
                         if (XinJieOut[37] && !Tester.IsInSampleMode && !Tester.IsInGRRMode)
@@ -3760,15 +4033,32 @@ namespace HS9上料机UI.viewmodel
                                 EpsonOpetate(2);
                                 ShowAlarmTextGrid("3分钟未产出");
                                 Unloadsw.Restart();
-                            }                        
+                            }
+                        }
+                        else
+                        {
+                            Unloadsw.Restart();
+                        }
+                        #region 15分钟暂停刷卡
+                        if (XinJieOut[37] && !Tester.IsInSampleMode && !Tester.IsInGRRMode)
+                        {
+                            if (Unloadsw.Elapsed.TotalMinutes >= 15)
+                            {
+                                EpsonOpetate(2);
+                                ShowAlarmTextGrid("15分钟未产出，需刷卡");//s刷卡
+                                Unloadsw.Restart();
+                                minutesCard = true;
+                            }
                         }
                         else
                         {
                             Unloadsw.Restart();
                         }
 
+                        #endregion
 
-                        if (green_normal)
+
+                        if (green_normal)//s/大数据/长绿
                         {
                             signal_lamp = 1;
                         }
@@ -3833,13 +4123,16 @@ namespace HS9上料机UI.viewmodel
                         {
                             isUpdateImage = true;
                         }
-                        string banci = GetBanci();
-                        if (banci != LastBanci)
-                        {
-                            LastBanci = banci;
-                            Inifile.INIWriteValue(iniParameterPath, "System", "Banci", LastBanci);
-                            autoClean = true;
-                        }
+                        //s/大数据，屏蔽原版换班
+
+                        //string banci = GetBanci();
+                        //if (banci != LastBanci)
+                        //{
+                        //    LastBanci = banci;
+                        //    Inifile.INIWriteValue(iniParameterPath, "System", "Banci", LastBanci);
+                        //    autoClean = true;
+                        //    autoCard = true;//s刷卡
+                        //}
                         if (XinJieOut[26])
                         {
                             BFO5.Value = !EpsonStatusPaused;
@@ -3854,69 +4147,76 @@ namespace HS9上料机UI.viewmodel
                                 //LouLiaoCount
                                 louliao += uint.Parse(LouLiaoCount.Value.ToString());
                                 Inifile.INIWriteValue(iniTimeCalcPath, "Summary", "louliao", louliao.ToString());
-                                try
-                                {
-                                    GlobalVar.Worksheet.Cells[13, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[13, 6].Value) + 1;
-                                }
-                                catch (Exception ex)
-                                {
+                                #region 上料區搬运吸嘴
+                                //try
+                                //{
+                                //    GlobalVar.Worksheet.Cells[13, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[13, 6].Value) + 1;
+                                //}
+                                //catch (Exception ex)
+                                //{
 
-                                    MsgText = AddMessage(ex.Message);
-                                }
-
+                                //    MsgText = AddMessage(ex.Message);
+                                //}
+                                #endregion
 
                             }
                         }
                         if (loadsuckFlag != XinJieOut[18])
                         {
                             loadsuckFlag = XinJieOut[18];
-                            if (loadsuckFlag)
-                            {
-                                try
-                                {
-                                    GlobalVar.Worksheet.Cells[14, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[14, 6].Value) + 1;
-                                }
-                                catch (Exception ex)
-                                {
+                            #region 上料區空TRAY搬运吸嘴
+                            //if (loadsuckFlag)
+                            //{
+                            //    try
+                            //    {
+                            //        GlobalVar.Worksheet.Cells[14, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[14, 6].Value) + 1;
+                            //    }
+                            //    catch (Exception ex)
+                            //    {
 
-                                    MsgText = AddMessage(ex.Message);
-                                }
-                            }
+                            //        MsgText = AddMessage(ex.Message);
+                            //    }
+                            //}
+                            #endregion
                         }
                         if (unloadsuckFlag != XinJieOut[19])
                         {
                             unloadsuckFlag = XinJieOut[19];
-                            if (unloadsuckFlag)
-                            {
-                                try
-                                {
-                                    GlobalVar.Worksheet.Cells[16, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[16, 6].Value) + 1;
-                                }
-                                catch (Exception ex)
-                                {
+                            #region 下料區空TRAY搬运吸嘴
+                            //if (unloadsuckFlag)
+                            //{
+                            //    try
+                            //    {
+                            //        GlobalVar.Worksheet.Cells[16, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[16, 6].Value) + 1;
+                            //    }
+                            //    catch (Exception ex)
+                            //    {
 
-                                    MsgText = AddMessage(ex.Message);
-                                }
-                            }
+                            //        MsgText = AddMessage(ex.Message);
+                            //    }
+                            //}
+                            #endregion
                         }
                         if (_bfo2 != (bool)BFO2.Value)
                         {
                             _bfo2 = (bool)BFO2.Value;
-                            if (_bfo2)
-                            {
-                                try
-                                {
-                                    GlobalVar.Worksheet.Cells[15, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[15, 6].Value) + 1;
-                                }
-                                catch (Exception ex)
-                                {
+                            #region 下料區搬运吸嘴
+                            //if (_bfo2)
+                            //{
+                            //    try
+                            //    {
+                            //        GlobalVar.Worksheet.Cells[15, 6].Value = Convert.ToInt32(GlobalVar.Worksheet.Cells[15, 6].Value) + 1;
+                            //    }
+                            //    catch (Exception ex)
+                            //    {
 
-                                    MsgText = AddMessage(ex.Message);
-                                }
-                            }
+                            //        MsgText = AddMessage(ex.Message);
+                            //    }
+                            //}
+                            #endregion
                         }
                         Light_Alarm.Value = AlarmTextGridShow == "Visible" && EpsonStatusPaused;
-                        
+
 
 
                         #endregion
@@ -4048,21 +4348,153 @@ namespace HS9上料机UI.viewmodel
                     }
                 }
 
+                #region 刷卡
+
+
+
+                //   if (cardcount++ > 9)
+                //   {
+                //     cardcount = 0;
+                //     try
+                //     {
+                //        byte[] buf = new byte[256];//用来存储卡信息的buff
+                //        byte[] snr = CPublic.CharToByte("FF FF FF FF FF FF");//应该是一种读码格式，照抄即可。
+                //            if (autoCard || minutesCard || testCard && cardOpenFlag)
+                //            {
+                //                EpsonOpetate(2);//s刷卡
+                //                ShowAlarmTextGrid("请刷卡");
+                //            if (IntPtr.Zero == reader.GetHComm())
+                //            {
+                //                string COM = Inifile.INIGetStringValue(iniParameterPath, "读卡器", "COM", "COM19").Replace("COM", "");
+                //                reader.OpenComm(int.Parse(COM), 9600);
+                //               // MsgText = AddMessage("COM口写入成功");//s
+                //             }
+
+                //            //刷卡；若刷到卡返回0，没刷到回1。
+                //            CardStatus = reader.MF_Read(0, 0, 0, 1, ref snr[0], ref buf[0]);
+                //            //采用上升沿信号，防止卡放在读卡机上，重复执行查询动作。寄卡放一次，才查询一次，要再查询，需要重新刷卡。
+                //            if (cardret != CardStatus)
+                //            {
+                //                cardret = CardStatus;
+                //                if (CardStatus == 0)//刷到卡了
+                //                {
+                //                    MsgText = AddMessage("刷到卡，准备读取信息");//s刷卡
+                //                    string strTmp = "";
+                //                    //测试发现，卡返回的是16个HEX（十六进制）数，放在byte[]数组内，需要用一下方法转成字符串格式。
+                //                    for (int i = 0; i < 16; i++)
+                //                    {
+                //                        strTmp += string.Format("{0:X2} ", buf[i]);
+                //                    }
+                //                        //删除转换后，字符串内的空格。这些HEX字符并不是员工编号字符的编码，需要用读到的字符串在数据库里查找，
+                //                        //在记录里再匹配员工信息和权限
+                //                    string barcode = strTmp.Replace(" ", "");
+                //                    MsgText = AddMessage("刷卡 " + barcode);
+                //                    SXJLibrary.Oracle oraDB = new SXJLibrary.Oracle("qddb04.eavarytech.com", "mesdb04", "ictdata", "ictdata*168");
+                //                    MsgText = AddMessage("准备连接刷卡数据库");
+                //                    if (oraDB.isConnect())
+                //                    {
+                //                        MsgText = AddMessage("刷卡数据库连接成功");
+                //                        string stm = string.Format("SELECT * FROM CAP_TABLE WHERE BARCODE = '{0}'", barcode);
+                //                        MsgText = AddMessage("准备查询刷卡数据库 ");
+                //                        DataSet s = oraDB.executeQuery(stm);
+                //                        DataTable dt = s.Tables[0];
+                //                        if (dt.Rows.Count > 0)//查询到数据条目大于0，即查到了
+                //                        {
+                //                             //取查到的第一行记录，一般只有1行。如果有多行，也只取第一行。
+                //                            DataRow dr = dt.Rows[0];
+                //                            //筛选一下数据，如果我们需要的“工号”、“姓名”和“权限”对应的栏位为空，则数据不合格。
+                //                            if (dr["OPERATORID"] != DBNull.Value && dr["DATA0"] != DBNull.Value && dr["RESULT"] != DBNull.Value)
+                //                            {
+                //                                    //打印出匹配到的结果，并返回给下位机。
+                //                                    MsgText = AddMessage("工号 " + (string)dr["OPERATORID"] + " 姓名 " + (string)dr["DATA0"] + " 权限 " + (string)dr["RESULT"]);
+                //                                    if ((string)dr["RESULT"] == "PASS")
+                //                                    {
+                //                                        //Xinjie.SetM(11155, true);
+                //                                        autoCard = false;//s刷卡
+                //                                        minutesCard = false;
+                //                                        testCard = false;
+                //                                        cardPassFlag = true;//s刷卡/刷卡成功
+                //                                        MsgText = AddMessage("刷卡成功");
+                //                                        ShowAlarmTextGrid("刷卡成功");
+                //                                    }
+                //                                    else
+                //                                    {
+                //                                        MsgText = AddMessage("数据库记录信息不匹配");
+                //                                    }
+                //                             }
+                //                            else
+                //                            {
+                //                                 MsgText = AddMessage("数据库记录信息不完整");
+                //                            }
+                //                         }
+                //                         else
+                //                          {
+                //                                MsgText = AddMessage("数据库未查询到卡信息");
+                //                          }
+                //                     }
+                //                     oraDB.disconnect();
+                //                 }
+                //            }
+                //        }
+
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        reader.CloseComm();
+                //        MsgText = AddMessage("刷卡error");//s
+                //    }
+
+                //}
+
+
+
+                #endregion
+
+
+
+
+
 
             }
         }
         void Write及时雨()
         {
-            TestCount_1 = epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString();
+            //           TestCount_1 = epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString();
+            //           Yield_1 = epsonRC90.YanmadeTester[0].Yield_Nomal.ToString();
+            //           PassCount_1 = epsonRC90.YanmadeTester[0].PassCount_Nomal.ToString();
+            //           TestCount_2 = epsonRC90.YanmadeTester[1].TestCount_Nomal.ToString();
+            //           Yield_2 = epsonRC90.YanmadeTester[1].Yield_Nomal.ToString();
+            //           PassCount_2 = epsonRC90.YanmadeTester[1].PassCount_Nomal.ToString();
+            //           TestCount_3 = epsonRC90.YanmadeTester[2].TestCount_Nomal.ToString();
+            //           Yield_3 = epsonRC90.YanmadeTester[2].Yield_Nomal.ToString();
+            //           PassCount_3 = epsonRC90.YanmadeTester[2].PassCount_Nomal.ToString();
+            //           TestCount_4 = epsonRC90.YanmadeTester[3].TestCount_Nomal.ToString();
+            //           Yield_4 = epsonRC90.YanmadeTester[3].Yield_Nomal.ToString();
+            //           PassCount_4 = epsonRC90.YanmadeTester[3].PassCount_Nomal.ToString();
+            ////原来           //TestCount_Total = (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString();
+            //           TestCount_Total = liaoinput.ToString();
+            //           TestCount_Total1 = (epsonRC90.YanmadeTester[0].PassCount + epsonRC90.YanmadeTester[1].PassCount + epsonRC90.YanmadeTester[2].PassCount + epsonRC90.YanmadeTester[3].PassCount).ToString();
+            //           LouxiliaoCount = louliao.ToString();
+
+            //           Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_1", epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString());
+            //           Inifile.INIWriteValue(iniFClient, "DataList", "Yield_1", epsonRC90.YanmadeTester[0].Yield_Nomal.ToString());
+            //           Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_2", epsonRC90.YanmadeTester[1].TestCount_Nomal.ToString());
+            //           Inifile.INIWriteValue(iniFClient, "DataList", "Yield_2", epsonRC90.YanmadeTester[1].Yield_Nomal.ToString());
+            //           Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_3", epsonRC90.YanmadeTester[2].TestCount_Nomal.ToString());
+            //           Inifile.INIWriteValue(iniFClient, "DataList", "Yield_3", epsonRC90.YanmadeTester[2].Yield_Nomal.ToString());
+            //           Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_4", epsonRC90.YanmadeTester[3].TestCount_Nomal.ToString());
+            //           Inifile.INIWriteValue(iniFClient, "DataList", "Yield_4", epsonRC90.YanmadeTester[3].Yield_Nomal.ToString());
+            //s 2020.0119改面板
+            TestCount_1 = (epsonRC90.YanmadeTester[0].PassCount_Nomal + epsonRC90.YanmadeTester[0].FailCount_Nomal).ToString();
             Yield_1 = epsonRC90.YanmadeTester[0].Yield_Nomal.ToString();
             PassCount_1 = epsonRC90.YanmadeTester[0].PassCount_Nomal.ToString();
-            TestCount_2 = epsonRC90.YanmadeTester[1].TestCount_Nomal.ToString();
+            TestCount_2 = (epsonRC90.YanmadeTester[1].PassCount_Nomal + epsonRC90.YanmadeTester[1].FailCount_Nomal).ToString();
             Yield_2 = epsonRC90.YanmadeTester[1].Yield_Nomal.ToString();
             PassCount_2 = epsonRC90.YanmadeTester[1].PassCount_Nomal.ToString();
-            TestCount_3 = epsonRC90.YanmadeTester[2].TestCount_Nomal.ToString();
+            TestCount_3 = (epsonRC90.YanmadeTester[2].PassCount_Nomal + epsonRC90.YanmadeTester[2].FailCount_Nomal).ToString();
             Yield_3 = epsonRC90.YanmadeTester[2].Yield_Nomal.ToString();
             PassCount_3 = epsonRC90.YanmadeTester[2].PassCount_Nomal.ToString();
-            TestCount_4 = epsonRC90.YanmadeTester[3].TestCount_Nomal.ToString();
+            TestCount_4 = (epsonRC90.YanmadeTester[3].PassCount_Nomal + epsonRC90.YanmadeTester[3].FailCount_Nomal).ToString();
             Yield_4 = epsonRC90.YanmadeTester[3].Yield_Nomal.ToString();
             PassCount_4 = epsonRC90.YanmadeTester[3].PassCount_Nomal.ToString();
             //TestCount_Total = (epsonRC90.YanmadeTester[0].TestCount_Nomal + epsonRC90.YanmadeTester[1].TestCount_Nomal + epsonRC90.YanmadeTester[2].TestCount_Nomal + epsonRC90.YanmadeTester[3].TestCount_Nomal).ToString();
@@ -4070,14 +4502,16 @@ namespace HS9上料机UI.viewmodel
             TestCount_Total1 = (epsonRC90.YanmadeTester[0].PassCount + epsonRC90.YanmadeTester[1].PassCount + epsonRC90.YanmadeTester[2].PassCount + epsonRC90.YanmadeTester[3].PassCount).ToString();
             LouxiliaoCount = louliao.ToString();
 
-            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_1", epsonRC90.YanmadeTester[0].TestCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_1", (epsonRC90.YanmadeTester[0].PassCount_Nomal + epsonRC90.YanmadeTester[0].FailCount_Nomal).ToString());
             Inifile.INIWriteValue(iniFClient, "DataList", "Yield_1", epsonRC90.YanmadeTester[0].Yield_Nomal.ToString());
-            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_2", epsonRC90.YanmadeTester[1].TestCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_2", (epsonRC90.YanmadeTester[1].PassCount_Nomal + epsonRC90.YanmadeTester[1].FailCount_Nomal).ToString());
             Inifile.INIWriteValue(iniFClient, "DataList", "Yield_2", epsonRC90.YanmadeTester[1].Yield_Nomal.ToString());
-            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_3", epsonRC90.YanmadeTester[2].TestCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_3", (epsonRC90.YanmadeTester[2].PassCount_Nomal + epsonRC90.YanmadeTester[2].FailCount_Nomal).ToString());
             Inifile.INIWriteValue(iniFClient, "DataList", "Yield_3", epsonRC90.YanmadeTester[2].Yield_Nomal.ToString());
-            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_4", epsonRC90.YanmadeTester[3].TestCount_Nomal.ToString());
+            Inifile.INIWriteValue(iniFClient, "DataList", "TestCount_4", (epsonRC90.YanmadeTester[3].PassCount_Nomal + epsonRC90.YanmadeTester[3].FailCount_Nomal).ToString());
             Inifile.INIWriteValue(iniFClient, "DataList", "Yield_4", epsonRC90.YanmadeTester[3].Yield_Nomal.ToString());
+            //s 2020.0119改面板
+
 
             Downtime = down_min.ToString("F1");
             Jigdowntime = jigdown_min.ToString("F1");
@@ -4323,7 +4757,7 @@ namespace HS9上料机UI.viewmodel
             }
 
         }
-        private string CheckfromDt(string flexnum,string ngitem,string date)
+        private string CheckfromDt(string flexnum, string ngitem, string date)
         {
             try
             {
@@ -4360,13 +4794,29 @@ namespace HS9上料机UI.viewmodel
                                         string[] arrFieldAndNewValue = { "PARTNUM", "SITEM", "BARCODE", "NGITEM", "TRES", "MNO", "CDATE", "CTIME", "SR01" };
                                         string[] arrFieldAndOldValue = { parnum.ToUpper(), "FLUKE", (string)dt.Rows[0]["BARCODE"], (string)dt1.Rows[0]["NGITEM"], tres, MNO, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.ToString("HHmmss"), flexnum };
                                         oraDB.insertSQL1("BARSAMREC".ToUpper(), arrFieldAndNewValue, arrFieldAndOldValue);
-             
+
                                         SaveCSVfileSample(arrFieldAndOldValue);
                                         DataSet samtimesds = oraDB.selectSQL("BARSAMREC", new string[] { "BARCODE" }, new string[] { (string)dt.Rows[0]["BARCODE"] });
+                                        DataSet samtimesds1 = oraDB.selectSQLwithOrder2("BARSAMREC", new string[] { "BARCODE" }, new string[] { (string)dt.Rows[0]["BARCODE"] });
+                                        DataTable dtS = samtimesds1.Tables[0];
                                         MsgText = AddMessage("插入样本记录 " + (string)dt.Rows[0]["BARCODE"] + " " + samtimesds.Tables[0].Rows.Count.ToString());
-                                        if (samtimesds.Tables[0].Rows.Count > SamTimesLimit)
+                                        if (dtS.Rows.Count > 0)
                                         {
-                                            ShowAlarmTextGrid((string)dt.Rows[0]["BARCODE"] + "样本记录" + samtimesds.Tables[0].Rows.Count.ToString() +" > " + SamTimesLimit.ToString());
+                                            if (dtS.Rows.Count > 0)
+                                            {
+                                                string datestr1 = (string)dtS.Rows[0]["CDATE"];
+                                                string timestr1 = (string)dtS.Rows[0]["CTIME"];
+                                                DateTime samNOW = DateTime.Now;
+                                                DateTime samSTART = DateTime.ParseExact(datestr1, "yyyyMMdd", System.Globalization.CultureInfo.CurrentCulture);
+                                                TimeSpan m_SamTimesLimit = samNOW - samSTART;
+                                                TotalWorkTime = (int)m_SamTimesLimit.TotalDays;
+                                            }
+                                        }
+                                            //if (samtimesds.Tables[0].Rows.Count > SamTimesLimit)//样本管控
+                                            if ((TotalWorkTime > SamTimesLimit)|| (samtimesds.Tables[0].Rows.Count > SamTimesLimit_Count))//样本管控
+                                        {
+                                            //ShowAlarmTextGrid((string)dt.Rows[0]["BARCODE"] + "样本记录" + samtimesds.Tables[0].Rows.Count.ToString() + " > " + SamTimesLimit.ToString());
+                                            ShowAlarmTextGrid((string)dt.Rows[0]["BARCODE"] + "样本记录" + TotalWorkTime.ToString() + " > " + SamTimesLimit.ToString() + "或" + (string)dt.Rows[0]["BARCODE"] + "样本记录" + samtimesds.Tables[0].Rows.Count.ToString() +">" + SamTimesLimit_Count.ToString());
                                             return "Limit";
                                         }
                                     }
@@ -4548,7 +4998,7 @@ namespace HS9上料机UI.viewmodel
 
                 if (!File.Exists(filepath))
                 {
-                    string[] heads = {"DateTime", "PARTNUM", "SITEM", "BARCODE", "NGITEM", "TRES", "MNO", "CDATE", "CTIME", "SR01" };
+                    string[] heads = { "DateTime", "PARTNUM", "SITEM", "BARCODE", "NGITEM", "TRES", "MNO", "CDATE", "CTIME", "SR01" };
                     Csvfile.AddNewLine(filepath, heads);
                 }
                 string[] conte = { System.DateTime.Now.ToString(), arrFieldAndOldValue[0], arrFieldAndOldValue[1], arrFieldAndOldValue[2], arrFieldAndOldValue[3], arrFieldAndOldValue[4], arrFieldAndOldValue[5], arrFieldAndOldValue[6], arrFieldAndOldValue[7], arrFieldAndOldValue[8] };
@@ -4597,6 +5047,29 @@ namespace HS9上料机UI.viewmodel
                 MsgText = AddMessage(ex.Message);
             }
         }
+        private void SaveCSVfileMaterial(string[] arrFieldAndOldValue)
+        {
+            string filepath = "D:\\耗材管控记录\\耗材管控记录" + GetBanci() + ".csv";
+            if (!Directory.Exists("D:\\耗材管控记录"))
+            {
+                Directory.CreateDirectory("D:\\耗材管控记录");
+            }
+            try
+            {
+
+                if (!File.Exists(filepath))
+                {
+                    string[] heads = { "DateTime", "項目", "AUTO NO", "TEST ID", "標準壽命", "預警壽命", "使用壽命", "上線日期", "下線日期", "更換次數" };
+                    Csvfile.AddNewLine(filepath, heads);
+                }
+                string[] conte = { System.DateTime.Now.ToString(), arrFieldAndOldValue[0], arrFieldAndOldValue[1], arrFieldAndOldValue[2], arrFieldAndOldValue[3], arrFieldAndOldValue[4], arrFieldAndOldValue[5], arrFieldAndOldValue[6], arrFieldAndOldValue[7], arrFieldAndOldValue[8] };
+                Csvfile.AddNewLine(filepath, conte);
+            }
+            catch (Exception ex)
+            {
+                MsgText = AddMessage(ex.Message);
+            }
+        }
         private void ReadParameter()
         {
             try
@@ -4608,7 +5081,7 @@ namespace HS9上料机UI.viewmodel
                     FlexId[i] = Inifile.INIGetStringValue(initestPath, "A", "id" + (i + 1).ToString(), "950951");
                 }
 
-                LastBanci = Inifile.INIGetStringValue(iniParameterPath, "System", "Banci", "0");
+               // LastBanci = Inifile.INIGetStringValue(iniParameterPath, "System", "Banci", "0");
                 SerialPortCom = Inifile.INIGetStringValue(iniParameterPath, "System", "PLCCOM", "COM7");
                 MachineNum = Inifile.INIGetStringValue(iniParameterPath, "System", "MachineNum", "X1621");
                 UITitle = MachineNum + "UI " + VersionMsg;
@@ -4621,6 +5094,20 @@ namespace HS9上料机UI.viewmodel
                         点3 = "点9： ";
                         break;
                 }
+
+                cardOpen = Inifile.INIGetStringValue(iniParameterPath, "读卡器", "cardOpen", "不启用");//s刷卡/刷卡启用
+                switch (cardOpen)//s刷卡/刷卡启用
+                {
+                    case "启用":
+                        cardOpenFlag = true;
+                        MsgText = AddMessage("刷卡启用");
+                        break;
+                    default:
+                        cardOpenFlag = false;
+                        MsgText = AddMessage("刷卡不启用");
+                        break;
+                }//s刷卡/刷卡启用
+
                 TestCheckedAL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedAL", "True"));
                 TestCheckedBL = bool.Parse(Inifile.INIGetStringValue(iniParameterPath, "Tester", "TestCheckedBL", "True"));
 
@@ -4656,6 +5143,7 @@ namespace HS9上料机UI.viewmodel
                     SampleTimeElapse = double.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "SampleTimeElapse", "2"));
                     SampleNgitemsNum = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "SampleNgitemsNum", "8"));
                     SamTimesLimit = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "SamTimesLimit", "100"));
+                    SamTimesLimit_Count = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "SamTimesLimit_Count", "100"));
                     DaySampleStartMin = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "DaySampleStartMin", "0"));
                     NightSampleStartMin = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "NightSampleStartMin", "0"));
                     DaySampleStartHour = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "Sam", "DaySampleStartHour", "8"));
@@ -4679,11 +5167,27 @@ namespace HS9上料机UI.viewmodel
                     NightSampleStartMin1 = 0;
                     SampleTimeElapse = 2;
                     SampleNgitemsNum = 8;
-                    SamTimesLimit = 100;
+                    SamTimesLimit = 180;
+                    SamTimesLimit_Count = 2400;
                     MsgText = AddMessage(ex.Message);
                 }
                 PcsGrrNeedNum = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "PcsGrrNeedNum", "4"));
                 PcsGrrNeedCount = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "PcsGrrNeedCount", "10"));
+                PcsNgCount = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "PcsNgCount", "10"));
+                FpyMax = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "FpyMax", "10"));
+                FpyMin = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "FpyMin", "10"));
+                FpyStop = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "FpyStop", "10"));
+                FpyInput = int.Parse(Inifile.INIGetStringValue(iniParameterPath, "System", "FpyInput", "10"));
+                MachId1 = Inifile.INIGetStringValue(iniParameterPath, "System", "MachId1", "X1621-1");
+                MachId2 = Inifile.INIGetStringValue(iniParameterPath, "System", "MachId2", "X1621-1");
+                MachId3 = Inifile.INIGetStringValue(iniParameterPath, "System", "MachId3", "X1621-1");
+                MachId4 = Inifile.INIGetStringValue(iniParameterPath, "System", "MachId4", "X1621-1");
+                Opertor = Inifile.INIGetStringValue(iniParameterPath, "System", "Opertor", "X1621-1");
+
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -4695,18 +5199,39 @@ namespace HS9上料机UI.viewmodel
         {
             try
             {
-                Inifile.INIWriteValue(iniParameterPath, "System", "MachineID", MachineID);
-                Inifile.INIWriteValue(iniParameterPath, "System", "线体", LineNUM);
-                Inifile.INIWriteValue(iniParameterPath, "System", "测试料号", ProductNUM);
-
+                #region //s/旧版大数据
+                //Inifile.INIWriteValue(iniParameterPath, "System", "MachineID", MachineID);
+                //Inifile.INIWriteValue(iniParameterPath, "System", "线体", LineNUM);
+                //Inifile.INIWriteValue(iniParameterPath, "System", "测试料号", ProductNUM);
+                #endregion
                 Inifile.INIWriteValue(iniParameterPath, "System", "PcsGrrNeedNum", PcsGrrNeedNum.ToString());
 
                 Inifile.INIWriteValue(iniParameterPath, "System", "PcsGrrNeedCount", PcsGrrNeedCount.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "System", "PcsNgCount", PcsNgCount.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "System", "FpyMax", FpyMax.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "System", "FpyMin", FpyMin.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "System", "FpyStop", FpyStop.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "System", "FpyInput", FpyInput.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "Sample", "MachId1", MachId1);
+                Inifile.INIWriteValue(iniParameterPath, "Sample", "MachId2", MachId2);
+                Inifile.INIWriteValue(iniParameterPath, "Sample", "MachId3", MachId3);
+                Inifile.INIWriteValue(iniParameterPath, "Sample", "MachId4", MachId4);
+                Inifile.INIWriteValue(iniParameterPath, "Sample", "Opertor", Opertor);
+                Inifile.INIWriteValue(initestPath, "A", "id1", MachId1);
+                Inifile.INIWriteValue(initestPath, "A", "id2", MachId2);
+                Inifile.INIWriteValue(initestPath, "A", "id3", MachId3);
+                Inifile.INIWriteValue(initestPath, "A", "id4", MachId4);
+                Inifile.INIWriteValue(initestPath, "Other", "op" , Opertor);
+
 
                 Inifile.INIWriteValue(iniParameterPath, "System", "IsSamTest", IsSamTest.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "System", "MachineNum", MachineNum);
                 Inifile.INIWriteValue(iniParameterPath, "System", "UPH", UPH.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "System", "MNO", MNO);
+
+                Inifile.INIWriteValue(iniParameterPath, "读卡器", "cardOpen", cardOpen);//s刷卡/刷卡启用
+
+
                 for (int i = 0; i < 8; i++)
                 {
                     Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleNgitem" + (i + 1).ToString(), SampleNgitem[i]);
@@ -4763,8 +5288,9 @@ namespace HS9上料机UI.viewmodel
 
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleTimeElapse", SampleTimeElapse.ToString());
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "SampleNgitemsNum", SampleNgitemsNum.ToString());
- 
+
                 Inifile.INIWriteValue(iniParameterPath, "Sam", "SamTimesLimit", SamTimesLimit.ToString());
+                Inifile.INIWriteValue(iniParameterPath, "Sam", "SamTimesLimit_Count", SamTimesLimit_Count.ToString());
                 MsgText = AddMessage("参数保存完成");
             }
             catch (Exception ex)
@@ -4817,7 +5343,7 @@ namespace HS9上料机UI.viewmodel
                 {
                     FindFill[i] = false;
                 }
-                
+
                 hdevEngine.inspectengine();
 
 
@@ -4828,7 +5354,7 @@ namespace HS9上料机UI.viewmodel
                     //    break;
                     //case "1373":
                     //    break;
-                    
+
                     case "X1621":
                         for (int i = 0; i < 12; i++)
                         {
@@ -4894,11 +5420,11 @@ namespace HS9上料机UI.viewmodel
                         }
                         break;
                 }
-                
+
 
                 MsgText = AddMessage("拍照完成: " + rst);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MsgText = AddMessage(ex.Message);
             }
@@ -4906,103 +5432,620 @@ namespace HS9上料机UI.viewmodel
         }
         ////s_modify_end
         #endregion
-        #region 大数据
-        public async void AlarmButtonClick()
-        {
-            AlarmButtonIsEnabled = false;
-            await Task.Run(() => {
-                try
-                {
-                    if (!Directory.Exists("D:\\报警记录\\" + DateTime.Now.ToString("yyyyMMdd")))
-                    {
-                        Directory.CreateDirectory("D:\\报警记录\\" + DateTime.Now.ToString("yyyyMMdd"));
-                    }
-                    string path = "D:\\报警记录\\" + DateTime.Now.ToString("yyyyMMdd") + "\\" + DateTime.Now.ToString("yyyyMMddHHmmss") + "AlarmSimple.csv";
-                    Csvfile.AddNewLine(path, new string[] { "Content", "Count", "Time(min)" });
-                    string _class = DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20 ? "D" : "N";
-                    string _ip = GetIp();
-                    string _date;
-                    if (DateTime.Now.Hour < 8)
-                    {
-                        _date = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
-                    }
-                    else
-                    {
-                        _date = DateTime.Now.ToString("yyyyMMdd");
-                    }
+        //    #region 大数据 //s/旧版大数据
+        //    public async void AlarmButtonClick()
+        //    {
+        //        AlarmButtonIsEnabled = false;
+        //        await Task.Run(() => {
+        //            try
+        //            {
+        //                if (!Directory.Exists("D:\\报警记录\\" + DateTime.Now.ToString("yyyyMMdd")))
+        //                {
+        //                    Directory.CreateDirectory("D:\\报警记录\\" + DateTime.Now.ToString("yyyyMMdd"));
+        //                }
+        //                string path = "D:\\报警记录\\" + DateTime.Now.ToString("yyyyMMdd") + "\\" + DateTime.Now.ToString("yyyyMMddHHmmss") + "AlarmSimple.csv";
+        //                Csvfile.AddNewLine(path, new string[] { "Content", "Count", "Time(min)" });
+        //                string _class = DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20 ? "D" : "N";
+        //                string _ip = GetIp();
+        //                string _date;
+        //                if (DateTime.Now.Hour < 8)
+        //                {
+        //                    _date = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+        //                }
+        //                else
+        //                {
+        //                    _date = DateTime.Now.ToString("yyyyMMdd");
+        //                }
 
-                    int alarmcount = 0; float alarmelapsed = 0;
-                    foreach (var item in AlarmList)
+        //                int alarmcount = 0; float alarmelapsed = 0;
+        //                foreach (var item in AlarmList)
+        //                {
+        //                    string StrMySQL = "Server=10.89.164.62;Database=dcdb;Uid=dcu;Pwd=dcudata;pooling=false;CharSet=utf8;port=3306";
+        //                    string stm = "SELECT * FROM TED_FAULT_DATA WHERE COMPUTERIP ='" + _ip + "' AND FAULTID = '" + item.Content +
+        //"' AND TDATE = '" + _date + "' AND CLASS = '" + _class + "' AND FL01 = '" + "OFF'";
+        //                    Mysql mysql = new Mysql();
+        //                    if (mysql.Connect(StrMySQL))
+        //                    {
+        //                        DataSet ds = mysql.Select(stm);
+        //                        DataTable dt = ds.Tables["table0"];
+        //                        if (dt.Rows.Count > 0)
+        //                        {
+        //                            int i = 0;
+        //                            float elapsed = 0;
+        //                            foreach (DataRow datarow in dt.Rows)
+        //                            {
+        //                                try
+        //                                {
+        //                                    elapsed += float.Parse((string)datarow["FAULTTIME"]);
+        //                                }
+        //                                catch
+        //                                { }
+        //                                i++;
+        //                            }
+        //                            if (i > 0)
+        //                            {
+        //                                alarmcount += i;
+        //                                alarmelapsed += elapsed;
+        //                                Csvfile.AddNewLine(path, new string[] { item.Content, i.ToString(), elapsed.ToString("F1") });
+        //                            }
+        //                        }
+        //                    }
+        //                    mysql.DisConnect();
+        //                }
+        //                Process process1 = new Process();
+        //                process1.StartInfo.FileName = path;
+        //                process1.StartInfo.Arguments = "";
+        //                process1.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
+        //                process1.Start();
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                AddMessage(ex.Message);
+        //            }
+        //        });
+        //        await Task.Run(() => {
+        //            try
+        //            {
+        //                string path = "D:\\报警记录\\" + DateTime.Now.ToString("yyyyMMdd") + "\\" + DateTime.Now.ToString("yyyyMMddHHmmss") + "AlarmTotal.csv";
+        //                string _class = DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20 ? "D" : "N";
+        //                string _ip = GetIp();
+        //                string _date;
+        //                if (DateTime.Now.Hour < 8)
+        //                {
+        //                    _date = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+        //                }
+        //                else
+        //                {
+        //                    _date = DateTime.Now.ToString("yyyyMMdd");
+        //                }
+        //                string StrMySQL = "Server=10.89.164.62;Database=dcdb;Uid=dcu;Pwd=dcudata;pooling=false;CharSet=utf8;port=3306";
+        //                string stm = "SELECT * FROM TED_FAULT_DATA WHERE COMPUTERIP ='" + _ip +
+        //                        "' AND TDATE = '" + _date + "' AND CLASS = '" + _class + "' AND FL01 = '" + "OFF'";
+
+        //                Mysql mysql = new Mysql();
+        //                if (mysql.Connect(StrMySQL))
+        //                {
+        //                    DataSet ds = mysql.Select(stm);
+        //                    DataTable dt = ds.Tables["table0"];
+        //                    if (dt.Rows.Count > 0)
+        //                    {
+        //                        string strHead = DateTime.Now.ToString("yyyyMMddHHmmss") + "AlarmTotal";
+        //                        string strColumns = "";
+        //                        for (int i = 0; i < dt.Columns.Count; i++)
+        //                        {
+        //                            strColumns += dt.Columns[i].ColumnName + ",";
+        //                        }
+        //                        strColumns = strColumns.Substring(0, strColumns.Length - 1);
+        //                        Csvfile.SaveToCsv(dt, path, strHead, strColumns);
+
+        //                        Process process1 = new Process();
+        //                        process1.StartInfo.FileName = path;
+        //                        process1.StartInfo.Arguments = "";
+        //                        process1.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
+        //                        process1.Start();
+        //                    }
+        //                }
+        //                mysql.DisConnect();
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                AddMessage(ex.Message);
+        //            }
+        //        });
+        //        AlarmButtonIsEnabled = true;
+        //    }
+        //    string GetIp()
+        //    {
+        //        string ipstring = "127.0.0.1";
+        //        string hostName = Dns.GetHostName();
+        //        System.Net.IPAddress[] addressList = Dns.GetHostAddresses(hostName);//会返回所有地址，包括IPv4和IPv6 
+        //        foreach (var item in addressList)
+        //        {
+        //            ipstring = item.ToString();
+        //            string[] ss = ipstring.Split(new string[] { "." }, StringSplitOptions.None);
+        //            if (ss.Length == 4 && ss[0] == "10")
+        //            {
+        //                return ipstring;
+        //            }
+        //        }
+        //        return "127.0.0.1";
+        //    }
+        //    private async Task BigDataInsert(string COMPUTERIP, string MACID, string LINEID, string PARTNUM, string CLASS, string FAULTID, string FAULTSTARTTIME, string FAULTTIME)
+        //    {
+        //        int result = await Task.Run<int>(() =>
+        //        {
+        //            try
+        //            {
+        //                string _TDate;
+        //                if (DateTime.Now.Hour < 8)
+        //                {
+        //                    _TDate = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+        //                }
+        //                else
+        //                {
+        //                    _TDate = DateTime.Now.ToString("yyyyMMdd");
+        //                }
+
+        //                string StrMySQL = "Server=10.89.164.62;Database=dcdb;Uid=dcu;Pwd=dcudata;pooling=false;CharSet=utf8;port=3306";
+        //                string stm = "insert into TED_FAULT_DATA (WORKSTATION,COMPUTERIP,MACID,LINEID,PARTNUM,TDATE,TTIME,CLASS,FAULTID,FAULTSTARTTIME,FAULTTIME,REPAIRRESULT,REPAIRER,FL01) VALUES ('JASPER','"
+        //+ COMPUTERIP + "','" + MACID + "','" + LINEID + "','" + PARTNUM + "','" + _TDate + "','" + DateTime.Now.ToString("HHmmss") + "','"
+        //+ CLASS + "','" + FAULTID + "','" + FAULTSTARTTIME + "','" + FAULTTIME + "','NA','NA','ON')";
+        //                Mysql mysql = new Mysql();
+        //                int res = -1;
+        //                if (mysql.Connect(StrMySQL))
+        //                {
+        //                    res = mysql.executeQuery(stm);
+        //                }
+        //                mysql.DisConnect();
+        //                return res;
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                return -999;
+        //            }
+        //        });
+        //        AddMessage("上传报警" + result.ToString());
+        //    }
+        //    private async Task BigDataUpdate(string ip, string content, string starttime, string _class, string faulttime)
+        //    {
+        //        int result = await Task.Run<int>(() =>
+        //        {
+        //            try
+        //            {
+        //                string StrMySQL = "Server=10.89.164.62;Database=dcdb;Uid=dcu;Pwd=dcudata;pooling=false;CharSet=utf8;port=3306";
+
+        //                string stm = "update TED_FAULT_DATA SET CLASS = '" + _class + "',FAULTTIME = '" + faulttime + "',FL01 = 'OFF' WHERE COMPUTERIP = '"
+        //                + ip + "' AND FAULTID = '" + content + "' AND FAULTSTARTTIME = '" + starttime + "'";
+        //                Mysql mysql = new Mysql();
+        //                int res = -1;
+        //                if (mysql.Connect(StrMySQL))
+        //                {
+        //                    res = mysql.executeQuery(stm);
+        //                }
+        //                mysql.DisConnect();
+        //                return res;
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                return -999;
+        //            }
+        //        });
+        //        AddMessage("更新报警" + result.ToString());
+        //      }
+        //    #endregion
+
+        #region //s/大数据
+        async void BigDataRun()
+        {
+            int _LampColor = LampColor;
+            int _LampColor2 = LampColor;
+            int count1 = 0, count2 = 0;
+            bool first = true;
+            LampGreenSw.Start();
+            DateTime t1, t2;
+            TimeSpan t3;
+            while (true)
+            {
+                await Task.Delay(1000);//每秒刷新               
+                #region 报警
+                // if (M11000 != null && plcstate)
+                //{
+                for (int i = 0; i < AlarmList.Count; i++)
+                {
+                    //if (XinJieOut[50 + i] != AlarmList[i].State && LampGreenSw.Elapsed.TotalMinutes > 3)
+                    if (i != 24)
                     {
-                        string StrMySQL = "Server=10.89.164.62;Database=dcdb;Uid=dcu;Pwd=dcudata;pooling=false;CharSet=utf8;port=3306";
-                        string stm = "SELECT * FROM TED_FAULT_DATA WHERE COMPUTERIP ='" + _ip + "' AND FAULTID = '" + item.Content +
-    "' AND TDATE = '" + _date + "' AND CLASS = '" + _class + "' AND FL01 = '" + "OFF'";
-                        Mysql mysql = new Mysql();
-                        if (mysql.Connect(StrMySQL))
+                        if (XinJieOut[50 + i] != AlarmList[i].State && (LampGreenSw.Elapsed.TotalMinutes > 3 || first))
                         {
-                            DataSet ds = mysql.Select(stm);
-                            DataTable dt = ds.Tables["table0"];
-                            if (dt.Rows.Count > 0)
+                            first = false;
+                            LampGreenSw.Reset();
+                            AlarmList[i].State = XinJieOut[50 + i];
+                            if (AlarmList[i].State)
                             {
-                                int i = 0;
-                                float elapsed = 0;
-                                foreach (DataRow datarow in dt.Rows)
+                                CurrentAlarm = AlarmList[i].Content;
+
+                                AlarmList[i].Start = DateTime.Now;
+                                AlarmList[i].End = DateTime.Now;
+                                AddMessage(AlarmList[i].Code + AlarmList[i].Content + "发生");
+
+                                string result = await Task<string>.Run(() =>
                                 {
                                     try
                                     {
-                                        elapsed += float.Parse((string)datarow["FAULTTIME"]);
+                                        int _result = -999;
+                                        Mysql mysql = new Mysql();
+                                        if (mysql.Connect())
+                                        {
+                                            string stm = string.Format("INSERT INTO HA_F4_DATA_ALARM (PM, GROUP1,TRACK,MACID,NAME,SSTARTDATE,SSTARTTIME,SSTOPDATE,SSTOPTIME,TIME,CLASS,WORKSTATION) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}')"
+                                                , PM, GROUP1, TRACK, MACID, AlarmList[i].Content, AlarmList[i].Start.ToString("yyyyMMdd"), AlarmList[i].Start.ToString("hhmmss"), AlarmList[i].End.ToString("yyyyMMdd"), AlarmList[i].End.ToString("hhmmss"), "0", GetBanci(), WORKSTATION);
+                                            _result = mysql.executeQuery(stm);
+                                        }
+                                        mysql.DisConnect();
+                                        return _result.ToString();
                                     }
-                                    catch
-                                    { }
-                                    i++;
-                                }
-                                if (i > 0)
-                                {
-                                    alarmcount += i;
-                                    alarmelapsed += elapsed;
-                                    Csvfile.AddNewLine(path, new string[] { item.Content, i.ToString(), elapsed.ToString("F1") });
-                                }
+                                    catch (Exception ex)
+                                    {
+                                        return ex.Message;
+                                    }
+                                });
+                                AddMessage("插入报警" + result);
+
+                                AlarmAction(i);//等待报警结束
                             }
+
                         }
-                        mysql.DisConnect();
                     }
-                    Process process1 = new Process();
-                    process1.StartInfo.FileName = path;
-                    process1.StartInfo.Arguments = "";
-                    process1.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
-                    process1.Start();
+
                 }
-                catch (Exception ex)
+
+                // }
+                #endregion
+                #region 灯信号
+                if (XinJieOut[36])//长红
                 {
-                    AddMessage(ex.Message);
-                }
-            });
-            await Task.Run(() => {
-                try
-                {
-                    string path = "D:\\报警记录\\" + DateTime.Now.ToString("yyyyMMdd") + "\\" + DateTime.Now.ToString("yyyyMMddHHmmss") + "AlarmTotal.csv";
-                    string _class = DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20 ? "D" : "N";
-                    string _ip = GetIp();
-                    string _date;
-                    if (DateTime.Now.Hour < 8)
+                    if (_LampColor == 1)//长绿
                     {
-                        _date = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+                        // LampColor = 3;//长黄
+                        LampColor = 5;//红色
+                    }
+                    if (_LampColor == 4)//闪黄
+                    {
+                        //LampColor = 4;//闪黄
+                        LampColor = 5;//红色
                     }
                     else
                     {
-                        _date = DateTime.Now.ToString("yyyyMMdd");
+                        LampColor = 2;
                     }
-                    string StrMySQL = "Server=10.89.164.62;Database=dcdb;Uid=dcu;Pwd=dcudata;pooling=false;CharSet=utf8;port=3306";
-                    string stm = "SELECT * FROM TED_FAULT_DATA WHERE COMPUTERIP ='" + _ip +
-                            "' AND TDATE = '" + _date + "' AND CLASS = '" + _class + "' AND FL01 = '" + "OFF'";
+                    _LampColor2 = 5;
+                }
+                else
+                {
+                    if (XinJieOut[35])//闪黄
+                    {
+                        if (_LampColor == 1)
+                        {
+                            LampColor = 4;//闪黄
+                        }
+                        else
+                        {
+                            LampColor = 2;
+                        }
+                        _LampColor2 = 4;
+                    }
+                    else
+                    {
+                        if (XinJieOut[34])//长黄
+                        {
+                            if (_LampColor == 1)
+                            {
+                                LampColor = 3;//长黄
+                            }
+                            else
+                            {
+                                LampColor = 2;
+                            }
+                            _LampColor2 = 3;
+                        }
+                        else
+                        {
+                            if (XinJieOut[33])//闪绿
+                            {
+                                LampColor = 2;
+                                _LampColor2 = 2;
+                            }
+                            else
+                            {
+                                LampColor = 1;//常绿
+                                _LampColor2 = 1;
+                            }
+                        }
+                    }
+                }
+
+                #endregion
+                #region 灯号更新
+                switch (LampColor)
+                {
+                    case 1:
+                        LampGreenElapse += 1;
+                        Inifile.INIWriteValue(iniParameterPath, "BigData", "LampGreenElapse", LampGreenElapse.ToString());
+                        break;
+                    case 2:
+                        LampGreenFlickerElapse += 1;
+                        Inifile.INIWriteValue(iniParameterPath, "BigData", "LampGreenFlickerElapse", LampGreenFlickerElapse.ToString());
+                        break;
+                    case 3:
+                        LampYellowElapse += 1;
+                        Inifile.INIWriteValue(iniParameterPath, "BigData", "LampYellowElapse", LampYellowElapse.ToString());
+                        break;
+                    case 4:
+                        LampYellowFlickerElapse += 1;
+                        Inifile.INIWriteValue(iniParameterPath, "BigData", "LampYellowFlickerElapse", LampYellowFlickerElapse.ToString());
+                        break;
+                    case 5:
+                        LampRedElapse += 1;
+                        Inifile.INIWriteValue(iniParameterPath, "BigData", "LampRedElapse", LampRedElapse.ToString());
+                        break;
+                    default:
+                        break;
+                }
+                count1++;
+                if (DateTime.Now.Hour >= 8 && DateTime.Now.Hour < 20)
+                {
+                    t1 = DateTime.Parse("8: 00:00");
+                    t2 = DateTime.Now;
+                    t3 = t2 - t1;
+                    int TotalWorkTime = (int)t3.TotalSeconds;
+                    _LampGreenFlickerElapse = (TotalWorkTime - (LampGreenElapse + LampYellowElapse + LampRedElapse + LampYellowFlickerElapse));
+                }
+                else
+                {
+                    if (DateTime.Now.Hour >= 0 && DateTime.Now.Hour < 8)
+                    {
+                        t1 = DateTime.Parse("20: 00:00");
+                        t2 = DateTime.Now;
+                        t3 = t2 - t1;
+                        int TotalWorkTime = (int)t3.TotalSeconds + 86400;
+                        _LampGreenFlickerElapse = (TotalWorkTime - (LampGreenElapse + LampYellowElapse + LampRedElapse + LampYellowFlickerElapse));
+                    }
+                    else
+                    {
+                        t1 = DateTime.Parse("20: 00:00");
+                        t2 = DateTime.Now;
+                        t3 = t2 - t1;
+                        int TotalWorkTime = (int)t3.TotalSeconds;
+                        _LampGreenFlickerElapse = (TotalWorkTime - (LampGreenElapse + LampYellowElapse + LampRedElapse + LampYellowFlickerElapse));
+                    }
+
+                }
+                if (_LampColor != _LampColor2)
+                {
+                    _LampColor = _LampColor2;
+                }
+
+                if (/*_LampColor != LampColor ||*/ count1 > 60)
+                {
+
+                    if (LampColor == 1 && _LampColor != LampColor)
+                    {
+                        LampGreenSw.Restart();
+                    }
+                    //_LampColor = LampColor;
+                    count1 = 0;
+                    string workState = "";
+                    switch (LampColor.ToString())
+                    {
+                        case ("1"):
+                            workState = "生产";
+                            break;
+                        case ("2"):
+                            workState = "待料";
+                            break;
+                        case ("3"):
+                            workState = "缺料";
+                            break;
+                        case ("5"):
+                            workState = "维修";
+                            break;
+                    }
+                    string result = await Task<string>.Run(() =>
+                    {
+                        try
+                        {
+                            ;
+                            int _result = -999;
+                            Mysql mysql = new Mysql();
+                            if (mysql.Connect())
+                            {
+                                string currentAlarm = LampColor == 4 ? CurrentAlarm : workState;
+                                ////string stm1 = string.Format("SELECT * FROM HA_F4_LIGHT WHERE LIGHT_ID ='{0}' AND CLASS='{1}'", LIGHT_ID, GetBanci());
+                                ////DataSet ds = mysql.Select(stm1);
+                                ////DataTable dt = ds.Tables["table0"];
+                                ////if (dt.Rows.Count == 0)
+                                ////{
+                                ////    string stm2 = string.Format("INSERT INTO HA_F4_LIGHT (PM,LIGHT_ID,MACID,CLASS,LIGHT,SDATE,STIME,ALARM,TIME_1,TIME_2,TIME_3,TIME_4,TIME_5 ,WORKSTATION ) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','0','0','0','0','0','{8}')"
+                                ////        , PM, LIGHT_ID, MACID, GetBanci(), LampColor.ToString(), DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.ToString("mmddss"), "NA", WORKSTATION);
+                                ////    _result = mysql.executeQuery(stm2);
+                                ////    MsgText = AddMessage("插入灯信号表");
+                                ////}
+                                string stm = string.Format("UPDATE HA_F4_LIGHT SET LIGHT = '{3}',SDATE = '{4}',STIME = '{5}',ALARM = '{6}',TIME_1 = '{8}',TIME_2 = '{9}',TIME_3 = '{10}',TIME_4 = '{11}',TIME_5 = '{12}' WHERE PM = '{0}' AND LIGHT_ID = '{1}' AND MACID = '{2}' AND CLASS = '{7}' AND WORKSTATION = '{13}'"
+                                        , PM, LIGHT_ID, MACID, LampColor, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.ToString("mmddss"), currentAlarm, GetBanci(), ((double)LampGreenElapse / 60).ToString("F2"), ((double)_LampGreenFlickerElapse / 60).ToString("F2"), ((double)LampYellowElapse / 60).ToString("F2")
+                                        , ((double)LampYellowFlickerElapse / 60).ToString("F2"), ((double)LampRedElapse / 60).ToString("F2"), WORKSTATION);
+                                //                            string stm = string.Format("INSERT INTO HA_F4_LIGHT (PM,LIGHT_ID,MACID,CLASS,LIGHT,SDATE,STIME,ALARM,TIME_1,TIME_2,TIME_3,TIME_4,TIME_5) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','0','0','0','0','0')"
+                                //, PM, LIGHT_ID, MACID, GetBanci(), LampColor.ToString(), DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.ToString("mmddss"), "NA");
+                                _result = mysql.executeQuery(stm);
+                            }
+                            mysql.DisConnect();
+                            return _result.ToString();
+                        }
+                        catch (Exception ex)
+                        {
+                            return ex.Message;
+                        }
+                    });
+                    AddMessage("更新灯信号" + result);
+                }
+                if (LampColor != 1)
+                {
+                    LampGreenSw.Reset();
+                }
+                #endregion
+
+                #region 插入良率
+                count2++;
+                if (count2 > 60)
+                {
+                    count2 = 0;
+                    string result = await Task<string>.Run(() =>
+                    {
+                        try
+                        {
+                            int _result = -999;
+                            Mysql mysql = new Mysql();
+                            if (mysql.Connect())
+                            {
+                                double fpy = liaoinput > 0 ? (double)liaooutput / liaoinput * 100 : 0;
+
+                                string stm1 = string.Format("SELECT * FROM HA_F4_DATA_FPY WHERE PM = '{0}' AND MACID = '{1}' AND CLASS = '{2}' AND WORKSTATION = '{3}'", PM, MACID, GetBanci(), WORKSTATION);
+                                DataSet ds = mysql.Select(stm1);
+                                DataTable dt = ds.Tables["table0"];
+                                if (dt.Rows.Count == 0)
+                                {
+                                    string stm2 = string.Format("INSERT INTO HA_F4_DATA_FPY (PM,MACID,CLASS,INPUT,OUTPUT,FAIL,FPY,WORKSTATION) VALUES ('{0}','{1}','{2}','0','0','0','0','{4}')"
+                                    , PM, MACID, GetBanci(), WORKSTATION);
+                                    _result = mysql.executeQuery(stm2);
+                                    MsgText = AddMessage("插入数据库良率");
+                                }
+
+                                string stm = string.Format("UPDATE HA_F4_DATA_FPY SET INPUT = '{3}',OUTPUT = '{4}',FAIL = '{5}',FPY = '{6}' WHERE PM = '{0}' AND MACID = '{1}' AND CLASS = '{2}'"
+                                    , PM, MACID, GetBanci(), liaoinput.ToString(), liaooutput.ToString(), (liaoinput - liaooutput).ToString(), fpy.ToString("F1"));
+                                _result = mysql.executeQuery(stm);
+                            }
+                            mysql.DisConnect();
+                            return _result.ToString();
+                        }
+                        catch (Exception ex)
+                        {
+                            return ex.Message;
+                        }
+                    });
+                    //AddMessage("上传良率" + result);
+                }
+
+                #endregion
+                #region 机台指标
+                //if (HD200 != null && plcstate)
+                //{
+                //    TimeSpan ts = DateTime.Now - GetBanStart();
+                //    //妥善率
+                //    double ProperlyRate = (ts.TotalMinutes - (double)LampYellowFlickerElapse - (double)LampRedElapse) / ts.TotalMinutes * 100;
+                //    //报警率
+                //    double AlarmRate = AlarmCount / HD200[6] * 100;
+                //    //达成率
+                //    double YieldRate = HD200[3] / ((ts.TotalMinutes - (double)LampGreenFlickerElapse - (double)LampYellowElapse) * (60 / HD200[7]) * 10) * 100;
+                //    //直通率
+                //    double PassRate = HD200[3] / HD200[6] * 100;
+
+                //    await Task.Run(() => { Xinjie.WriteW(410, (PassRate * 10).ToString("F0")); });//往D410写直通率，保留1位小数
+                //    await Task.Run(() => { Xinjie.WriteW(411, (AlarmRate * 10).ToString("F0")); });//往D410写报警率，保留1位小数
+                //    await Task.Run(() => { Xinjie.WriteW(412, (YieldRate * 10).ToString("F0")); });//往D411写达成率，保留1位小数
+                //    await Task.Run(() => { Xinjie.WriteW(413, (ProperlyRate * 10).ToString("F0")); });//往D413写妥善率，保留1位小数
+
+                //    await Task.Run(() => { Xinjie.WriteW(401, AlarmCount.ToString()); });//往D401写报警次数，保留1位小数
+                //}
+                #endregion
+            }
+
+        }
+
+        async void AlarmAction(int i)
+        {
+            while (true)
+            {
+                await Task.Delay(100);
+                try
+                {
+                    if (!XinJieOut[50 + i])
+                    {
+                        break;
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+            AlarmList[i].End = DateTime.Now;
+            AddMessage(AlarmList[i].Code + AlarmList[i].Content + "解除");
+            TimeSpan time = AlarmList[i].End - AlarmList[i].Start;
+            string result = await Task<string>.Run(() =>
+            {
+                try
+                {
+                    int _result = -999;
+                    Mysql mysql = new Mysql();
+                    if (mysql.Connect())
+                    {
+                        string stm = string.Format("UPDATE HA_F4_DATA_ALARM SET SSTOPDATE = '{5}',SSTOPTIME = '{6}',TIME = '{7}' WHERE PM = '{0}' AND MACID = '{1}' AND NAME = '{2}' AND SSTARTDATE = '{3}' AND SSTARTTIME = '{4}' AND WORKSTATION = '{11}'"
+                            , PM, MACID, AlarmList[i].Content, AlarmList[i].Start.ToString("yyyyMMdd"), AlarmList[i].Start.ToString("hhmmss"), AlarmList[i].End.ToString("yyyyMMdd"), AlarmList[i].End.ToString("hhmmss"), time.TotalMinutes.ToString("F2"), WORKSTATION);
+                        _result = mysql.executeQuery(stm);
+                    }
+                    mysql.DisConnect();
+                    return _result.ToString();
+                }
+                catch (Exception ex)
+                {
+                    return ex.Message;
+                }
+            });
+            AddMessage("更新报警" + result);
+        }
+        private void BigDataPeramEditCommandExecute()
+        {
+            if (BigDataEditIsReadOnly)
+            {
+                BigDataEditIsReadOnly = false;
+                BigDataPeramEdit = "Save";
+            }
+            else
+            {
+                Inifile.INIWriteValue(iniParameterPath, "BigData", "PM", PM);
+                Inifile.INIWriteValue(iniParameterPath, "BigData", "GROUP1", GROUP1);
+                Inifile.INIWriteValue(iniParameterPath, "BigData", "TRACK", TRACK);
+                Inifile.INIWriteValue(iniParameterPath, "BigData", "MACID", MACID);
+                Inifile.INIWriteValue(iniParameterPath, "BigData", "WORKSTATION", WORKSTATION);
+                Inifile.INIWriteValue(iniParameterPath, "BigData", "LIGHT_ID", LIGHT_ID);
+                BigDataEditIsReadOnly = true;
+                BigDataPeramEdit = "Edit";
+                AddMessage("大数据参数保存");
+            }
+        }
+        private async void BigDataAlarmGetCommandCommandExecute()
+        {
+            AlarmButtonIsEnabled = false;
+
+            var rst = await Task<string>.Run(() =>
+            {
+                try
+                {
+                    if (!Directory.Exists(Path.Combine(System.Environment.CurrentDirectory, DateTime.Now.ToString("yyyyMMdd"))))
+                    {
+                        Directory.CreateDirectory(Path.Combine(System.Environment.CurrentDirectory, DateTime.Now.ToString("yyyyMMdd")));
+                    }
+                    string path = Path.Combine(System.Environment.CurrentDirectory, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.ToString("yyyyMMddHHmmss") + "AlarmTotal.csv");
+
 
                     Mysql mysql = new Mysql();
-                    if (mysql.Connect(StrMySQL))
+                    if (mysql.Connect())
                     {
+                        string stm = string.Format("SELECT * FROM HA_F4_DATA_ALARM WHERE PM = '{0}' AND MACID = '{1}' AND CLASS = '{2}'", PM, MACID, GetBanci());
                         DataSet ds = mysql.Select(stm);
+
                         DataTable dt = ds.Tables["table0"];
                         if (dt.Rows.Count > 0)
                         {
+                            AlarmCount = dt.Rows.Count;
                             string strHead = DateTime.Now.ToString("yyyyMMddHHmmss") + "AlarmTotal";
                             string strColumns = "";
                             for (int i = 0; i < dt.Columns.Count; i++)
@@ -5010,7 +6053,7 @@ namespace HS9上料机UI.viewmodel
                                 strColumns += dt.Columns[i].ColumnName + ",";
                             }
                             strColumns = strColumns.Substring(0, strColumns.Length - 1);
-                            Csvfile.SaveToCsv(dt, path, strHead, strColumns);
+                            Csvfile.dt2csv(dt, path, strHead, strColumns);
 
                             Process process1 = new Process();
                             process1.StartInfo.FileName = path;
@@ -5018,129 +6061,256 @@ namespace HS9上料机UI.viewmodel
                             process1.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
                             process1.Start();
                         }
+
                     }
                     mysql.DisConnect();
+
+
+
+
                 }
                 catch (Exception ex)
                 {
-                    AddMessage(ex.Message);
+
+                    return ex.Message;
                 }
+                return "查询报警结束";
             });
+
+            AddMessage(rst);
             AlarmButtonIsEnabled = true;
         }
-        string GetIp()
+        private void WriteMachineData()
         {
-            string ipstring = "127.0.0.1";
-            string hostName = Dns.GetHostName();
-            System.Net.IPAddress[] addressList = Dns.GetHostAddresses(hostName);//会返回所有地址，包括IPv4和IPv6 
-            foreach (var item in addressList)
+            string excelpath = @"D:\MachineData.xlsx";
+
+            try
             {
-                ipstring = item.ToString();
-                string[] ss = ipstring.Split(new string[] { "." }, StringSplitOptions.None);
-                if (ss.Length == 4 && ss[0] == "10")
+                FileInfo fileInfo = new FileInfo(excelpath);
+                if (!File.Exists(excelpath))
                 {
-                    return ipstring;
+                    using (ExcelPackage package = new ExcelPackage(fileInfo))
+                    {
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("MachineData");
+                        worksheet.Cells[1, 1].Value = "绿灯常亮累计时长（单位min）";
+                        worksheet.Cells[1, 2].Value = "绿灯闪烁累计时长（单位min）";
+                        worksheet.Cells[1, 3].Value = "黄灯常亮累计时长（单位min）";
+                        worksheet.Cells[1, 4].Value = "黄灯闪烁累计时长（单位min）";
+                        worksheet.Cells[1, 5].Value = "红灯常亮累计时长（单位min）";
+                        package.Save();
+                    }
+                }
+
+
+                using (ExcelPackage package = new ExcelPackage(fileInfo))
+                {
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                    int newrow = worksheet.Dimension.End.Row + 1;
+                    worksheet.Cells[newrow, 1].Value = System.DateTime.Now.ToString();
+                    worksheet.Cells[newrow, 2].Value = LampGreenElapse;
+                    worksheet.Cells[newrow, 2].Value = _LampGreenFlickerElapse;
+                    worksheet.Cells[newrow, 3].Value = LampYellowElapse;
+                    worksheet.Cells[newrow, 4].Value = LampYellowFlickerElapse;
+                    worksheet.Cells[newrow, 5].Value = LampRedElapse;
+                    package.Save();
+                }
+                AddMessage("保存机台生产数据完成");
+            }
+            catch (Exception ex)
+            {
+                AddMessage(ex.Message);
+            }
+        }
+        async void UIRun() //s/大数据，新增
+        {
+            CardLockFlag = false;
+            CardLockTime = DateTime.Now;
+            bool first = true;//软件第一次打开
+            AddMessage("机台锁定!请刷卡!!!");
+            while (true)
+            {
+                await Task.Delay(100);
+                #region 换班
+                LastBanci = Inifile.INIGetStringValue(iniParameterPath, "System", "Banci", "0");
+                string banci = GetBanci();
+                if (banci != LastBanci)
+                {
+                    LastBanci = banci;
+                    Inifile.INIWriteValue(iniParameterPath, "System", "Banci", LastBanci);
+                    autoClean = true;
+                    autoCard = true;//换班刷卡
+
+                    WriteMachineData();
+                    LampGreenElapse = 0;
+                    Inifile.INIWriteValue(iniParameterPath, "BigData", "LampGreenElapse", LampGreenElapse.ToString());
+                    LampGreenFlickerElapse = 0;
+                    Inifile.INIWriteValue(iniParameterPath, "BigData", "LampGreenFlickerElapse", LampGreenFlickerElapse.ToString());
+                    LampYellowElapse = 0;
+                    Inifile.INIWriteValue(iniParameterPath, "BigData", "LampYellowElapse", LampYellowElapse.ToString());
+                    LampYellowFlickerElapse = 0;
+                    Inifile.INIWriteValue(iniParameterPath, "BigData", "LampYellowFlickerElapse", LampYellowFlickerElapse.ToString());
+                    LampRedElapse = 0;
+                    Inifile.INIWriteValue(iniParameterPath, "BigData", "LampRedElapse", LampRedElapse.ToString());
+
+
+                    //更新数据库数据
+
+                    string result = await Task<string>.Run(() =>
+                    {
+                        try
+                        {
+                            int _result = -999;
+                            Mysql mysql = new Mysql();
+                            if (mysql.Connect())
+                            {
+                                //string stm = string.Format("UPDATE HA_F4_LIGHT SET LIGHT = '{3}',SDATE = '{4}',STIME = '{5}',ALARM = '{6}',CLASS = '{7}',TIME_1 = '0',TIME_2 = '0',TIME_3 = '0',TIME_4 = '0',TIME_5 = '0' WHERE PM = '{0}' AND LIGHT_ID = '{1}' AND MACID = '{2}'"
+                                //    , PM, LIGHT_ID, MACID, LampColor, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.ToString("mmddss"), "NA", GetBanci());
+                                string stm = string.Format("INSERT INTO HA_F4_LIGHT (PM,LIGHT_ID,MACID,CLASS,LIGHT,SDATE,STIME,ALARM,TIME_1,TIME_2,TIME_3,TIME_4,TIME_5) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','0','0','0','0','0')"
+                                    , PM, LIGHT_ID, MACID, GetBanci(), LampColor.ToString(), DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.ToString("mmddss"), "NA");
+                                _result = mysql.executeQuery(stm);
+
+                                AddMessage("插入数据库灯信号" + _result.ToString());
+                                stm = string.Format("INSERT INTO HA_F4_DATA_FPY (PM,MACID,CLASS,INPUT,OUTPUT,FAIL,FPY) VALUES ('{0}','{1}','{2}','0','0','0','0')"
+                                    , PM, MACID, GetBanci());
+                                _result = mysql.executeQuery(stm);
+                                AddMessage("插入数据库良率" + _result.ToString());
+                            }
+                            mysql.DisConnect();
+                            return _result.ToString();
+                        }
+                        catch (Exception ex)
+                        {
+                            return ex.Message;
+                        }
+                    });
+
+                    //Xinjie.SetM(337, true);//给XCC刷卡信号 
+                    //CardLockFlag = true;
+                    //CardLockTime = DateTime.Now;
+                    //AddMessage("机台锁定!");
+                    AddMessage(LastBanci + " 换班数据清零");
+                }
+                #endregion
+                #region 刷卡1
+
+                if (first && IsPLCConnect && cardOpenFlag)
+                {
+                    first = false;
+                    CardLockFlag = true;
+                    CardLockTime = System.DateTime.Now;
+                    Xinjie.SetM(337, true);//给XCC刷卡信号
+                }
+                #endregion
+                #region 刷卡恢复
+
+                if (CardLockFlag)
+                {
+                    try
+                    {
+                        SXJLibrary.Oracle oraDB = new SXJLibrary.Oracle("qddb04.eavarytech.com", "mesdb04", "ictdata", "ictdata*168");
+                        if (oraDB.isConnect())
+                        {
+                            string stm = string.Format("SELECT * FROM CFT_DATA WHERE MNO = '{0}' AND TRESULT = 'PASS' ORDER BY TESTDATE DESC,TESTTIME DESC",
+                                MachineNum);
+                            DataSet ds = oraDB.executeQuery(stm);
+                            DataTable dt = ds.Tables[0];
+                            if (dt.Rows.Count > 0)
+                            {
+                                DataRow dr = dt.Rows[0];
+                                string opertor = (string)dr["OPERTOR"];
+                                string datestr = (string)dr["TESTDATE"];
+                                string timestr = (string)dr["TESTTIME"];
+                                if (datestr.Length == 8 && (timestr.Length == 5 || timestr.Length == 6))
+                                {
+                                    if (timestr.Length == 5)
+                                    {
+                                        timestr = "0" + timestr;
+                                    }
+                                    string datetimestr = string.Empty;
+                                    datetimestr = string.Format("{0}/{1}/{2} {3}:{4}:{5}", datestr.Substring(0, 4), datestr.Substring(4, 2), datestr.Substring(6, 2), timestr.Substring(0, 2), timestr.Substring(2, 2), timestr.Substring(4, 2));
+                                    DateTime updatetime = Convert.ToDateTime(datetimestr);
+                                    if ((updatetime - CardLockTime).TotalMilliseconds > 0)
+                                    {
+                                        Xinjie.SetM(337, false);//给XCC刷卡信号 
+                                        CardLockFlag = false;
+                                        autoCard = false;//s刷卡
+                                        minutesCard = false;
+                                        testCard = false;
+                                        cardPassFlag = true;//s刷卡/刷卡成功   
+                                        Inifile.INIWriteValue(initestPath, "Other", "op", opertor);
+                                        MsgText = AddMessage("刷卡成功，解锁");
+                                        ShowAlarmTextGrid("刷卡成功");
+                                    }
+                                }
+                            }
+                        }
+                        oraDB.disconnect();
+                    }
+                    catch (Exception ex)
+                    {
+                        AddMessage(ex.Message);
+                    }
+                }
+
+                #endregion
+                #region 锁机
+                if (!CardLockFlag)
+                {
+                    if (autoCard || minutesCard || testCard && cardOpenFlag)
+                    {
+                        EpsonOpetate(2);//s刷卡
+                        ShowAlarmTextGrid("请刷卡");
+                        {
+                            Xinjie.SetM(337, true);//给XCC刷卡信号 
+                            CardLockFlag = true;
+                            CardLockTime = DateTime.Now;
+                        }
+                    }
+                    #endregion
                 }
             }
-            return "127.0.0.1";
-        }
-        private async Task BigDataInsert(string COMPUTERIP, string MACID, string LINEID, string PARTNUM, string CLASS, string FAULTID, string FAULTSTARTTIME, string FAULTTIME)
-        {
-            int result = await Task.Run<int>(() =>
-            {
-                try
-                {
-                    string _TDate;
-                    if (DateTime.Now.Hour < 8)
-                    {
-                        _TDate = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
-                    }
-                    else
-                    {
-                        _TDate = DateTime.Now.ToString("yyyyMMdd");
-                    }
+            #endregion
 
-                    string StrMySQL = "Server=10.89.164.62;Database=dcdb;Uid=dcu;Pwd=dcudata;pooling=false;CharSet=utf8;port=3306";
-                    string stm = "insert into TED_FAULT_DATA (WORKSTATION,COMPUTERIP,MACID,LINEID,PARTNUM,TDATE,TTIME,CLASS,FAULTID,FAULTSTARTTIME,FAULTTIME,REPAIRRESULT,REPAIRER,FL01) VALUES ('JASPER','"
-    + COMPUTERIP + "','" + MACID + "','" + LINEID + "','" + PARTNUM + "','" + _TDate + "','" + DateTime.Now.ToString("HHmmss") + "','"
-    + CLASS + "','" + FAULTID + "','" + FAULTSTARTTIME + "','" + FAULTTIME + "','NA','NA','ON')";
-                    Mysql mysql = new Mysql();
-                    int res = -1;
-                    if (mysql.Connect(StrMySQL))
-                    {
-                        res = mysql.executeQuery(stm);
-                    }
-                    mysql.DisConnect();
-                    return res;
-                }
-                catch (Exception ex)
-                {
-                    return -999;
-                }
-            });
-            AddMessage("上传报警" + result.ToString());
-        }
-        private async Task BigDataUpdate(string ip, string content, string starttime, string _class, string faulttime)
-        {
-            int result = await Task.Run<int>(() =>
-            {
-                try
-                {
-                    string StrMySQL = "Server=10.89.164.62;Database=dcdb;Uid=dcu;Pwd=dcudata;pooling=false;CharSet=utf8;port=3306";
 
-                    string stm = "update TED_FAULT_DATA SET CLASS = '" + _class + "',FAULTTIME = '" + faulttime + "',FL01 = 'OFF' WHERE COMPUTERIP = '"
-                    + ip + "' AND FAULTID = '" + content + "' AND FAULTSTARTTIME = '" + starttime + "'";
-                    Mysql mysql = new Mysql();
-                    int res = -1;
-                    if (mysql.Connect(StrMySQL))
-                    {
-                        res = mysql.executeQuery(stm);
-                    }
-                    mysql.DisConnect();
-                    return res;
-                }
-                catch (Exception ex)
-                {
-                    return -999;
-                }
-            });
-            AddMessage("更新报警" + result.ToString());
+            #endregion
         }
-        #endregion
-        #endregion
-    }
-    public class AlarmRecord
-    {
-        public string AlarmTime { set; get; }
-        public string Content { set; get; }
-        public AlarmRecord(string alarmTime, string content)
+        public class AlarmRecord
         {
-            AlarmTime = alarmTime;
-            Content = content;
+            public string AlarmTime { set; get; }
+            public string Content { set; get; }
+            public AlarmRecord(string alarmTime, string content)
+            {
+                AlarmTime = alarmTime;
+                Content = content;
+            }
         }
-    }
-    public class TestRecord
-    {
-        public string TestTime { set; get; }
-        public string Barcode { set; get; }
-        public string TestResult { set; get; }
-        public string TestCycleTime { set; get; }
-        public string Index { set; get; }
-        public TestRecord(string testTime, string barcode, string testResult, string testCycleTime, string index)
+        public class TestRecord
         {
-            TestTime = testTime;
-            Barcode = barcode;
-            TestResult = testResult;
-            TestCycleTime = testCycleTime;
-            Index = index;
+            public string TestTime { set; get; }
+            public string Barcode { set; get; }
+            public string TestResult { set; get; }
+            public string TestCycleTime { set; get; }
+            public string Index { set; get; }
+            public TestRecord(string testTime, string barcode, string testResult, string testCycleTime, string index)
+            {
+                TestTime = testTime;
+                Barcode = barcode;
+                TestResult = testResult;
+                TestCycleTime = testCycleTime;
+                Index = index;
+            }
         }
+        class AlarmData
+        {
+            public string Code { set; get; }
+            public string Content { set; get; }
+            public DateTime Start { set; get; }
+            public DateTime End { set; get; }
+            public bool State { set; get; }
+        }
+
+
+
     }
-    class AlarmData
-    {
-        public string Code { set; get; }
-        public string Content { set; get; }
-        public DateTime Start { set; get; }
-        public DateTime End { set; get; }
-        public bool State { set; get; }
-    }
+
 }

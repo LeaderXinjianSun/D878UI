@@ -82,5 +82,11 @@ namespace HS9上料机UI.model
             myadp.Fill(ds, "table0");
             return ds;
         }
+        public object  ExEcuteScalar(string stm)//s/大数据
+        {
+            MySqlCommand cmd = new MySqlCommand(stm, conn);
+            object res = cmd.ExecuteScalar();
+            return res;
+        }
     }
 }
